@@ -1,0 +1,450 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --navy-950: #020B18;
+  --navy-900: #0A1628;
+  --navy-800: #0A2540;
+  --brand-blue: #0066FF;
+  --brand-cyan: #00D4FF;
+  --brand-purple: #7B61FF;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #FFFFFF;
+  color: #111827;
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #020B18;
+}
+::-webkit-scrollbar-thumb {
+  background: #0066FF;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00D4FF;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #0066FF, #00D4FF, #7B61FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-blue {
+  background: linear-gradient(135deg, #0066FF, #00D4FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 30px rgba(0, 102, 255, 0.4), 0 0 60px rgba(0, 102, 255, 0.1);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+}
+
+/* Noise texture overlay */
+.noise-overlay::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+}
+
+/* Grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 102, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 102, 255, 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Animated border gradient */
+@keyframes border-rotate {
+  0% { --angle: 0deg; }
+  100% { --angle: 360deg; }
+}
+
+.animated-border {
+  position: relative;
+  border-radius: 16px;
+  background: rgba(10, 37, 64, 0.8);
+}
+
+.animated-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 17px;
+  background: linear-gradient(var(--angle, 0deg), #0066FF, #00D4FF, #7B61FF, #0066FF);
+  animation: border-rotate 4s linear infinite;
+  z-index: -1;
+  opacity: 0.6;
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Particle dots */
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  50% { transform: translateY(-30px) rotate(180deg); opacity: 0.5; }
+}
+
+/* Section spacing */
+.section-padding {
+  padding: 100px 0;
+}
+
+/* Link hover underline */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #0066FF, #00D4FF);
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Light theme nav link underline */
+.nav-link-light {
+  position: relative;
+}
+.nav-link-light::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: #00283C;
+  transition: width 0.3s ease;
+}
+.nav-link-light:hover::after {
+  width: 100%;
+}
+
+/* Stats number gradient */
+.stat-number {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #FFFFFF, #00D4FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Smooth appear animation for sections */
+@keyframes appear-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.appear-up {
+  animation: appear-up 0.7s ease forwards;
+}
+
+/* WhatsApp message bubble */
+.whatsapp-msg-in {
+  background: rgba(255,255,255,0.07);
+  border-radius: 0 18px 18px 18px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.whatsapp-msg-out {
+  background: linear-gradient(135deg, rgba(0,102,255,0.3), rgba(0,212,255,0.15));
+  border-radius: 18px 18px 0 18px;
+  border: 1px solid rgba(0,212,255,0.2);
+}
+
+/* 3D card tilt perspective */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.card-3d:hover {
+  transform: perspective(1000px) rotateY(-5deg) rotateX(3deg) translateZ(10px);
+}
+
+/* Pulse ring */
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 102, 255, 0.5); }
+  70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 102, 255, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 102, 255, 0); }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s infinite;
+}
+
+/* ===================== LIGHT THEME — HOME PAGE ===================== */
+
+/* White card — for light-bg sections */
+.card-white {
+  background: #FFFFFF;
+  border: 1px solid #E2EBF0;
+  box-shadow: 0 2px 8px rgba(0, 40, 60, 0.06);
+  transition: all 0.25s ease;
+}
+.card-white:hover {
+  border-color: #00B4D8;
+  box-shadow: 0 8px 28px rgba(0, 40, 60, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Dark teal solid button — for light bg */
+.btn-dark {
+  background: #00283C;
+  color: white;
+  border-radius: 6px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+.btn-dark:hover {
+  background: #003D5C;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 40, 60, 0.3);
+}
+
+/* Section badge — light bg version */
+.badge-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: rgba(0, 40, 60, 0.07);
+  color: #00283C;
+  border: 1px solid rgba(0, 40, 60, 0.15);
+}
+
+/* Gradient heading — dark teal to cyan, for white bg */
+.gradient-heading {
+  background: linear-gradient(135deg, #00283C 0%, #0077A8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Marquee animation for logo bar */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  animation: marquee 30s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Card top accent — teal gradient border */
+.card-accent-light {
+  position: relative;
+}
+.card-accent-light::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #00283C, #00B4D8);
+  border-radius: 9999px 9999px 0 0;
+}
+
+/* ===================== BRAND THEME — DARK TEAL + CYAN ===================== */
+
+/* Glass card — matches logo dark teal */
+.card-light {
+  background: rgba(0, 40, 60, 0.35);
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+}
+
+.card-light:hover {
+  background: rgba(0, 40, 60, 0.55);
+  border-color: rgba(0, 212, 255, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 212, 255, 0.12);
+}
+
+/* Primary CTA — gradient teal to cyan */
+.btn-primary {
+  background: linear-gradient(135deg, #00B4D8, #0077A8);
+  color: white;
+  border-radius: 9999px;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 180, 216, 0.45);
+}
+
+/* Outline button — cyan border */
+.btn-outline {
+  background: transparent;
+  color: #00D4FF;
+  border: 1.5px solid rgba(0, 212, 255, 0.45);
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.btn-outline:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: #00D4FF;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2);
+}
+
+/* Section badge — cyan glass pill */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: rgba(0, 212, 255, 0.08);
+  color: #00D4FF;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+/* Gradient headline text — white fading to cyan */
+.gradient-teal {
+  background: linear-gradient(135deg, #ffffff 0%, #00D4FF 60%, #7FFFD4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Cyan-only gradient text for accents */
+.gradient-cyan {
+  background: linear-gradient(135deg, #00D4FF, #7FFFD4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glowing orb background element */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+/* Gradient border card (top accent) */
+.card-accent {
+  position: relative;
+}
+.card-accent::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #00283C, #00D4FF, #7FFFD4);
+  border-radius: 9999px 9999px 0 0;
+}
+
+/* Glow effects */
+.glow-cyan {
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.3), 0 0 80px rgba(0, 212, 255, 0.1);
+}
+
+.glow-teal {
+  box-shadow: 0 0 40px rgba(0, 40, 60, 0.6);
+}
+
+/* Typing cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #00D4FF;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
