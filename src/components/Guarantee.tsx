@@ -36,7 +36,7 @@ export default function Guarantee() {
                   Most agencies guess. We audit, prove, and guarantee. Our free clinic audit shows you exactly where patients are leaking — whether you hire us or not, you walk away with a clear plan.
                 </p>
                 <p className="text-gray-500 leading-relaxed mb-8">
-                  For qualifying clinics, we guarantee measurable growth within 60 days — more patient inquiries, better Google ranking, or reduced missed calls. If we don&apos;t deliver, you don&apos;t pay. No fluff. No long-term contracts.
+                  For qualifying clinics, we guarantee measurable growth within 60 days — more patient inquiries, better Google ranking, or reduced missed calls. If we don&apos;t deliver, you don&apos;t pay. No fluff. Minimum 3–6 month commitment.
                 </p>
                 <button onClick={openForm}
                   className="btn-dark px-8 py-4 text-base">
@@ -49,7 +49,7 @@ export default function Guarantee() {
                 {[
                   { icon: "✅", title: "Free audit — no strings attached", desc: "We analyse your online presence and give you a written report. You keep it even if you don't work with us." },
                   { icon: "📈", title: "Measurable growth in 60 days", desc: "We set clear KPIs at the start: patient inquiries, Google ranking, call volume. You can see the progress live." },
-                  { icon: "🚫", title: "No long-term contracts", desc: "Month-to-month. You're not locked in. Stay because the results speak for themselves — not because you have to." },
+                  { icon: "🚫", title: "3–6 month minimum", desc: "Results take time to compound. We ask for 3–6 months — and we back every day of it with measurable outcomes." },
                   { icon: "🤝", title: "Dedicated account team", desc: "One point of contact who knows your clinic. Not a ticket system. Not a call centre. A real person." },
                 ].map((item) => (
                   <div key={item.title} className="flex gap-4 p-4 rounded-xl bg-[#F8FAFC] border border-gray-100">

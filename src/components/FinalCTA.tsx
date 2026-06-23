@@ -12,7 +12,7 @@ export default function FinalCTA() {
           Ready to Grow Your Clinic?
         </h2>
         <p className="text-white/60 mb-8 max-w-xl mx-auto leading-relaxed">
-          After 10,000+ audit hours and 100+ clinics served, we know exactly what it takes to fill your appointment book. Start with a free audit — no commitment, no contracts.
+          After 10,000+ audit hours and 100+ clinics served, we know exactly what it takes to fill your appointment book. Start with a free audit — minimum 3–6 month engagement.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button onClick={openForm}
@@ -27,7 +27,7 @@ export default function FinalCTA() {
             Chat on WhatsApp
           </a>
         </div>
-        <p className="text-white/30 text-xs mt-6">★★★★★ Rated 4.9/5 by 100+ clinics across Pakistan · No contracts · Cancel anytime</p>
+        <p className="text-white/30 text-xs mt-6">★★★★★ Rated 4.9/5 by 100+ clinics across Pakistan · 3–6 month minimum · Results guaranteed</p>
       </div>
     </section>
   );

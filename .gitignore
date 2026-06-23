@@ -4,3 +4,4 @@ out/
 .env
 .env.local
 *.node
+.DS_Store

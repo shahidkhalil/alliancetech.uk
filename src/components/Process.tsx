@@ -51,7 +51,7 @@ export default function Process() {
           <button onClick={openForm} className="btn-dark px-8 py-4 text-base">
             Start Your Clinic Growth Audit — Free
           </button>
-          <p className="text-gray-400 text-sm mt-3">No contracts. No commitments. Just a clear plan for your clinic.</p>
+          <p className="text-gray-400 text-sm mt-3">Minimum 3–6 month engagement. Just enough time for results to compound and your ROI to become undeniable.</p>
         </motion.div>
       </div>
     </section>

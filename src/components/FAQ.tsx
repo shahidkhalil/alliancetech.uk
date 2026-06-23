@@ -5,7 +5,7 @@ import { useRef } from "react";
 
 const faqs = [
   { q: "How quickly will I see results?", a: "Most clinics see measurable results — more calls, WhatsApp inquiries, and Google traffic — within 30–45 days. Full results typically show by day 60. We give you a clear month-by-month projection at the start." },
-  { q: "Do I need to sign a long-term contract?", a: "No. We work month-to-month. You can cancel at any time. That said, 90%+ of our clients stay long-term because the ROI is clear in their monthly reports." },
+  { q: "What is your minimum contract length?", a: "We require a minimum commitment of 3–6 months. Real results — Google rankings, ad optimisation, AI training — take time to compound. 90%+ of our clients continue well beyond 6 months because the ROI speaks for itself." },
   { q: "What if I already have a website?", a: "We audit your existing website first. If it can be improved without a full rebuild, we do that. If it's holding you back, we'll build a new one as part of your plan." },
   { q: "How does the AI Receptionist work?", a: "It's connected to your clinic's phone number and WhatsApp. It answers in Urdu and English, qualifies the patient, and books them directly into your appointment calendar — 24/7 without any staff involvement." },
   { q: "Do you work with aesthetic clinics too?", a: "Yes. About half our clients are aesthetic and skin clinics. We have specific campaigns, content, and SEO strategies for botox, fillers, laser, and skin treatments." },
