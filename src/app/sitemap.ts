@@ -17,6 +17,7 @@ const routes = [
   { path: "/aesthetic-clinic-growth", priority: 0.7 },
   { path: "/dental-clinic-lahore", priority: 0.7 },
   { path: "/about", priority: 0.5 },
+  { path: "/our-mission", priority: 0.5 },
   { path: "/contact", priority: 0.5 },
 ];
 

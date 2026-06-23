@@ -46,7 +46,7 @@ const navLinks = [
       heading: "Who We Are",
       links: [
         { label: "About Us", href: "/about" },
-        { label: "Our Mission", href: "/about" },
+        { label: "Our Mission", href: "/our-mission" },
         { label: "Contact Us", href: "/contact" },
       ],
     },
