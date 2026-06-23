@@ -1,6 +1,7 @@
 "use client";
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
+import GoogleMapsMockup from "@/components/GoogleMapsMockup";
 import FinalCTA from "@/components/FinalCTA";
 
 const features = [
@@ -41,6 +42,16 @@ export default function LocalSEOForClinics() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="py-16 bg-white border-b border-gray-100">
+        <div className="max-w-3xl mx-auto px-6 text-center mb-10">
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] mb-3">
+            Be the Pin Patients <span className="gradient-heading">Click First</span>
+          </h2>
+          <p className="text-gray-500">A fully optimised Google Business Profile that ranks above every nearby competitor.</p>
+        </div>
+        <GoogleMapsMockup />
       </section>
 
       <section className="py-16 bg-white">

@@ -1,6 +1,7 @@
 "use client";
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
+import WebsitePreviewMockup from "@/components/WebsitePreviewMockup";
 import FinalCTA from "@/components/FinalCTA";
 import { CheckCircle2 } from "lucide-react";
 
@@ -42,6 +43,16 @@ export default function ClinicWebsiteDesign() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="py-16 bg-white border-b border-gray-100">
+        <div className="max-w-3xl mx-auto px-6 text-center mb-10">
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] mb-3">
+            A Site Built to <span className="gradient-heading">Turn Visitors Into Patients</span>
+          </h2>
+          <p className="text-gray-500">Clean design, fast load times, and a booking flow that converts — see it in action.</p>
+        </div>
+        <WebsitePreviewMockup />
       </section>
 
       <section className="py-16 bg-white">
