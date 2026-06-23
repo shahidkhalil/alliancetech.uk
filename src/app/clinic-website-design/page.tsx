@@ -2,6 +2,7 @@
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import WebsitePreviewMockup from "@/components/WebsitePreviewMockup";
+import ResponsiveShowcaseMockup from "@/components/ResponsiveShowcaseMockup";
 import FinalCTA from "@/components/FinalCTA";
 import { CheckCircle2 } from "lucide-react";
 
@@ -33,6 +34,10 @@ export default function ClinicWebsiteDesign() {
         subheadline="Live in 7 days. Mobile-first, fast-loading, and built to turn visitors into booked patients — not just look good."
         ctaText="Get a Free Website Audit"
       />
+
+      <section className="bg-white border-b border-gray-100">
+        <ResponsiveShowcaseMockup />
+      </section>
 
       <section className="py-12 bg-[#F8FAFC] border-b border-gray-100">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
