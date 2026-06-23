@@ -13,7 +13,7 @@ const services = [
     subtitle: "Google & Meta Ads",
     desc: "Targeted campaigns built specifically for dental and aesthetic clinics — not generic templates. Every rupee tracked.",
     stat: "4x avg. ROAS",
-    href: "/dental-clinic-growth",
+    href: "/digital-marketing-for-clinics",
     popular: true,
   },
   {
@@ -22,7 +22,7 @@ const services = [
     subtitle: "Fast. Professional. Converting.",
     desc: "Built for Pakistani clinics — mobile-first, SEO-ready, and designed to turn visitors into booked appointments.",
     stat: "Live in 7 days",
-    href: "/dental-clinic-growth",
+    href: "/clinic-website-design",
     popular: false,
   },
   {
@@ -31,7 +31,7 @@ const services = [
     subtitle: "Your brand on every phone",
     desc: "Branded iOS & Android app. Patients book, view records, get reminders, and pay — with your clinic's logo.",
     stat: "Branded & custom",
-    href: "/ehr-platform",
+    href: "/clinic-mobile-app",
     popular: false,
   },
   {
@@ -49,7 +49,7 @@ const services = [
     subtitle: "Long-term organic growth",
     desc: "Rank on page 1 for high-intent treatment searches. Dental implants, whitening, fillers — the terms that convert.",
     stat: "100% organic",
-    href: "/local-seo-for-clinics",
+    href: "/seo-for-clinics",
     popular: false,
   },
   {

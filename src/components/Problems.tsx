@@ -33,7 +33,6 @@ export default function Problems() {
   return (
     <section className="py-16 lg:py-20 bg-[#F8FAFC]" ref={ref}>
       <div className="max-w-6xl mx-auto px-6">
-        <VideoProgressBar />
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="text-center mb-12">
           <span className="badge-light mb-4">THE PROBLEM</span>
           <h2 className="text-3xl lg:text-4xl font-extrabold text-[#00283C] mt-4 mb-4 tracking-tight">
@@ -44,6 +43,7 @@ export default function Problems() {
             After auditing 100+ dental and aesthetic clinics across Pakistan, we see the same 6 problems costing clinics thousands every month.
           </p>
         </motion.div>
+        <VideoProgressBar />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {problems.map((p, i) => (

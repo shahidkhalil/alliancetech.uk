@@ -9,6 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://alliancetech.io"),
   title: "Alliance Tech | AI-Powered Growth for Dental & Aesthetic Clinics",
   description:
     "Alliance Tech helps Dental and Aesthetic Clinics grow through AI Automation, Patient Acquisition, WhatsApp AI Agents, AI Receptionists, and Smart EHR Solutions. Book your free growth consultation today.",

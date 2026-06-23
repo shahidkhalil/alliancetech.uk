@@ -1,0 +1,29 @@
+import type { MetadataRoute } from "next";
+
+const baseUrl = "https://alliancetech.io";
+
+const routes = [
+  { path: "", priority: 1.0 },
+  { path: "/services", priority: 0.9 },
+  { path: "/digital-marketing-for-clinics", priority: 0.8 },
+  { path: "/clinic-website-design", priority: 0.8 },
+  { path: "/clinic-mobile-app", priority: 0.8 },
+  { path: "/seo-for-clinics", priority: 0.8 },
+  { path: "/local-seo-for-clinics", priority: 0.8 },
+  { path: "/ai-receptionist", priority: 0.8 },
+  { path: "/whatsapp-ai-automation", priority: 0.8 },
+  { path: "/ehr-platform", priority: 0.8 },
+  { path: "/dental-clinic-growth", priority: 0.7 },
+  { path: "/aesthetic-clinic-growth", priority: 0.7 },
+  { path: "/dental-clinic-lahore", priority: 0.7 },
+  { path: "/about", priority: 0.5 },
+  { path: "/contact", priority: 0.5 },
+];
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return routes.map((r) => ({
+    url: `${baseUrl}${r.path}`,
+    changeFrequency: "monthly",
+    priority: r.priority,
+  }));
+}
