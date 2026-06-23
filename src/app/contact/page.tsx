@@ -13,7 +13,7 @@ export default function Contact() {
         headline="Let's Grow Your"
         highlight="Clinic Together"
         subheadline="Book a free 30-minute strategy call. We'll audit your current patient acquisition and show you exactly what's being left on the table."
-        ctaText="Book Free Strategy Call"
+        ctaText="Get Your Free Clinic Audit"
       />
 
       <section className="py-16 bg-white">

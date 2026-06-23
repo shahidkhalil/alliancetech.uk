@@ -30,7 +30,7 @@ export default function DentalClinicGrowth() {
         headline="More Dental Patients,"
         highlight="Every Single Month"
         subheadline="We build websites, run ads, and create mobile apps for dental clinics in Pakistan — everything under one roof, so you can focus on treating patients."
-        ctaText="Get Free Dental Growth Audit"
+        ctaText="Get Your Free Clinic Audit"
       />
 
       <section className="py-12 border-b border-gray-100 bg-[#F8FAFC]">

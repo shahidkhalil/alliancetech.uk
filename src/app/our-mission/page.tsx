@@ -43,7 +43,7 @@ export default function OurMission() {
         headline="Healthcare Growth Shouldn't"
         highlight="Depend on Luck"
         subheadline="Pakistan has thousands of skilled doctors running clinics that deserve to be full. We build the systems that make sure they are."
-        ctaText="Work With Us"
+        ctaText="Get Your Free Clinic Audit"
       />
 
       <section className="py-16 lg:py-20 bg-white">

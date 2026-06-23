@@ -34,7 +34,7 @@ export default function About() {
         headline="We Grow Clinics With"
         highlight="AI & Automation"
         subheadline="Alliance Tech is Pakistan's first AI-powered healthcare growth agency, helping dental and aesthetic clinics attract more patients, automate operations, and scale faster."
-        ctaText="Work With Us"
+        ctaText="Get Your Free Clinic Audit"
       />
 
       <section className="py-16 bg-white">

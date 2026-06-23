@@ -104,7 +104,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                 <div>
                   <h2 className="text-xl font-bold text-white">Book Free Consultation</h2>
                   <p className="text-sm text-white/50 mt-1">
-                    We&apos;ll call you within 30 minutes
+                    We&apos;ll call you within 2 hours
                   </p>
                 </div>
                 <button
@@ -127,7 +127,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2">Request Received! 🎉</h3>
                   <p className="text-white/60 text-sm mb-6">
-                    Our team will call you within 30 minutes. Check your WhatsApp for a confirmation message.
+                    Our team will call you within 2 hours. Check your WhatsApp for a confirmation message.
                   </p>
                   <button
                     onClick={onClose}

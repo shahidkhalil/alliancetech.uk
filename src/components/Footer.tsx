@@ -1,10 +1,11 @@
 import Image from "next/image";
 
 const services = [
-  { label: "Digital Marketing", href: "/dental-clinic-growth" },
-  { label: "Websites for Dentists", href: "/dental-clinic-growth" },
-  { label: "Apps for Dental Clinics", href: "/ehr-platform" },
+  { label: "Digital Marketing", href: "/digital-marketing-for-clinics" },
+  { label: "Websites for Dentists", href: "/clinic-website-design" },
+  { label: "Apps for Dental Clinics", href: "/clinic-mobile-app" },
   { label: "Local SEO for Clinics", href: "/local-seo-for-clinics" },
+  { label: "SEO for Clinics", href: "/seo-for-clinics" },
   { label: "AI Receptionist", href: "/ai-receptionist" },
   { label: "WhatsApp AI Automation", href: "/whatsapp-ai-automation" },
   { label: "EHR Platform", href: "/ehr-platform" },

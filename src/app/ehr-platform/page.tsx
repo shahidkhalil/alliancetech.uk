@@ -84,7 +84,7 @@ export default function EHRPlatformPage() {
         headline="Go Fully Paperless in"
         highlight="7 Days"
         subheadline="Our clinic management platform handles patient records, appointments, billing, and communications — built specifically for dental and aesthetic clinics in Pakistan."
-        ctaText="Book Free EHR Demo"
+        ctaText="Get Your Free Clinic Audit"
       />
 
       {/* Stats bar */}

@@ -49,7 +49,7 @@ export default function Process() {
         <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.6 }}
           className="text-center">
           <button onClick={openForm} className="btn-dark px-8 py-4 text-base">
-            Start Your Clinic Growth Audit — Free
+            Get Your Free Clinic Audit
           </button>
           <p className="text-gray-400 text-sm mt-3">Minimum 3–6 month engagement. Just enough time for results to compound and your ROI to become undeniable.</p>
         </motion.div>

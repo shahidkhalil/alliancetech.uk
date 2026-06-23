@@ -35,7 +35,7 @@ export default function AIReceptionist() {
         headline="Never Miss a Patient Call"
         highlight="Ever Again"
         subheadline="Our AI receptionist answers every call, books appointments, and handles patient queries — 24/7 in Urdu and English, at a fraction of staff cost."
-        ctaText="See AI Receptionist in Action"
+        ctaText="Get Your Free Clinic Audit"
       />
 
       <section className="py-12 bg-[#F8FAFC] border-b border-gray-100">

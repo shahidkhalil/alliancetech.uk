@@ -29,7 +29,7 @@ export default function DentalClinicLahore() {
         headline="The #1 Dental Marketing Agency"
         highlight="in Lahore"
         subheadline="We help Lahore dental clinics dominate Google Maps, run profitable ads, and fill their appointment books — guaranteed results in 60 days."
-        ctaText="Book Free Lahore Clinic Audit"
+        ctaText="Get Your Free Clinic Audit"
       />
 
       <section className="py-12 bg-[#F8FAFC] border-b border-gray-100">

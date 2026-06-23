@@ -7,7 +7,7 @@ export default function FinalCTA() {
   return (
     <section className="py-16 lg:py-20 bg-[#00283C]">
       <div className="max-w-3xl mx-auto px-6 text-center">
-        <p className="text-sm font-bold text-white/40 uppercase tracking-widest mb-4">ONLY ACCEPTING 5 NEW CLINICS THIS MONTH</p>
+        <p className="text-sm font-bold text-white/40 uppercase tracking-widest mb-4">ONLY ACCEPTING 10 NEW CLINICS THIS MONTH</p>
         <h2 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight mb-4">
           Ready to Grow Your Clinic?
         </h2>

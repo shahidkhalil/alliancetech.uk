@@ -89,7 +89,7 @@ export default function WhatsAppAIAutomation() {
         headline="Reply to Every Patient"
         highlight="in Under 5 Seconds"
         subheadline="Our WhatsApp AI handles patient messages, books appointments, and sends reminders — automatically, in Urdu and English, round the clock."
-        ctaText="See WhatsApp AI Demo"
+        ctaText="Get Your Free Clinic Audit"
       />
 
       {/* Stats bar */}
