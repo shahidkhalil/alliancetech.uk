@@ -3,12 +3,14 @@ import { ReactNode } from "react";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 import ConsultationForm from "./ConsultationForm";
+import AnalyticsTracker from "./AnalyticsTracker";
 import { FormProvider, useForm } from "@/context/FormContext";
 
 function PageContent({ children }: { children: ReactNode }) {
   const { isOpen, closeForm } = useForm();
   return (
     <div className="relative min-h-screen bg-white">
+      <AnalyticsTracker />
       <Navigation />
       <main className="relative">{children}</main>
       <Footer />

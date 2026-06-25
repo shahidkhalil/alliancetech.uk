@@ -4,46 +4,95 @@ import { useRef } from "react";
 
 const testimonials = [
   {
-    name: "Dr. Ahmed Raza",
-    role: "Dental Surgeon, DHA Lahore",
-    quote: "We went from 40 patients a month to 170+ in under two months. The AI receptionist alone saved us 3 hours of staff time daily. Alliance Tech is the real deal.",
+    name: "FCConvert",
+    role: "Verified Google Review",
+    quote: "Professional team with great expertise in healthcare marketing.",
     stars: 5,
-    initials: "AR",
+    initials: "FC",
   },
   {
-    name: "Dr. Sara Malik",
-    role: "Aesthetic Clinic, Gulberg",
-    quote: "Our WhatsApp was getting 5 messages a week. Now it's 50+ and the AI handles all of them in Urdu and English. Bookings doubled in the first month.",
+    name: "Dizi Sultana",
+    role: "Verified Google Review",
+    quote: "Professional team with great expertise in healthcare marketing.",
     stars: 5,
-    initials: "SM",
+    initials: "D",
   },
   {
-    name: "Dr. Faisal Khan",
-    role: "Multi-chair Clinic, Karachi",
-    quote: "We were losing patients to clinics with worse doctors but better online presence. Alliance Tech got us to #1 on Google Maps in 45 days.",
+    name: "Shahid Zia",
+    role: "Verified Google Review",
+    quote: "Outstanding service and support. From website development to Google Maps ranking, Alliance Tech handled everything professionally.",
     stars: 5,
-    initials: "FK",
+    initials: "S",
   },
   {
-    name: "Dr. Nadia Hussain",
-    role: "Skin Clinic, Islamabad",
-    quote: "The EHR system alone was worth it. No more paper registers, no lost prescriptions, and patients love the app to book their own appointments.",
+    name: "Saim Ali",
+    role: "Verified Google Review",
+    quote: "Alliance Tech delivered exactly what they promised.",
     stars: 5,
-    initials: "NH",
+    initials: "SA",
   },
   {
-    name: "Dr. Tariq Mahmood",
-    role: "Orthodontist, Rawalpindi",
-    quote: "I was skeptical about WhatsApp AI. But when I saw it booking 3 patients at 11pm while I was asleep, I became a believer.",
+    name: "Tehreem",
+    role: "Verified Google Review",
+    quote: "Excellent digital marketing services for healthcare businesses.",
     stars: 5,
-    initials: "TM",
+    initials: "T",
   },
   {
-    name: "Dr. Ayesha Siddiqui",
-    role: "Cosmetic Dentist, Lahore",
-    quote: "Professional, fast, and they actually understand clinics. My website was done in a week and it looks better than any clinic site I've seen in Pakistan.",
+    name: "Steve Jhon",
+    role: "Verified Google Review",
+    quote: "Excellent web development service.",
     stars: 5,
-    initials: "AS",
+    initials: "S",
+  },
+  {
+    name: "Democracy progressive Pro Updates",
+    role: "Verified Google Review",
+    quote: "We hired Alliance Tech for website development in Kareem Block, Allama Iqbal Town. The website looks professional and mobile-friendly.",
+    stars: 5,
+    initials: "DP",
+  },
+  {
+    name: "Ahmad Ilyas",
+    role: "Verified Google Review",
+    quote: "Our website was outdated and slow. Alliance Tech completely redesigned it and improved the user experience.",
+    stars: 4,
+    initials: "A",
+  },
+  {
+    name: "Muhammad Hamza",
+    role: "Verified Google Review",
+    quote: "Professional, responsive, and results-driven. Their healthcare marketing expertise helped us grow our clinic's reputation in Lahore.",
+    stars: 5,
+    initials: "MH",
+  },
+  {
+    name: "Ahmad ilyas",
+    role: "Verified Google Review",
+    quote: "They managed our social media very well. Now we are getting more reach.",
+    stars: 5,
+    initials: "A",
+  },
+  {
+    name: "Hassan Shafique",
+    role: "Local Guide, Verified Google Review",
+    quote: "Great workspace with great environment!",
+    stars: 5,
+    initials: "HS",
+  },
+  {
+    name: "Rashid Sadiq",
+    role: "Verified Google Review",
+    quote: "Good place.",
+    stars: 5,
+    initials: "RS",
+  },
+  {
+    name: "Muhammad Sarmad Rasheed (Ali)",
+    role: "Local Guide, Verified Google Review",
+    quote: "Good service.",
+    stars: 5,
+    initials: "MS",
   },
 ];
 
@@ -61,14 +110,17 @@ export default function Testimonials() {
           </h2>
           <div className="flex items-center justify-center gap-2 mt-2">
             <span className="text-amber-400 text-xl">★★★★★</span>
-            <span className="text-gray-700 font-bold">4.9 / 5</span>
-            <span className="text-gray-400 text-sm">— average from 100+ clinic reviews</span>
+            <span className="text-gray-700 font-bold">5.0 / 5</span>
+            <a href="https://share.google/Qt7j63D8W1G2NTjtA" target="_blank" rel="noopener noreferrer"
+              className="text-[#0077A8] text-sm font-semibold hover:underline">
+              See our reviews on Google →
+            </a>
           </div>
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {testimonials.map((t, i) => (
-            <motion.div key={t.name}
+            <motion.div key={t.name + i}
               initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: i * 0.08 }}
               className="card-white rounded-xl p-6 flex flex-col">
@@ -90,6 +142,15 @@ export default function Testimonials() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.6 }}
+          className="mt-10 text-center">
+          <p className="text-gray-500 text-sm mb-3">Had a great experience with us?</p>
+          <a href="https://g.page/r/CXJTY6Ac29IaEAE/review" target="_blank" rel="noopener noreferrer"
+            className="btn-dark px-6 py-3 text-sm inline-block">
+            Leave Us a Review on Google →
+          </a>
+        </motion.div>
       </div>
     </section>
   );

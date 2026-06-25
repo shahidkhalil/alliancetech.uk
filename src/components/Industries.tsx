@@ -1,6 +1,7 @@
 "use client";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { useForm } from "@/context/FormContext";
 
 const industries = [
   {
@@ -48,6 +49,7 @@ const industries = [
 export default function Industries() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
+  const { openForm } = useForm();
 
   return (
     <section className="relative py-24 lg:py-32 z-10" id="industries">
@@ -158,15 +160,15 @@ export default function Industries() {
           className="mt-12 text-center"
         >
           <p className="text-white/40 mb-6">Not sure if we work with your clinic type?</p>
-          <a
-            href="#contact"
+          <button
+            onClick={openForm}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass text-sm font-semibold text-white hover:border-brand-blue/40 hover:bg-brand-blue/10 transition-all duration-300"
           >
             Talk to our team
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-          </a>
+          </button>
         </motion.div>
       </div>
     </section>

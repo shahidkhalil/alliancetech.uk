@@ -35,8 +35,6 @@ export default function ForWho() {
                 "Get to #1 on Google Maps in your area",
                 "Run targeted ads for implants, orthodontics & cosmetic work",
                 "AI that books patients from WhatsApp while you sleep",
-                "Patient app + EHR to go fully digital",
-                "Reputation management for 5-star Google reviews",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-gray-600">
                   <svg className="w-4 h-4 text-[#00B4D8] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -68,8 +66,6 @@ export default function ForWho() {
                 "Instagram & TikTok campaigns that convert",
                 "Before & after content strategy that builds trust",
                 "WhatsApp AI handling inquiries in Urdu & English",
-                "Local SEO for skin clinic & treatment keywords",
-                "Review generation to dominate your area",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-gray-600">
                   <svg className="w-4 h-4 text-[#00B4D8] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

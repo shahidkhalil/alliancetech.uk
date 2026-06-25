@@ -2,21 +2,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
-function VideoProgressBar() {
-  return (
-    <div className="w-full h-1 bg-gray-200 rounded-full overflow-hidden mb-10">
-      <motion.div
-        className="h-full rounded-full"
-        style={{ background: "linear-gradient(90deg, #00283C, #00B4D8)" }}
-        initial={{ width: "0%" }}
-        whileInView={{ width: "100%" }}
-        viewport={{ once: false, amount: 0.3 }}
-        transition={{ duration: 8, ease: "linear" }}
-      />
-    </div>
-  );
-}
-
 const problems = [
   { icon: "📵", title: "Missed calls = missed patients", desc: "80% of patients who can't reach a clinic on the first try call the next one. No AI receptionist = lost revenue every single day." },
   { icon: "📍", title: "Invisible on Google Maps", desc: "If your clinic doesn't appear in the top 3 when someone searches 'dentist near me', you don't exist to that patient." },
@@ -43,7 +28,6 @@ export default function Problems() {
             After auditing 100+ dental and aesthetic clinics across Pakistan, we see the same 6 problems costing clinics thousands every month.
           </p>
         </motion.div>
-        <VideoProgressBar />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {problems.map((p, i) => (
@@ -64,7 +48,7 @@ export default function Problems() {
             <p className="text-white font-bold text-base">Sound familiar? You&apos;re not alone.</p>
             <p className="text-white/50 text-sm mt-0.5">We&apos;ve fixed all 6 for clinics across Pakistan — we can fix them for you too.</p>
           </div>
-          <a href="#services" className="flex-shrink-0 bg-white text-[#00283C] font-bold px-5 py-2.5 rounded-md text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">
+          <a href="/#services" className="flex-shrink-0 bg-white text-[#00283C] font-bold px-5 py-2.5 rounded-md text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">
             See Our Solutions →
           </a>
         </motion.div>

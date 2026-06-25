@@ -3,9 +3,16 @@ import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import { useForm } from "@/context/FormContext";
 
-export default function Contact() {
+function BookCallButton() {
   const { openForm } = useForm();
+  return (
+    <button onClick={openForm} className="btn-dark w-full py-4 text-base rounded-lg">
+      Book Free Strategy Call →
+    </button>
+  );
+}
 
+export default function Contact() {
   return (
     <PageWrapper>
       <ServicePageHero
@@ -79,9 +86,7 @@ export default function Contact() {
                 ))}
               </ul>
             </div>
-            <button onClick={openForm} className="btn-dark w-full py-4 text-base rounded-lg">
-              Book Free Strategy Call →
-            </button>
+            <BookCallButton />
           </div>
         </div>
       </section>

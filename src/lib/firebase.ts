@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAnalytics, isSupported, type Analytics } from "firebase/analytics";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDRQGCPHq99dVFXIQVH0C4FlIz3GQhUR1Y",
@@ -15,4 +16,15 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
 export const db = getFirestore(app);
+
+let analytics: Analytics | undefined;
+export async function getFirebaseAnalytics() {
+  if (typeof window === "undefined") return undefined;
+  if (analytics) return analytics;
+  if (await isSupported()) {
+    analytics = getAnalytics(app);
+  }
+  return analytics;
+}
+
 export default app;

@@ -17,17 +17,20 @@ const vision = [
   { stat: "0", label: "Patients lost to silence" },
 ];
 
-function BeliefRow({ b, i }: { b: { lead: string; desc: string }; i: number }) {
+function BeliefCard({ b, i }: { b: { lead: string; desc: string }; i: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
-      className={`grid md:grid-cols-[1fr_1.6fr] gap-6 md:gap-10 py-8 ${i > 0 ? "border-t border-gray-100" : ""}`}
+      initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: i * 0.1, duration: 0.5 }}
+      className="card-white rounded-xl p-7 flex flex-col"
     >
-      <p className="text-xl lg:text-2xl font-extrabold text-[#00283C] tracking-tight leading-snug">{b.lead}</p>
-      <p className="text-gray-500 leading-relaxed">{b.desc}</p>
+      <div className="w-9 h-9 rounded-full bg-[#00283C] flex items-center justify-center text-xs font-extrabold text-white mb-5">
+        {i + 1}
+      </div>
+      <p className="text-lg font-extrabold text-[#00283C] tracking-tight leading-snug mb-3">{b.lead}</p>
+      <p className="text-gray-500 text-sm leading-relaxed">{b.desc}</p>
     </motion.div>
   );
 }
@@ -54,12 +57,14 @@ export default function OurMission() {
         </div>
       </section>
 
-      <section className="py-14 bg-[#F8FAFC] border-t border-gray-100">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] text-center mb-2">What We Believe</h2>
-          <p className="text-gray-400 text-center mb-2">Three principles behind every product we build.</p>
-          <div>
-            {beliefs.map((b, i) => <BeliefRow key={b.lead} b={b} i={i} />)}
+      <section className="py-16 lg:py-20 bg-[#F8FAFC] border-t border-gray-100">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] mb-3">What We Believe</h2>
+            <p className="text-gray-400">Three principles behind every product we build.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {beliefs.map((b, i) => <BeliefCard key={b.lead} b={b} i={i} />)}
           </div>
         </div>
       </section>

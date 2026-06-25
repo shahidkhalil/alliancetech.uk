@@ -31,11 +31,13 @@ export const metadata: Metadata = {
       "Get more patients, automate operations, and increase revenue with our healthcare growth ecosystem.",
     type: "website",
     url: "https://alliancetech.io",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Alliance Tech (PVT) LTD" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Alliance Tech | AI Healthcare Growth",
     description: "AI-powered growth solutions for dental and aesthetic clinics.",
+    images: ["/og-image.jpg"],
   },
 };
 

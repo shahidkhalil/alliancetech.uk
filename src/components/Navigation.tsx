@@ -8,7 +8,7 @@ import { useForm } from "@/context/FormContext";
 const navLinks = [
   {
     label: "What We Do",
-    href: "#services",
+    href: "/#services",
     dropdown: {
       heading: "What We Do",
       links: [
@@ -33,9 +33,6 @@ const navLinks = [
         { label: "Dental Clinics", href: "/dental-clinic-growth" },
         { label: "Aesthetic Clinics", href: "/aesthetic-clinic-growth" },
         { label: "Clinics in Lahore", href: "/dental-clinic-lahore" },
-        { label: "Clinics in Karachi", href: "/dental-clinic-growth" },
-        { label: "Clinics in Islamabad", href: "/dental-clinic-growth" },
-        { label: "New Clinic Startups", href: "/dental-clinic-growth" },
       ],
     },
   },
@@ -53,7 +50,7 @@ const navLinks = [
   },
   {
     label: "Results",
-    href: "#results",
+    href: "/#results",
     dropdown: null,
   },
   {
@@ -62,8 +59,8 @@ const navLinks = [
     dropdown: {
       heading: "Resources",
       links: [
-        { label: "Pricing", href: "#pricing" },
-        { label: "FAQ", href: "#faq" },
+        { label: "Pricing", href: "/#pricing" },
+        { label: "FAQ", href: "/#faq" },
         { label: "WhatsApp AI Demo", href: "/whatsapp-ai-automation" },
         { label: "EHR Platform Demo", href: "/ehr-platform" },
       ],

@@ -19,7 +19,7 @@ export default function FAQ() {
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
   return (
-    <section className="py-16 lg:py-20 bg-[#F8FAFC]" ref={ref}>
+    <section className="py-16 lg:py-20 bg-[#F8FAFC]" id="faq" ref={ref}>
       <div className="max-w-3xl mx-auto px-6">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="text-center mb-10">
           <span className="badge-light mb-4">FAQ</span>
