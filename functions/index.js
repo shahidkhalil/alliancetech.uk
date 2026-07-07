@@ -109,6 +109,14 @@ exports.auditWebsite = onRequest(
         id: doc.id,
         url,
         report,
+        competitors: competitors
+          ? {
+              searchQuery: competitors.searchQuery,
+              yourGoogleRank: competitors.yourGoogleRank,
+              list: competitors.competitorsAboveYou,
+              localMapPack: competitors.localMapPack,
+            }
+          : null,
         meta: {
           pagespeedMobileOk: !!pagespeed?.mobile?.scores,
           pagespeedDesktopOk: !!pagespeed?.desktop?.scores,

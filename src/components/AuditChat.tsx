@@ -26,6 +26,23 @@ interface MoneyMapRow {
   leader?: string | null;
   insight: string;
 }
+interface CompetitorRow {
+  position: number;
+  title: string;
+  domain: string;
+  profile?: {
+    hasWhatsApp?: boolean;
+    hasPhoneLink?: boolean;
+    hasBooking?: boolean;
+    hasReviews?: boolean;
+  };
+}
+interface CompetitorData {
+  searchQuery: string;
+  yourGoogleRank: number | null;
+  list: CompetitorRow[];
+  localMapPack?: { name: string; rating?: number; reviews?: number }[];
+}
 interface Report {
   overallScore: number;
   verdict: string;
@@ -39,6 +56,7 @@ interface Report {
   moneyMap?: MoneyMapRow[];
   moneyMapVerdict?: string;
   nextStep?: string;
+  competitorData?: CompetitorData | null;
 }
 
 type Msg =
@@ -137,6 +155,62 @@ const STATUS_STYLES: Record<MoneyMapRow["status"], { label: string; color: strin
   close: { label: "CLOSE", color: "#D97706", bg: "#FFFBEB" },
   strong: { label: "STRONG", color: "#16A34A", bg: "#F0FDF4" },
 };
+
+function CompetitorLeaderboard({ data }: { data: CompetitorData }) {
+  const badge = (on: boolean | undefined, label: string) => (
+    <span
+      className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${on ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400 line-through"}`}
+    >
+      {label}
+    </span>
+  );
+  return (
+    <div>
+      <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-1">
+        🏆 Top competitors — &ldquo;{data.searchQuery}&rdquo;
+      </p>
+      <p className="text-xs text-gray-500 mb-2">
+        {data.yourGoogleRank
+          ? `You rank #${data.yourGoogleRank}. Ranking above you:`
+          : "You're not in the top 10. These clinics are taking your patients:"}
+      </p>
+      <div className="space-y-1.5">
+        {data.list.map((c) => (
+          <div key={c.domain + c.position} className="rounded-lg border border-gray-100 bg-white p-2.5">
+            <div className="flex items-start gap-2">
+              <span className="w-6 h-6 rounded-full bg-[#00283C] text-white text-[11px] font-extrabold flex items-center justify-center flex-shrink-0">
+                {c.position}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-[#00283C] truncate">{c.title}</p>
+                <p className="text-[10px] text-gray-400 truncate">{c.domain}</p>
+                {c.profile && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {badge(c.profile.hasWhatsApp, "WhatsApp")}
+                    {badge(c.profile.hasPhoneLink, "Tap-to-call")}
+                    {badge(c.profile.hasBooking, "Booking")}
+                    {badge(c.profile.hasReviews, "Reviews")}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {data.localMapPack?.length ? (
+        <div className="mt-2">
+          <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wide mb-1">📍 Google Maps pack</p>
+          {data.localMapPack.map((p) => (
+            <p key={p.name} className="text-xs text-gray-600">
+              {p.name} {p.rating ? <span className="font-semibold">⭐{p.rating}</span> : null}
+              {p.reviews ? <span className="text-gray-400"> ({p.reviews} reviews)</span> : null}
+            </p>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 function MoneyMapCard({ report }: { report: Report }) {
   return (
@@ -265,7 +339,7 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
       clearInterval(progressTimer);
       if (!res.ok) throw new Error(data.error || "Audit failed");
 
-      const report: Report = data.report;
+      const report: Report = { ...data.report, competitorData: data.competitors || null };
       const url: string = data.url || rawUrl;
 
       replaceTyping({ from: "bot", kind: "text", text: "Done! Here's what I found. 👇" });
@@ -337,11 +411,16 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
                 ))}
               </motion.div>
             );
-            if (m.kind === "competitor") return (m.report.competitorComparison || m.report.moneyMap?.length) ? (
+            if (m.kind === "competitor") return (m.report.competitorComparison || m.report.moneyMap?.length || m.report.competitorData?.list?.length) ? (
               <Bubble key={m.id} from="bot">
+                {m.report.competitorData?.list?.length ? (
+                  <div className="mb-3">
+                    <CompetitorLeaderboard data={m.report.competitorData} />
+                  </div>
+                ) : null}
                 {m.report.competitorComparison && (
                   <div className="mb-3">
-                    <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-2">🥊 vs. your competitors</p>
+                    <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-2">🥊 What this means</p>
                     <p className="text-gray-600">{m.report.competitorComparison}</p>
                   </div>
                 )}

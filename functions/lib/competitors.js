@@ -62,15 +62,15 @@ async function findCompetitors(auditedUrl, seo, apiKey) {
 
   const ownRank = organic.find((r) => r.domain === ownDomain)?.position ?? null;
 
-  // Top 3 competitors: sites ranking above them (or simply the top 3 if unranked).
+  // Top 5 competitors: sites ranking above them (or simply the top 5 if unranked).
   const rivals = organic
     .filter((r) => r.domain !== ownDomain)
     .filter((r) => (ownRank ? r.position < ownRank : true))
-    .slice(0, 3);
+    .slice(0, 5);
 
-  // Quick on-page profile of the top 2 rivals (parallel, best-effort).
+  // Quick on-page profile of the top 3 rivals (parallel, best-effort).
   const profiles = await Promise.all(
-    rivals.slice(0, 2).map(async (r) => {
+    rivals.slice(0, 3).map(async (r) => {
       try {
         const s = await analyzeSeo(r.link);
         return {
@@ -92,7 +92,7 @@ async function findCompetitors(auditedUrl, seo, apiKey) {
   );
 
   // Local map pack (Google Business listings) if Serper returned it.
-  const mapPack = (data.places || []).slice(0, 3).map((p) => ({
+  const mapPack = (data.places || []).slice(0, 5).map((p) => ({
     name: p.title,
     rating: p.rating,
     reviews: p.ratingCount,
@@ -103,7 +103,7 @@ async function findCompetitors(auditedUrl, seo, apiKey) {
     specialty,
     city,
     yourGoogleRank: ownRank, // null = not in top 10
-    competitorsAboveYou: profiles.concat(rivals.slice(2)),
+    competitorsAboveYou: profiles.concat(rivals.slice(3)),
     localMapPack: mapPack,
   };
 }
