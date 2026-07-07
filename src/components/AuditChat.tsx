@@ -19,6 +19,13 @@ const AUDIT_ENDPOINT =
   "https://asia-south1-alliancepak.cloudfunctions.net/auditWebsite";
 
 interface Issue { title: string; impact: string; fix: string }
+interface MoneyMapRow {
+  treatment: string;
+  status: "invisible" | "close" | "strong";
+  yourRank: number | null;
+  leader?: string | null;
+  insight: string;
+}
 interface Report {
   overallScore: number;
   verdict: string;
@@ -29,6 +36,8 @@ interface Report {
   improvements?: Issue[];
   doingWell?: string[];
   competitorComparison?: string;
+  moneyMap?: MoneyMapRow[];
+  moneyMapVerdict?: string;
   nextStep?: string;
 }
 
@@ -119,6 +128,40 @@ function ScoreCard({ report, url }: { report: Report; url: string }) {
       </div>
       <p className="font-extrabold text-[#00283C]">{report.verdict}</p>
       <p className="text-gray-500 text-sm mt-1">{report.headline}</p>
+    </div>
+  );
+}
+
+const STATUS_STYLES: Record<MoneyMapRow["status"], { label: string; color: string; bg: string }> = {
+  invisible: { label: "INVISIBLE", color: "#DC2626", bg: "#FEF2F2" },
+  close: { label: "CLOSE", color: "#D97706", bg: "#FFFBEB" },
+  strong: { label: "STRONG", color: "#16A34A", bg: "#F0FDF4" },
+};
+
+function MoneyMapCard({ report }: { report: Report }) {
+  return (
+    <div>
+      <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-2">💰 Treatment Money Map</p>
+      <div className="space-y-2">
+        {report.moneyMap!.map((row) => {
+          const s = STATUS_STYLES[row.status] || STATUS_STYLES.close;
+          return (
+            <div key={row.treatment} className="rounded-lg border border-gray-100 p-3" style={{ background: s.bg }}>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <p className="font-bold text-[#00283C] text-sm">{row.treatment}</p>
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full text-white" style={{ background: s.color }}>
+                  {row.yourRank ? `#${row.yourRank} · ${s.label}` : s.label}
+                </span>
+              </div>
+              {row.leader && <p className="text-xs text-gray-500 mb-1">Search owned by: <span className="font-semibold">{row.leader}</span></p>}
+              <p className="text-xs text-gray-600">{row.insight}</p>
+            </div>
+          );
+        })}
+      </div>
+      {report.moneyMapVerdict && (
+        <p className="mt-2 text-sm font-semibold text-[#00283C]">📌 {report.moneyMapVerdict}</p>
+      )}
     </div>
   );
 }
@@ -238,12 +281,13 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
           : [
               [600, { from: "bot", kind: "score", report, url }],
               [1600, { from: "bot", kind: "impact", report }],
-              [2600, { from: "bot", kind: "issues", report }],
-              [3600, { from: "bot", kind: "improvements", report }],
-              [4600, { from: "bot", kind: "well", report }],
-              [5600, { from: "bot", kind: "cta", report }],
-              [6400, { from: "bot", kind: "text", text: "Anything else? Choose an option or paste another website. 👇" }],
-              [6800, { from: "bot", kind: "options" }],
+              [2600, { from: "bot", kind: "competitor", report }],
+              [3600, { from: "bot", kind: "issues", report }],
+              [4600, { from: "bot", kind: "improvements", report }],
+              [5600, { from: "bot", kind: "well", report }],
+              [6600, { from: "bot", kind: "cta", report }],
+              [7400, { from: "bot", kind: "text", text: "Anything else? Choose an option or paste another website. 👇" }],
+              [7800, { from: "bot", kind: "options" }],
             ];
       steps.forEach(([delay, m]) => setTimeout(() => push(m), delay));
       setTimeout(() => setBusy(false), steps.at(-1)![0] + 200);
@@ -293,10 +337,15 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
                 ))}
               </motion.div>
             );
-            if (m.kind === "competitor") return m.report.competitorComparison ? (
+            if (m.kind === "competitor") return (m.report.competitorComparison || m.report.moneyMap?.length) ? (
               <Bubble key={m.id} from="bot">
-                <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-2">🥊 vs. your competitors</p>
-                <p className="text-gray-600">{m.report.competitorComparison}</p>
+                {m.report.competitorComparison && (
+                  <div className="mb-3">
+                    <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-2">🥊 vs. your competitors</p>
+                    <p className="text-gray-600">{m.report.competitorComparison}</p>
+                  </div>
+                )}
+                {m.report.moneyMap?.length ? <MoneyMapCard report={m.report} /> : null}
               </Bubble>
             ) : null;
             if (m.kind === "score") return (
@@ -315,12 +364,6 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
                     <div>
                       <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-1"><UserRound className="w-4 h-4 text-[#0077A8]" /> I tried booking like a patient…</p>
                       <p className="italic text-gray-600">{m.report.mysteryPatient}</p>
-                    </div>
-                  )}
-                  {m.report.competitorComparison && (
-                    <div className="pl-3 border-l-2 border-[#DC2626]">
-                      <p className="font-bold text-[#00283C] mb-1">🥊 vs. your competitors</p>
-                      <p className="text-gray-600">{m.report.competitorComparison}</p>
                     </div>
                   )}
                 </div>

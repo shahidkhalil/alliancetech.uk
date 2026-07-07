@@ -10,6 +10,7 @@ const admin = require("firebase-admin");
 const { runPageSpeed } = require("./lib/pagespeed");
 const { analyzeSeo } = require("./lib/seo");
 const { findCompetitors } = require("./lib/competitors");
+const { buildMoneyMap } = require("./lib/treatments");
 const { generateReport } = require("./lib/ai");
 
 admin.initializeApp();
@@ -68,19 +69,26 @@ exports.auditWebsite = onRequest(
         analyzeSeo(url).catch((e) => ({ error: e.message })),
       ]);
 
-      // Competitor benchmark (optional — needs SERPER_API_KEY and a readable site).
+      // Competitor benchmark + treatment money map (optional — need SERPER_API_KEY).
       let competitors = null;
+      let moneyMap = null;
       const serperKey = SERPER_API_KEY.value();
       if (serperKey && seo && !seo.error) {
         competitors = await findCompetitors(url, seo, serperKey).catch((e) => {
           console.warn("Competitor lookup failed:", e.message);
           return null;
         });
+        if (competitors) {
+          moneyMap = await buildMoneyMap(url, competitors.specialty, competitors.city, serperKey).catch((e) => {
+            console.warn("Money map failed:", e.message);
+            return null;
+          });
+        }
       }
 
       // AI turns data into the report.
       const report = await generateReport(
-        { url, pagespeed, seo, competitors },
+        { url, pagespeed, seo, competitors, moneyMap },
         {
           provider,
           openaiKey: OPENAI_API_KEY.value() || undefined,
@@ -92,7 +100,7 @@ exports.auditWebsite = onRequest(
       const doc = await db.collection("audits").add({
         url,
         report,
-        rawData: { pagespeed, seo, competitors },
+        rawData: { pagespeed, seo, competitors, moneyMap },
         provider,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
