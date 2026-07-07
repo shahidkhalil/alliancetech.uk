@@ -18,6 +18,8 @@ const routes = [
   { path: "/dental-clinic-lahore", priority: 0.7 },
   { path: "/about", priority: 0.5 },
   { path: "/our-mission", priority: 0.5 },
+  { path: "/portfolio", priority: 0.7 },
+  { path: "/free-website-audit", priority: 0.8 },
   { path: "/contact", priority: 0.5 },
   { path: "/privacy-policy", priority: 0.3 },
   { path: "/terms-of-service", priority: 0.3 },

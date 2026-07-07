@@ -1,7 +1,20 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CheckCircle2, Loader2, Phone, Mail, Building2, User, MessageSquare, ChevronDown } from "lucide-react";
+import {
+  X,
+  CheckCircle2,
+  Loader2,
+  Phone,
+  Mail,
+  Building2,
+  User,
+  MessageSquare,
+  ArrowLeft,
+  ArrowRight,
+  Stethoscope,
+  Sparkles,
+} from "lucide-react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -14,43 +27,79 @@ interface FormData {
   message: string;
 }
 
+const WHATSAPP_NUMBER = "923207800010";
+
 const clinicTypes = [
-  "Dental Clinic",
-  "Aesthetic Clinic",
-  "Cosmetic Surgery Clinic",
-  "Dermatology Clinic",
-  "Multi-Specialty Clinic",
-  "Other Healthcare Provider",
+  { label: "Dental Clinic", icon: Stethoscope },
+  { label: "Aesthetic Clinic", icon: Sparkles },
+  { label: "Cosmetic Surgery Clinic", icon: Sparkles },
+  { label: "Dermatology Clinic", icon: Stethoscope },
+  { label: "Multi-Specialty Clinic", icon: Building2 },
+  { label: "Other Healthcare Provider", icon: Building2 },
 ];
+
+const steps = ["Service", "Your Details", "Review & Confirm"];
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const emptyForm: FormData = {
+  name: "",
+  phone: "",
+  email: "",
+  clinicName: "",
+  clinicType: "",
+  message: "",
+};
+
 export default function ConsultationForm({ isOpen, onClose }: Props) {
-  const [form, setForm] = useState<FormData>({
-    name: "",
-    phone: "",
-    email: "",
-    clinicName: "",
-    clinicType: "",
-    message: "",
-  });
+  const [step, setStep] = useState(0);
+  const [form, setForm] = useState<FormData>(emptyForm);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const reset = () => {
+    setStep(0);
+    setForm(emptyForm);
+    setStatus("idle");
+    setErrorMsg("");
+  };
+
+  const handleClose = () => {
+    onClose();
+    setTimeout(reset, 300);
+  };
+
+  const canContinue = step === 0 ? !!form.clinicType : !!form.name && !!form.phone;
+
+  const whatsappLink = () => {
+    const text =
+      `New Free Clinic Audit Request%0A` +
+      `Name: ${form.name}%0A` +
+      `Phone: ${form.phone}%0A` +
+      (form.email ? `Email: ${form.email}%0A` : "") +
+      (form.clinicName ? `Clinic: ${form.clinicName}%0A` : "") +
+      `Type: ${form.clinicType}%0A` +
+      (form.message ? `Message: ${form.message}` : "");
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+  };
+
+  const handleSubmit = async () => {
     setStatus("loading");
     setErrorMsg("");
 
+    // WhatsApp delivery is the primary path — open it regardless of Firestore.
+    window.open(whatsappLink(), "_blank");
+
+    // Best-effort: also store the lead in Firestore. Never block the user on it.
     try {
       await addDoc(collection(db, "leads"), {
         ...form,
@@ -58,14 +107,11 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
         createdAt: serverTimestamp(),
         status: "new",
       });
-
-      setStatus("success");
-      setForm({ name: "", phone: "", email: "", clinicName: "", clinicType: "", message: "" });
     } catch (err) {
-      console.error("Firestore error:", err);
-      setErrorMsg("Something went wrong. Please try WhatsApp instead.");
-      setStatus("error");
+      console.error("Firestore save failed (lead still sent to WhatsApp):", err);
     }
+
+    setStatus("success");
   };
 
   return (
@@ -77,7 +123,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
           />
 
@@ -102,18 +148,51 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
               {/* Header */}
               <div className="flex items-start justify-between px-6 pt-6 pb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-white">Book Free Consultation</h2>
+                  <h2 className="text-xl font-bold text-white">Get Your Free Clinic Audit</h2>
                   <p className="text-sm text-white/50 mt-1">
-                    We&apos;ll call you within 2 hours
+                    Takes 60 seconds — we&apos;ll message you on WhatsApp
                   </p>
                 </div>
                 <button
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
+
+              {/* Step indicator */}
+              {status !== "success" && (
+                <div className="flex items-center gap-2 px-6 pb-5">
+                  {steps.map((label, i) => (
+                    <div key={label} className="flex items-center flex-1 last:flex-none">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold transition-colors"
+                          style={{
+                            background: i <= step ? "linear-gradient(135deg, #0066FF, #00D4FF)" : "rgba(255,255,255,0.08)",
+                            color: i <= step ? "white" : "rgba(255,255,255,0.4)",
+                          }}
+                        >
+                          {i < step ? "✓" : i + 1}
+                        </div>
+                        <span
+                          className="text-xs font-medium hidden sm:inline"
+                          style={{ color: i <= step ? "white" : "rgba(255,255,255,0.35)" }}
+                        >
+                          {label}
+                        </span>
+                      </div>
+                      {i < steps.length - 1 && (
+                        <div
+                          className="h-px flex-1 mx-2"
+                          style={{ background: i < step ? "#00D4FF" : "rgba(255,255,255,0.08)" }}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* Success state */}
               {status === "success" ? (
@@ -127,140 +206,224 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                   </div>
                   <h3 className="text-lg font-bold text-white mb-2">Request Received! 🎉</h3>
                   <p className="text-white/60 text-sm mb-6">
-                    Our team will call you within 2 hours. Check your WhatsApp for a confirmation message.
+                    We&apos;ve opened WhatsApp with your details pre-filled — just hit send and our team will reply within 2 hours.
                   </p>
-                  <button
-                    onClick={onClose}
-                    className="px-6 py-3 rounded-full text-sm font-semibold text-white w-full"
-                    style={{ background: "linear-gradient(135deg, #0066FF, #00D4FF)" }}
-                  >
-                    Close
-                  </button>
+                  <div className="flex flex-col gap-3">
+                    <a
+                      href={whatsappLink()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-6 py-3 rounded-full text-sm font-semibold text-white w-full flex items-center justify-center gap-2"
+                      style={{ background: "#25D366" }}
+                    >
+                      Open WhatsApp Again
+                    </a>
+                    <button
+                      onClick={handleClose}
+                      className="px-6 py-3 rounded-full text-sm font-semibold text-white/60 w-full hover:text-white transition-colors"
+                      style={{ background: "rgba(255,255,255,0.05)" }}
+                    >
+                      Close
+                    </button>
+                  </div>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                  {/* Name + Phone row */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                      <input
-                        name="name"
-                        value={form.name}
-                        onChange={handleChange}
-                        required
-                        placeholder="Your name"
-                        className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
-                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
-                      />
-                    </div>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                      <input
-                        name="phone"
-                        value={form.phone}
-                        onChange={handleChange}
-                        required
-                        placeholder="Phone / WhatsApp"
-                        className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
-                        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
-                      />
-                    </div>
-                  </div>
+                <div className="px-6 pb-6">
+                  <AnimatePresence mode="wait">
+                    {/* Step 0: Choose service */}
+                    {step === 0 && (
+                      <motion.div
+                        key="step0"
+                        initial={{ opacity: 0, x: 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -16 }}
+                        transition={{ duration: 0.2 }}
+                        className="grid grid-cols-2 gap-3"
+                      >
+                        {clinicTypes.map(({ label, icon: Icon }) => (
+                          <button
+                            key={label}
+                            type="button"
+                            onClick={() => setForm((p) => ({ ...p, clinicType: label }))}
+                            className="flex flex-col items-start gap-2 p-4 rounded-xl text-left transition-all"
+                            style={{
+                              background: form.clinicType === label ? "rgba(0,102,255,0.15)" : "rgba(255,255,255,0.05)",
+                              border: form.clinicType === label ? "1px solid #0066FF" : "1px solid rgba(255,255,255,0.08)",
+                            }}
+                          >
+                            <Icon
+                              className="w-5 h-5"
+                              style={{ color: form.clinicType === label ? "#00D4FF" : "rgba(255,255,255,0.4)" }}
+                            />
+                            <span
+                              className="text-sm font-semibold"
+                              style={{ color: form.clinicType === label ? "white" : "rgba(255,255,255,0.7)" }}
+                            >
+                              {label}
+                            </span>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
 
-                  {/* Email */}
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                    <input
-                      name="email"
-                      type="email"
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="Email address (optional)"
-                      className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    />
-                  </div>
+                    {/* Step 1: Your details */}
+                    {step === 1 && (
+                      <motion.div
+                        key="step1"
+                        initial={{ opacity: 0, x: 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -16 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-3"
+                      >
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                          <input
+                            name="name"
+                            value={form.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="Your name"
+                            className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
+                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+                          />
+                        </div>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                          <input
+                            name="phone"
+                            value={form.phone}
+                            onChange={handleChange}
+                            required
+                            placeholder="Phone / WhatsApp number"
+                            className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
+                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+                          />
+                        </div>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                          <input
+                            name="email"
+                            type="email"
+                            value={form.email}
+                            onChange={handleChange}
+                            placeholder="Email address (optional)"
+                            className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
+                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+                          />
+                        </div>
+                        <div className="relative">
+                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                          <input
+                            name="clinicName"
+                            value={form.clinicName}
+                            onChange={handleChange}
+                            placeholder="Clinic / business name (optional)"
+                            className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
+                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+                          />
+                        </div>
+                        <div className="relative">
+                          <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-white/30" />
+                          <textarea
+                            name="message"
+                            value={form.message}
+                            onChange={handleChange}
+                            rows={2}
+                            placeholder="What's your biggest challenge? (optional)"
+                            className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none resize-none"
+                            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
+                          />
+                        </div>
+                      </motion.div>
+                    )}
 
-                  {/* Clinic name */}
-                  <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                    <input
-                      name="clinicName"
-                      value={form.clinicName}
-                      onChange={handleChange}
-                      required
-                      placeholder="Clinic / Business name"
-                      className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    />
-                  </div>
-
-                  {/* Clinic type */}
-                  <div className="relative">
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
-                    <select
-                      name="clinicType"
-                      value={form.clinicType}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-3 py-3 rounded-xl text-sm text-white outline-none appearance-none cursor-pointer"
-                      style={{
-                        background: "rgba(255,255,255,0.05)",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        color: form.clinicType ? "white" : "rgba(255,255,255,0.3)",
-                      }}
-                    >
-                      <option value="" disabled style={{ background: "#0A1628" }}>
-                        Clinic type
-                      </option>
-                      {clinicTypes.map((t) => (
-                        <option key={t} value={t} style={{ background: "#0A1628" }}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Message */}
-                  <div className="relative">
-                    <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-white/30" />
-                    <textarea
-                      name="message"
-                      value={form.message}
-                      onChange={handleChange}
-                      rows={3}
-                      placeholder="What's your biggest challenge? (optional)"
-                      className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none resize-none"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
-                    />
-                  </div>
+                    {/* Step 2: Review & confirm */}
+                    {step === 2 && (
+                      <motion.div
+                        key="step2"
+                        initial={{ opacity: 0, x: 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -16 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-2"
+                      >
+                        {[
+                          ["Service", form.clinicType],
+                          ["Name", form.name],
+                          ["Phone", form.phone],
+                          ["Email", form.email || "—"],
+                          ["Clinic", form.clinicName || "—"],
+                        ].map(([label, value]) => (
+                          <div
+                            key={label}
+                            className="flex items-center justify-between py-2.5 px-3 rounded-lg"
+                            style={{ background: "rgba(255,255,255,0.04)" }}
+                          >
+                            <span className="text-xs text-white/40">{label}</span>
+                            <span className="text-sm text-white font-medium text-right">{value}</span>
+                          </div>
+                        ))}
+                        <p className="text-xs text-white/40 pt-1">
+                          On confirm, we&apos;ll save your details and open WhatsApp with a pre-filled message to our team.
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   {/* Error */}
                   {status === "error" && (
-                    <p className="text-red-400 text-xs text-center">{errorMsg}</p>
+                    <p className="text-red-400 text-xs text-center mt-3">{errorMsg}</p>
                   )}
 
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    disabled={status === "loading"}
-                    className="w-full flex items-center justify-center gap-2 py-4 rounded-full text-sm font-bold text-white transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
-                    style={{ background: "linear-gradient(135deg, #0066FF, #00D4FF)" }}
-                  >
-                    {status === "loading" ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Submitting...
-                      </>
-                    ) : (
-                      "Book My Free Consultation →"
+                  {/* Nav buttons */}
+                  <div className="flex items-center gap-3 mt-5">
+                    {step > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setStep((s) => s - 1)}
+                        className="flex items-center justify-center gap-1 px-4 py-3 rounded-full text-sm font-semibold text-white/60 hover:text-white transition-colors"
+                        style={{ background: "rgba(255,255,255,0.05)" }}
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                        Back
+                      </button>
                     )}
-                  </button>
+                    {step < 2 ? (
+                      <button
+                        type="button"
+                        disabled={!canContinue}
+                        onClick={() => setStep((s) => s + 1)}
+                        className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white transition-all duration-300 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
+                        style={{ background: "linear-gradient(135deg, #0066FF, #00D4FF)" }}
+                      >
+                        Continue
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={status === "loading"}
+                        onClick={handleSubmit}
+                        className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white transition-all duration-300 hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed"
+                        style={{ background: "linear-gradient(135deg, #0066FF, #00D4FF)" }}
+                      >
+                        {status === "loading" ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          "Confirm & Send to WhatsApp →"
+                        )}
+                      </button>
+                    )}
+                  </div>
 
-                  <p className="text-center text-xs text-white/30">
+                  <p className="text-center text-xs text-white/30 mt-4">
                     🔒 Your info is private. No spam, ever.
                   </p>
-                </form>
+                </div>
               )}
             </div>
           </motion.div>

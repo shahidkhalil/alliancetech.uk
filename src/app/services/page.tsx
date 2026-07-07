@@ -10,6 +10,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FinalCTA from "@/components/FinalCTA";
 import ConsultationForm from "@/components/ConsultationForm";
+import AuditChatWidget from "@/components/AuditChatWidget";
 import { FormProvider, useForm } from "@/context/FormContext";
 
 const services = [
@@ -192,6 +193,7 @@ function ServicesContent() {
   return (
     <div className="min-h-screen bg-white">
       <ConsultationForm isOpen={isOpen} onClose={closeForm} />
+      <AuditChatWidget />
       <Navigation />
 
       {/* Hero */}

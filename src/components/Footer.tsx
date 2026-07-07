@@ -68,7 +68,7 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {[
                 { label: "About Us", href: "/about" },
-                { label: "Results", href: "/#results" },
+                { label: "Case Studies", href: "/portfolio" },
                 { label: "Pricing", href: "/#pricing" },
                 { label: "Contact", href: "/contact" },
                 { label: "Dental Clinics Lahore", href: "/dental-clinic-lahore" },

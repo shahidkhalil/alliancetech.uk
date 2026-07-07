@@ -82,6 +82,16 @@ export default function Results() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4 }}
+          className="text-center mt-10"
+        >
+          <a href="/portfolio" className="btn-dark px-7 py-3.5 text-sm inline-flex items-center gap-2">
+            See Our Work →
+          </a>
+        </motion.div>
       </div>
     </section>
   );

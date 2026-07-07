@@ -1,8 +1,10 @@
 "use client";
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { useForm } from "@/context/FormContext";
+
+type Currency = "PKR" | "USD";
 
 const modules = {
   website: {
@@ -33,15 +35,15 @@ const modules = {
 };
 
 const addOns = [
-  { name: "AI Receptionist", desc: "Answers every clinic call 24/7 in Urdu and English and books appointments automatically.", href: "/ai-receptionist", price: "Quoted on your audit call" },
-  { name: "SEO for Clinics", desc: "Long-term organic Google rankings for your highest-value treatment keywords.", href: "/seo-for-clinics", price: "Quoted on your audit call" },
-  { name: "EHR Platform", desc: "Digital patient records, prescriptions, and billing, on its own without the full Premium plan.", href: "/ehr-platform", price: "PKR 25,000 / year" },
+  { name: "AI Receptionist", desc: "Answers every clinic call 24/7 in Urdu and English and books appointments automatically.", href: "/ai-receptionist", price: { PKR: "Quoted on your audit call", USD: "Quoted on your audit call" } },
+  { name: "SEO for Clinics", desc: "Long-term organic Google rankings for your highest-value treatment keywords.", href: "/seo-for-clinics", price: { PKR: "Quoted on your audit call", USD: "Quoted on your audit call" } },
+  { name: "EHR Platform", desc: "Digital patient records, prescriptions, and billing, on its own without the full Premium plan.", href: "/ehr-platform", price: { PKR: "PKR 25,000 / year", USD: "$300 / year" } },
 ];
 
 const plans = [
   {
     name: "Basic",
-    price: "PKR 35,000",
+    price: { PKR: "PKR 35,000", USD: "$500" },
     period: "per month",
     desc: "For new or small clinics that need a strong online foundation patients can actually find.",
     moduleKeys: ["website", "localSeo"],
@@ -50,7 +52,7 @@ const plans = [
   },
   {
     name: "Standard",
-    price: "PKR 50,000",
+    price: { PKR: "PKR 50,000", USD: "$1,000" },
     period: "per month",
     desc: "Everything in Basic, plus paid campaigns that put your clinic in front of patients actively searching today.",
     moduleKeys: ["website", "localSeo", "marketing"],
@@ -59,7 +61,7 @@ const plans = [
   },
   {
     name: "Premium",
-    price: "PKR 80,000",
+    price: { PKR: "PKR 80,000", USD: "$1,500" },
     period: "per month",
     desc: "Everything in Standard, plus automation that answers, books, and records patients without your staff lifting a finger.",
     moduleKeys: ["website", "localSeo", "marketing", "whatsapp", "ehr"],
@@ -68,11 +70,48 @@ const plans = [
   },
 ];
 
+// Detect visitor country once: Pakistan → PKR, everywhere else → USD.
+function useCurrency(): [Currency, (c: Currency) => void] {
+  const [currency, setCurrency] = useState<Currency>("PKR");
+  const [manual, setManual] = useState(false);
+
+  useEffect(() => {
+    if (manual) return;
+    // Quick offline heuristic first (timezone), then confirm via IP lookup.
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      if (tz && !tz.includes("Karachi")) setCurrency("USD");
+    } catch { /* ignore */ }
+
+    let cancelled = false;
+    const apply = (code: string) => {
+      if (!cancelled && !manual) {
+        setCurrency(code.trim().toUpperCase() === "PK" ? "PKR" : "USD");
+      }
+    };
+    // Primary: geojs.io. Fallback: ipwho.is. Both are CORS-enabled and free.
+    fetch("https://get.geojs.io/v1/ip/country.json")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => apply(d.country))
+      .catch(() =>
+        fetch("https://ipwho.is/?fields=country_code")
+          .then((r) => (r.ok ? r.json() : Promise.reject()))
+          .then((d) => apply(d.country_code))
+          .catch(() => { /* keep timezone heuristic / default */ })
+      );
+    return () => { cancelled = true; };
+  }, [manual]);
+
+  const set = (c: Currency) => { setManual(true); setCurrency(c); };
+  return [currency, set];
+}
+
 export default function PricingPackages() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const { openForm } = useForm();
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [currency, setCurrency] = useCurrency();
 
   return (
     <section className="py-16 lg:py-20 bg-white" id="pricing" ref={ref}>
@@ -85,6 +124,21 @@ export default function PricingPackages() {
           <p className="text-gray-500 max-w-xl mx-auto">
             No hidden fees, ever. Every plan runs on a 3 to 6 month minimum, just enough time for results to compound and show in your numbers.
           </p>
+
+          {/* Currency toggle */}
+          <div className="inline-flex items-center gap-1 mt-6 p-1 rounded-full bg-[#F1F5F9] border border-gray-200">
+            {(["PKR", "USD"] as Currency[]).map((c) => (
+              <button
+                key={c}
+                onClick={() => setCurrency(c)}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${
+                  currency === c ? "bg-[#00283C] text-white" : "text-gray-500 hover:text-[#00283C]"
+                }`}
+              >
+                {c === "PKR" ? "🇵🇰 PKR" : "🌍 USD ($)"}
+              </button>
+            ))}
+          </div>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6 items-stretch">
@@ -106,7 +160,7 @@ export default function PricingPackages() {
                   <h3 className="text-lg font-bold text-[#00283C] mb-1">{p.name}</h3>
                   <p className="text-gray-400 text-sm mb-4 leading-relaxed">{p.desc}</p>
                   <div className="mb-1">
-                    <span className="text-3xl font-extrabold text-[#00283C]">{p.price}</span>
+                    <span className="text-3xl font-extrabold text-[#00283C]">{p.price[currency]}</span>
                   </div>
                   <p className="text-gray-400 text-xs mb-6 uppercase tracking-wide font-semibold">Billed {p.period}</p>
 
@@ -186,7 +240,7 @@ export default function PricingPackages() {
                 className="flex flex-col bg-white rounded-lg p-4 border border-gray-100 hover:border-[#00B4D8]/40 transition-colors">
                 <p className="text-sm font-bold text-[#00283C] mb-1">{a.name}</p>
                 <p className="text-xs text-gray-500 leading-relaxed mb-2 flex-1">{a.desc}</p>
-                <p className="text-xs font-semibold text-[#0077A8]">{a.price}</p>
+                <p className="text-xs font-semibold text-[#0077A8]">{a.price[currency]}</p>
               </a>
             ))}
           </div>

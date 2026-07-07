@@ -16,12 +16,14 @@ import PricingPackages from "@/components/PricingPackages";
 import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
+import AuditChatWidget from "@/components/AuditChatWidget";
 
 function HomeContent() {
   const { isOpen, closeForm } = useForm();
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-white">
       <ConsultationForm isOpen={isOpen} onClose={closeForm} />
+      <AuditChatWidget />
       <Navigation />
       <Hero />
       <Problems />

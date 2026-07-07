@@ -44,13 +44,14 @@ const navLinks = [
       links: [
         { label: "About Us", href: "/about" },
         { label: "Our Mission", href: "/our-mission" },
+        { label: "Our Work", href: "/portfolio" },
         { label: "Contact Us", href: "/contact" },
       ],
     },
   },
   {
-    label: "Results",
-    href: "/#results",
+    label: "Case Studies",
+    href: "/portfolio",
     dropdown: null,
   },
   {
@@ -59,6 +60,7 @@ const navLinks = [
     dropdown: {
       heading: "Resources",
       links: [
+        { label: "Free Website Audit", href: "/free-website-audit" },
         { label: "Pricing", href: "/#pricing" },
         { label: "FAQ", href: "/#faq" },
         { label: "WhatsApp AI Demo", href: "/whatsapp-ai-automation" },
@@ -86,16 +88,16 @@ export default function Navigation() {
         scrolled ? "bg-white border-b border-gray-100 shadow-sm" : "bg-white/95 backdrop-blur-sm"
       }`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-24">
 
             {/* Logo */}
             <a href="/" className="flex items-center flex-shrink-0">
               <Image
                 src="/logo.png"
                 alt="Alliance Tech (PVT) LTD"
-                width={150}
-                height={54}
-                className="h-12 lg:h-14 w-auto object-contain"
+                width={200}
+                height={72}
+                className="h-16 lg:h-20 w-auto object-contain"
                 priority
               />
             </a>

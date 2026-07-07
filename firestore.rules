@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public lead form: anyone may submit (create) a lead, but no one can
+    // read, edit, or delete leads from the client. Manage them in the console.
+    match /leads/{doc} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    // Lock everything else down.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

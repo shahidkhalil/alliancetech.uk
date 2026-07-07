@@ -4,6 +4,7 @@ import Navigation from "./Navigation";
 import Footer from "./Footer";
 import ConsultationForm from "./ConsultationForm";
 import AnalyticsTracker from "./AnalyticsTracker";
+import AuditChatWidget from "./AuditChatWidget";
 import { FormProvider, useForm } from "@/context/FormContext";
 
 function PageContent({ children }: { children: ReactNode }) {
@@ -15,6 +16,7 @@ function PageContent({ children }: { children: ReactNode }) {
       <main className="relative">{children}</main>
       <Footer />
       <ConsultationForm isOpen={isOpen} onClose={closeForm} />
+      <AuditChatWidget />
     </div>
   );
 }
