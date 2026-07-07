@@ -4,6 +4,7 @@
  */
 
 const { analyzeSeo } = require("./seo");
+const { serperSearch } = require("./serper");
 
 const SPECIALTIES = [
   { re: /dentist|dental|orthodont|teeth|tooth|smile/i, term: "dentist" },
@@ -43,14 +44,7 @@ async function findCompetitors(auditedUrl, seo, apiKey) {
   const { query, specialty, city } = inferQuery(seo);
   const ownDomain = rootDomain(new URL(auditedUrl).hostname);
 
-  const res = await fetch("https://google.serper.dev/search", {
-    method: "POST",
-    headers: { "X-API-KEY": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ q: query, gl: "pk", num: 10 }),
-    signal: AbortSignal.timeout(15000),
-  });
-  if (!res.ok) throw new Error(`Serper error ${res.status}`);
-  const data = await res.json();
+  const data = await serperSearch(query, apiKey);
 
   const organic = (data.organic || []).map((r, i) => ({
     position: i + 1,

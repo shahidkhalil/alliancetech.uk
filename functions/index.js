@@ -12,9 +12,14 @@ const { analyzeSeo } = require("./lib/seo");
 const { findCompetitors } = require("./lib/competitors");
 const { buildMoneyMap } = require("./lib/treatments");
 const { generateReport } = require("./lib/ai");
+const { initCache, getCache, setCache, checkRateLimit } = require("./lib/cache");
 
 admin.initializeApp();
 const db = admin.firestore();
+initCache(db);
+
+const AUDIT_CACHE_DAYS = 7;
+const DAILY_LIMIT_PER_IP = 10;
 
 // Secrets (set via: firebase functions:secrets:set NAME)
 // ANTHROPIC_API_KEY is optional — only bind it if you switch AI_PROVIDER to "anthropic".
@@ -60,6 +65,22 @@ exports.auditWebsite = onRequest(
     }
 
     try {
+      // Full-audit cache: same URL within a week returns the stored result —
+      // zero PageSpeed, Serper, or OpenAI spend.
+      const auditCacheKey = `audit:${url}`;
+      const cached = await getCache(auditCacheKey);
+      if (cached) {
+        res.status(200).json({ ...cached, meta: { ...cached.meta, cached: true } });
+        return;
+      }
+
+      // Per-IP daily limit protects the API budget from abuse.
+      const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
+      if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP))) {
+        res.status(429).json({ error: "Daily audit limit reached. Try again tomorrow, or book a free call with our team." });
+        return;
+      }
+
       const provider = (process.env.AI_PROVIDER || "openai").toLowerCase();
       const psApiKey = PAGESPEED_API_KEY.value() || undefined;
 
@@ -105,7 +126,7 @@ exports.auditWebsite = onRequest(
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      res.status(200).json({
+      const payload = {
         id: doc.id,
         url,
         report,
@@ -119,10 +140,14 @@ exports.auditWebsite = onRequest(
           : null,
         meta: {
           pagespeedMobileOk: !!pagespeed?.mobile?.scores,
-          pagespeedDesktopOk: !!pagespeed?.desktop?.scores,
           seoOk: !seo?.error,
         },
-      });
+      };
+
+      // Cache the full result so repeats cost nothing.
+      await setCache(auditCacheKey, payload, AUDIT_CACHE_DAYS);
+
+      res.status(200).json(payload);
     } catch (err) {
       console.error("Audit failed:", err);
       res.status(500).json({ error: "Audit failed. Please try again.", detail: err.message });

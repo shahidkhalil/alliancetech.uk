@@ -40,16 +40,7 @@ function rootDomain(hostname) {
   return hostname.replace(/^www\./, "").toLowerCase();
 }
 
-async function serperSearch(q, apiKey) {
-  const res = await fetch("https://google.serper.dev/search", {
-    method: "POST",
-    headers: { "X-API-KEY": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ q, gl: "pk", num: 10 }),
-    signal: AbortSignal.timeout(15000),
-  });
-  if (!res.ok) throw new Error(`Serper ${res.status}`);
-  return res.json();
-}
+const { serperSearch } = require("./serper");
 
 /**
  * Build the money map: for each high-value treatment in this specialty,

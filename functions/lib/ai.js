@@ -25,25 +25,86 @@ TONE:
 - Prioritise ruthlessly: biggest verified business problems first.
 - Return ONLY valid JSON matching the requested schema. No markdown, no commentary.`;
 
+/** Keep prompts small: send only fields the model actually reasons about. */
+function slimData(audit) {
+  const m = audit.pagespeed?.mobile;
+  const pagespeed = m?.scores
+    ? { scores: m.scores, metrics: m.metrics, topOpportunities: (m.opportunities || []).slice(0, 3) }
+    : { error: m?.error || "unavailable" };
+
+  const s = audit.seo || {};
+  const seo = s.error
+    ? { error: s.error }
+    : {
+        title: (s.title || "").slice(0, 90),
+        titleLength: s.titleLength,
+        metaDescriptionLength: s.metaDescriptionLength,
+        h1Count: s.h1Count,
+        isHttps: s.isHttps,
+        hasCanonical: s.hasCanonical,
+        hasViewport: s.hasViewport,
+        hasOgImage: s.hasOgImage,
+        hasStructuredData: s.hasStructuredData,
+        wordCount: s.wordCount,
+        imagesMissingAlt: s.imagesMissingAlt,
+        conversion: s.conversion,
+      };
+
+  let competitors = null;
+  if (audit.competitors) {
+    const c = audit.competitors;
+    competitors = {
+      searchQuery: c.searchQuery,
+      yourGoogleRank: c.yourGoogleRank,
+      rivals: (c.competitorsAboveYou || []).map((r) => ({
+        position: r.position,
+        title: (r.title || "").slice(0, 60),
+        domain: r.domain,
+        profile: r.profile
+          ? {
+              hasWhatsApp: r.profile.hasWhatsApp,
+              hasPhoneLink: r.profile.hasPhoneLink,
+              hasBooking: r.profile.hasBooking,
+              hasReviews: r.profile.hasReviews,
+            }
+          : undefined,
+      })),
+      localMapPack: c.localMapPack,
+    };
+  }
+
+  const moneyMap = audit.moneyMap
+    ? audit.moneyMap.map((t) => ({
+        treatment: t.treatment,
+        avgCaseValuePKR: t.avgCaseValuePKR,
+        yourRank: t.yourRank,
+        leader: t.leader ? { title: (t.leader.title || "").slice(0, 60), domain: t.leader.domain } : null,
+      }))
+    : null;
+
+  return { pagespeed, seo, competitors, moneyMap };
+}
+
 function buildUserPrompt(audit) {
-  const psOk = !!(audit.pagespeed?.mobile?.scores || audit.pagespeed?.desktop?.scores);
+  const slim = slimData(audit);
+  const psOk = !slim.pagespeed.error;
   return `Audit this website and return the JSON report.
 
 WEBSITE: ${audit.url}
 
-=== SPEED (Google PageSpeed / Lighthouse) ===
-${psOk ? "" : "NOTE: Speed measurement FAILED — you have no speed data. Do not mention speed anywhere in the report.\n"}${JSON.stringify(audit.pagespeed, null, 2)}
+=== SPEED (Google PageSpeed / Lighthouse, mobile) ===
+${psOk ? "" : "NOTE: Speed measurement FAILED — you have no speed data. Do not mention speed anywhere in the report.\n"}${JSON.stringify(slim.pagespeed)}
 
 === ON-PAGE SEO & UX SIGNALS ===
-${JSON.stringify(audit.seo, null, 2)}
+${JSON.stringify(slim.seo)}
 
-${audit.competitors ? `=== LOCAL COMPETITOR BENCHMARK (real Google results for "${audit.competitors.searchQuery}") ===
-Their Google rank for this search: ${audit.competitors.yourGoogleRank ?? "NOT in the top 10 — patients never see them"}
-${JSON.stringify(audit.competitors, null, 2)}
+${slim.competitors ? `=== LOCAL COMPETITOR BENCHMARK (real Google results for "${slim.competitors.searchQuery}") ===
+Their Google rank for this search: ${slim.competitors.yourGoogleRank ?? "NOT in the top 10 — patients never see them"}
+${JSON.stringify(slim.competitors)}
 Use this for "competitorComparison": name the actual competitors, state the rank gap plainly, and point out concrete things the rivals' sites have that this site lacks (from their profiles). This is the most persuasive section — make it specific, factual, and sting a little, but never invent details.
 ` : ""}
-${audit.moneyMap ? `=== TREATMENT MONEY MAP (per-treatment Google rankings, real searches) ===
-${JSON.stringify(audit.moneyMap, null, 2)}
+${slim.moneyMap ? `=== TREATMENT MONEY MAP (per-treatment Google rankings, real searches) ===
+${JSON.stringify(slim.moneyMap)}
 Use this for the "moneyMap" output field. For each treatment: state their rank (or "not in top 10 — invisible"), who owns the search (the leader), and a conservative revenue exposure estimate using avgCaseValuePKR (label it an estimate; assume even a handful of cases/month at stake — do NOT invent search-volume numbers). Set status: "invisible" (not in top 10), "close" (rank 4-10), or "strong" (rank 1-3, tell them to defend it). End with "moneyMapVerdict": one sentence naming where they're strongest and which high-value treatment is their biggest missed opportunity.
 ` : ""}
 Return JSON with EXACTLY this shape:
@@ -71,6 +132,7 @@ async function callOpenAI(audit, apiKey) {
     body: JSON.stringify({
       model,
       temperature: 0.6,
+      max_tokens: 1500,
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: SYSTEM_PROMPT },

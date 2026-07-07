@@ -57,16 +57,13 @@ async function runStrategy(url, strategy, apiKey) {
 }
 
 /**
- * Run both mobile and desktop. Mobile is the priority (most clinic traffic).
+ * Mobile-only: it's where clinic traffic is, it halves API quota use,
+ * and desktop scores rarely change the verdict.
  */
 async function runPageSpeed(url, apiKey) {
-  const [mobile, desktop] = await Promise.allSettled([
-    runStrategy(url, "mobile", apiKey),
-    runStrategy(url, "desktop", apiKey),
-  ]);
+  const [mobile] = await Promise.allSettled([runStrategy(url, "mobile", apiKey)]);
   return {
     mobile: mobile.status === "fulfilled" ? mobile.value : { error: mobile.reason?.message },
-    desktop: desktop.status === "fulfilled" ? desktop.value : { error: desktop.reason?.message },
   };
 }
 
