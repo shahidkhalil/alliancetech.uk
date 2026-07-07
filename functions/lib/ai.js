@@ -37,7 +37,11 @@ ${psOk ? "" : "NOTE: Speed measurement FAILED — you have no speed data. Do not
 === ON-PAGE SEO & UX SIGNALS ===
 ${JSON.stringify(audit.seo, null, 2)}
 
-${audit.competitors ? `=== COMPETITORS RANKING ABOVE THEM ===\n${JSON.stringify(audit.competitors, null, 2)}\n` : ""}
+${audit.competitors ? `=== LOCAL COMPETITOR BENCHMARK (real Google results for "${audit.competitors.searchQuery}") ===
+Their Google rank for this search: ${audit.competitors.yourGoogleRank ?? "NOT in the top 10 — patients never see them"}
+${JSON.stringify(audit.competitors, null, 2)}
+Use this for "competitorComparison": name the actual competitors, state the rank gap plainly, and point out concrete things the rivals' sites have that this site lacks (from their profiles). This is the most persuasive section — make it specific, factual, and sting a little, but never invent details.
+` : ""}
 Return JSON with EXACTLY this shape:
 {
   "overallScore": <0-100 integer, your holistic judgement>,

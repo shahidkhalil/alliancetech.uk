@@ -258,6 +258,12 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
                       <p className="italic text-gray-600">{m.report.mysteryPatient}</p>
                     </div>
                   )}
+                  {m.report.competitorComparison && (
+                    <div className="pl-3 border-l-2 border-[#DC2626]">
+                      <p className="font-bold text-[#00283C] mb-1">🥊 vs. your competitors</p>
+                      <p className="text-gray-600">{m.report.competitorComparison}</p>
+                    </div>
+                  )}
                 </div>
               </Bubble>
             );
