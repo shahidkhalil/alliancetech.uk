@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Bot } from "lucide-react";
+import { X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import AuditChat, { BotAvatar } from "./AuditChat";
 
@@ -82,26 +82,46 @@ export default function AuditChatWidget() {
         )}
       </AnimatePresence>
 
-      {/* Launcher button */}
+      {/* Launcher button — pill with label so the function is obvious before clicking */}
       <motion.button
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1, type: "spring", stiffness: 260, damping: 20 }}
         onClick={() => { setOpen((o) => !o); setEverOpened(true); setShowNudge(false); }}
-        className="fixed bottom-5 right-4 sm:right-6 z-[60] w-14 h-14 rounded-full bg-[#00283C] shadow-xl flex items-center justify-center text-white hover:scale-105 transition-transform"
-        aria-label={open ? "Close audit chat" : "Open audit chat"}
+        className="fixed bottom-5 right-4 sm:right-6 z-[60] group"
+        aria-label={open ? "Close audit chat" : "Open free website audit chat"}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          {open ? (
-            <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
-              <X className="w-6 h-6" />
+        {open ? (
+          <span className="flex items-center justify-center w-16 h-16 rounded-full bg-[#00283C] shadow-xl text-white hover:scale-105 transition-transform">
+            <X className="w-7 h-7" />
+          </span>
+        ) : (
+          <span className="relative flex items-center gap-3 pl-3 pr-5 py-3 rounded-full shadow-2xl hover:scale-105 transition-transform"
+            style={{ background: "linear-gradient(135deg, #00283C, #0077A8)" }}>
+            {/* pulsing attention ring */}
+            <motion.span
+              className="absolute inset-0 rounded-full"
+              style={{ background: "linear-gradient(135deg, #00283C, #0077A8)", zIndex: -1 }}
+              animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0, 0.5] }}
+              transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+            />
+            <motion.span
+              className="flex items-center justify-center w-11 h-11 rounded-full bg-white/15 text-2xl"
+              animate={{ rotate: [0, -12, 12, -8, 8, 0] }}
+              transition={{ repeat: Infinity, duration: 2.4, repeatDelay: 3 }}
+            >
+              🩺
             </motion.span>
-          ) : (
-            <motion.span key="bot" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
-              <Bot className="w-6 h-6 text-[#9FD3E8]" />
-            </motion.span>
-          )}
-        </AnimatePresence>
+            <span className="text-left leading-tight">
+              <span className="block text-sm font-extrabold text-white">Free Website Audit</span>
+              <span className="block text-[11px] text-white/70">AI checkup in 30 sec 🤖</span>
+            </span>
+            <span className="absolute -top-1 -right-1 flex h-4 w-4">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500 border-2 border-white" />
+            </span>
+          </span>
+        )}
       </motion.button>
     </>
   );
