@@ -41,6 +41,8 @@ type Msg =
   | { id: number; from: "bot"; kind: "improvements"; report: Report }
   | { id: number; from: "bot"; kind: "well"; report: Report }
   | { id: number; from: "bot"; kind: "cta"; report: Report }
+  | { id: number; from: "bot"; kind: "competitor"; report: Report }
+  | { id: number; from: "bot"; kind: "options" }
   | { id: number; from: "user"; kind: "text"; text: string };
 
 type MsgInput = Msg extends infer M ? (M extends Msg ? Omit<M, "id"> : never) : never;
@@ -130,6 +132,7 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [mode, setMode] = useState<"full" | "competitor">("full");
   const bottomRef = useRef<HTMLDivElement>(null);
   const started = useRef(false);
 
@@ -152,11 +155,31 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
       400
     );
     const t2 = setTimeout(
-      () => push({ from: "bot", kind: "text", text: "Paste your website address below and I'll run a full audit — takes about 30 seconds. 👇" }),
+      () => push({ from: "bot", kind: "text", text: "What would you like to do? 👇" }),
       1400
     );
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+    const t3 = setTimeout(() => push({ from: "bot", kind: "options" }), 1800);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [push]);
+
+  const chooseOption = (opt: "audit" | "competitor" | "call") => {
+    if (busy) return;
+    if (opt === "audit") {
+      push({ from: "user", kind: "text", text: "🔍 Full website audit" });
+      setMode("full");
+      setTimeout(() => push({ from: "bot", kind: "text", text: "Great choice! Paste your website address below (e.g. yourclinic.com) and I'll check its speed, SEO, and patient experience. 👇" }), 400);
+    } else if (opt === "competitor") {
+      push({ from: "user", kind: "text", text: "🥊 Competitor benchmark" });
+      setMode("competitor");
+      setTimeout(() => push({ from: "bot", kind: "text", text: "Let's see who's beating you on Google. Paste your website address below and I'll find your rank and the clinics ranking above you. 👇" }), 400);
+    } else {
+      push({ from: "user", kind: "text", text: "📞 Book a free strategy call" });
+      setTimeout(() => {
+        push({ from: "bot", kind: "text", text: "Perfect — opening the booking form for you now. Our team will get back to you within 2 hours. 🙌" });
+        openForm();
+      }, 400);
+    }
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -203,16 +226,27 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
       const url: string = data.url || rawUrl;
 
       replaceTyping({ from: "bot", kind: "text", text: "Done! Here's what I found. 👇" });
-      const steps: Array<[number, MsgInput]> = [
-        [600, { from: "bot", kind: "score", report, url }],
-        [1600, { from: "bot", kind: "impact", report }],
-        [2600, { from: "bot", kind: "issues", report }],
-        [3600, { from: "bot", kind: "improvements", report }],
-        [4600, { from: "bot", kind: "well", report }],
-        [5600, { from: "bot", kind: "cta", report }],
-      ];
+      const steps: Array<[number, MsgInput]> =
+        mode === "competitor" && report.competitorComparison
+          ? [
+              [600, { from: "bot", kind: "score", report, url }],
+              [1600, { from: "bot", kind: "competitor", report }],
+              [2600, { from: "bot", kind: "cta", report }],
+              [3400, { from: "bot", kind: "text", text: "Want the full picture? Choose another option or paste a different website. 👇" }],
+              [3800, { from: "bot", kind: "options" }],
+            ]
+          : [
+              [600, { from: "bot", kind: "score", report, url }],
+              [1600, { from: "bot", kind: "impact", report }],
+              [2600, { from: "bot", kind: "issues", report }],
+              [3600, { from: "bot", kind: "improvements", report }],
+              [4600, { from: "bot", kind: "well", report }],
+              [5600, { from: "bot", kind: "cta", report }],
+              [6400, { from: "bot", kind: "text", text: "Anything else? Choose an option or paste another website. 👇" }],
+              [6800, { from: "bot", kind: "options" }],
+            ];
       steps.forEach(([delay, m]) => setTimeout(() => push(m), delay));
-      setTimeout(() => setBusy(false), 5800);
+      setTimeout(() => setBusy(false), steps.at(-1)![0] + 200);
     } catch (err) {
       clearInterval(progressTimer);
       replaceTyping({
@@ -240,6 +274,31 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
           {messages.map((m) => {
             if (m.kind === "typing") return <TypingBubble key={m.id} />;
             if (m.kind === "text") return <Bubble key={m.id} from={m.from}>{m.text}</Bubble>;
+            if (m.kind === "options") return (
+              <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-2 pl-10 pr-4">
+                {[
+                  { key: "audit" as const, label: "🔍 Full website audit", desc: "Speed, SEO & patient experience" },
+                  { key: "competitor" as const, label: "🥊 Competitor benchmark", desc: "Your Google rank vs. rival clinics" },
+                  { key: "call" as const, label: "📞 Book a free strategy call", desc: "Talk to our team directly" },
+                ].map((o) => (
+                  <button
+                    key={o.key}
+                    onClick={() => chooseOption(o.key)}
+                    disabled={busy}
+                    className="text-left bg-white border border-[#0077A8]/30 hover:border-[#0077A8] hover:bg-[#F0F9FC] rounded-xl px-4 py-3 transition-colors disabled:opacity-50"
+                  >
+                    <p className="text-sm font-bold text-[#00283C]">{o.label}</p>
+                    <p className="text-xs text-gray-400">{o.desc}</p>
+                  </button>
+                ))}
+              </motion.div>
+            );
+            if (m.kind === "competitor") return m.report.competitorComparison ? (
+              <Bubble key={m.id} from="bot">
+                <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-2">🥊 vs. your competitors</p>
+                <p className="text-gray-600">{m.report.competitorComparison}</p>
+              </Bubble>
+            ) : null;
             if (m.kind === "score") return (
               <Bubble key={m.id} from="bot"><ScoreCard report={m.report} url={m.url} /></Bubble>
             );
