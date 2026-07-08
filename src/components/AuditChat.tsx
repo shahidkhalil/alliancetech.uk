@@ -13,6 +13,8 @@ import {
   Bot,
 } from "lucide-react";
 import { useForm } from "@/context/FormContext";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const AUDIT_ENDPOINT =
   process.env.NEXT_PUBLIC_AUDIT_ENDPOINT ||
@@ -89,6 +91,8 @@ type Msg =
   | { id: number; from: "bot"; kind: "cta"; report: Report }
   | { id: number; from: "bot"; kind: "competitor"; report: Report }
   | { id: number; from: "bot"; kind: "options" }
+  | { id: number; from: "bot"; kind: "teaser"; report: Report }
+  | { id: number; from: "bot"; kind: "gate" }
   | { id: number; from: "user"; kind: "text"; text: string };
 
 type MsgInput = Msg extends infer M ? (M extends Msg ? Omit<M, "id"> : never) : never;
@@ -165,6 +169,67 @@ function ScoreCard({ report, url }: { report: Report; url: string }) {
       </div>
       <p className="font-extrabold text-[#00283C]">{report.verdict}</p>
       <p className="text-gray-500 text-sm mt-1">{report.headline}</p>
+    </div>
+  );
+}
+
+const LEAD_KEY = "at_audit_lead";
+
+function getSavedLead(): { name: string; phone: string } | null {
+  try {
+    const raw = localStorage.getItem(LEAD_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string) => void; onSkip: () => void }) {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
+  const phoneOk = phone.replace(/\D/g, "").length >= 10;
+  const canSubmit = name.trim().length >= 2 && phoneOk && !saving;
+
+  if (done) return <p className="text-sm text-green-600 font-semibold">✓ Unlocked — here comes your full report…</p>;
+
+  return (
+    <div>
+      <p className="font-bold text-[#00283C] mb-1">🔓 Your full report is ready</p>
+      <p className="text-gray-500 text-xs mb-3">
+        I&apos;ve also found your competitor gap and Treatment Money Map. Tell me where to send the report and I&apos;ll unlock everything right here:
+      </p>
+      <div className="space-y-2">
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name"
+          className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-[#00283C] outline-none focus:border-[#0077A8]"
+        />
+        <input
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="WhatsApp number (03XX…)"
+          inputMode="tel"
+          className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-[#00283C] outline-none focus:border-[#0077A8]"
+        />
+        <button
+          disabled={!canSubmit}
+          onClick={async () => {
+            setSaving(true);
+            await onUnlock(name.trim(), phone.trim());
+            setDone(true);
+          }}
+          className="btn-dark w-full py-2.5 text-sm disabled:opacity-40"
+        >
+          {saving ? "Unlocking…" : "Show My Full Report →"}
+        </button>
+      </div>
+      <button onClick={() => { setDone(true); onSkip(); }} className="mt-2 text-[11px] text-gray-400 hover:text-gray-600 underline">
+        Maybe later — just show me a summary
+      </button>
+      <p className="mt-2 text-[10px] text-gray-300">🔒 Private. No spam, ever.</p>
     </div>
   );
 }
@@ -327,6 +392,13 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
   const [mode, setMode] = useState<"full" | "competitor">("full");
   const bottomRef = useRef<HTMLDivElement>(null);
   const started = useRef(false);
+  // Lead gate: full report unlocks after name+WhatsApp (remembered per browser).
+  const unlockedRef = useRef(false);
+  const pendingRef = useRef<{ steps: MsgInput[]; report: Report; url: string } | null>(null);
+
+  useEffect(() => {
+    if (getSavedLead()) unlockedRef.current = true;
+  }, []);
 
   const push = useCallback((m: MsgInput) => {
     setMessages((prev) => [...prev, { ...m, id: mid() } as Msg]);
@@ -418,28 +490,39 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
       const url: string = data.url || rawUrl;
 
       replaceTyping({ from: "bot", kind: "text", text: "Done! Here's what I found. 👇" });
-      const steps: Array<[number, MsgInput]> =
+
+      // Everything after the score is the "full report".
+      const fullSteps: MsgInput[] =
         mode === "competitor" && report.competitorComparison
           ? [
-              [600, { from: "bot", kind: "score", report, url }],
-              [1600, { from: "bot", kind: "competitor", report }],
-              [2600, { from: "bot", kind: "cta", report }],
-              [3400, { from: "bot", kind: "text", text: "Want the full picture? Choose another option or paste a different website. 👇" }],
-              [3800, { from: "bot", kind: "options" }],
+              { from: "bot", kind: "competitor", report },
+              { from: "bot", kind: "cta", report },
+              { from: "bot", kind: "text", text: "Want the full picture? Choose another option or paste a different website. 👇" },
+              { from: "bot", kind: "options" },
             ]
           : [
-              [600, { from: "bot", kind: "score", report, url }],
-              [1600, { from: "bot", kind: "impact", report }],
-              [2600, { from: "bot", kind: "competitor", report }],
-              [3600, { from: "bot", kind: "issues", report }],
-              [4600, { from: "bot", kind: "improvements", report }],
-              [5600, { from: "bot", kind: "well", report }],
-              [6600, { from: "bot", kind: "cta", report }],
-              [7400, { from: "bot", kind: "text", text: "Anything else? Choose an option or paste another website. 👇" }],
-              [7800, { from: "bot", kind: "options" }],
+              { from: "bot", kind: "impact", report },
+              { from: "bot", kind: "competitor", report },
+              { from: "bot", kind: "issues", report },
+              { from: "bot", kind: "improvements", report },
+              { from: "bot", kind: "well", report },
+              { from: "bot", kind: "cta", report },
+              { from: "bot", kind: "text", text: "Anything else? Choose an option or paste another website. 👇" },
+              { from: "bot", kind: "options" },
             ];
-      steps.forEach(([delay, m]) => setTimeout(() => push(m), delay));
-      setTimeout(() => setBusy(false), steps.at(-1)![0] + 200);
+
+      setTimeout(() => push({ from: "bot", kind: "score", report, url }), 600);
+
+      if (unlockedRef.current) {
+        fullSteps.forEach((m, i) => setTimeout(() => push(m), 1600 + i * 1000));
+        setTimeout(() => setBusy(false), 1600 + fullSteps.length * 1000);
+      } else {
+        // Peek-and-gate: score + one teaser issue, then ask for name+WhatsApp.
+        pendingRef.current = { steps: fullSteps, report, url };
+        setTimeout(() => push({ from: "bot", kind: "teaser", report }), 1600);
+        setTimeout(() => push({ from: "bot", kind: "gate" }), 2400);
+        setTimeout(() => setBusy(false), 2600);
+      }
     } catch (err) {
       clearInterval(progressTimer);
       replaceTyping({
@@ -457,6 +540,48 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
     if (!v || busy) return;
     setInput("");
     runAudit(v);
+  };
+
+  const unlockReport = async (name: string, phone: string) => {
+    const pending = pendingRef.current;
+    unlockedRef.current = true;
+    try { localStorage.setItem(LEAD_KEY, JSON.stringify({ name, phone })); } catch { /* ignore */ }
+
+    // Save the lead with full audit intelligence attached.
+    try {
+      await addDoc(collection(db, "leads"), {
+        name,
+        phone,
+        source: "audit_bot",
+        website: pending?.url || "",
+        auditScore: pending?.report?.overallScore ?? null,
+        auditVerdict: pending?.report?.verdict || "",
+        topIssue: pending?.report?.criticalIssues?.[0]?.title || "",
+        createdAt: serverTimestamp(),
+        status: "new",
+      });
+    } catch (e) {
+      console.error("Lead save failed:", e);
+    }
+
+    if (pending) {
+      pending.steps.forEach((m, i) => setTimeout(() => push(m), 600 + i * 1000));
+      pendingRef.current = null;
+    }
+  };
+
+  const skipGate = () => {
+    const pending = pendingRef.current;
+    pendingRef.current = null;
+    setTimeout(() => {
+      push({
+        from: "bot",
+        kind: "text",
+        text: "No problem! Quick summary: your biggest issue is above — fixing it should be priority one. If you'd like the full breakdown or want us to handle it, I'm right here. 👇",
+      });
+      if (pending) push({ from: "bot", kind: "cta", report: pending.report });
+      push({ from: "bot", kind: "options" });
+    }, 400);
   };
 
   return (
@@ -485,6 +610,24 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
                   </button>
                 ))}
               </motion.div>
+            );
+            if (m.kind === "teaser") {
+              const first = m.report.criticalIssues?.[0];
+              return first ? (
+                <Bubble key={m.id} from="bot">
+                  <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-1"><AlertTriangle className="w-4 h-4 text-[#DC2626]" /> Your #1 critical issue</p>
+                  <div className="pl-3 border-l-2 border-[#DC2626]">
+                    <p className="font-bold text-[#00283C]">{first.title}</p>
+                    <p className="text-gray-500">{first.impact}</p>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2">…plus {(m.report.criticalIssues?.length || 1) - 1 + (m.report.improvements?.length || 0)} more findings, your competitor gap, and the Treatment Money Map.</p>
+                </Bubble>
+              ) : null;
+            }
+            if (m.kind === "gate") return (
+              <Bubble key={m.id} from="bot">
+                <LeadGate onUnlock={unlockReport} onSkip={skipGate} />
+              </Bubble>
             );
             if (m.kind === "competitor") return (m.report.competitorComparison || m.report.moneyMap?.length || m.report.competitorData?.list?.length) ? (
               <Bubble key={m.id} from="bot">
