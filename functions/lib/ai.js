@@ -107,6 +107,13 @@ ${slim.moneyMap ? `=== TREATMENT MONEY MAP (per-treatment Google rankings, real 
 ${JSON.stringify(slim.moneyMap)}
 Use this for the "moneyMap" output field. For each treatment: state their rank (or "not in top 10 — invisible"), who owns the search (the leader), and a conservative revenue exposure estimate using avgCaseValuePKR (label it an estimate; assume even a handful of cases/month at stake — do NOT invent search-volume numbers). Set status: "invisible" (not in top 10), "close" (rank 4-10), or "strong" (rank 1-3, tell them to defend it). End with "moneyMapVerdict": one sentence naming where they're strongest and which high-value treatment is their biggest missed opportunity.
 ` : ""}
+${audit.gmb && audit.gmb.found ? `=== GOOGLE BUSINESS PROFILE CHECK (real Places data) ===
+Their listing: ${JSON.stringify(audit.gmb.you)}
+Map-pack rivals' listings: ${JSON.stringify(audit.gmb.rivals)}
+Use this for "gmbInsight": 2-4 sentences comparing their Google Business listing to the rivals — rating gap, review count gap, review pace (reviewsPerMonth), missing photos/hours/website/phone. These are fixes they can start TODAY; say which single GMB fix matters most. Never invent numbers.
+` : audit.gmb && !audit.gmb.found ? `=== GOOGLE BUSINESS PROFILE CHECK ===
+No Google Business listing found for "${audit.gmb.searchedFor}". Use "gmbInsight" to tell them plainly: patients searching on Google Maps cannot find them at all, and creating a (free) listing is their single fastest win.
+` : ""}
 Return JSON with EXACTLY this shape:
 {
   "overallScore": <0-100 integer, your holistic judgement>,
@@ -119,6 +126,7 @@ Return JSON with EXACTLY this shape:
   "doingWell": [ "<short positive point>" ],
   ${audit.competitors ? '"competitorComparison": "<2-4 sentences comparing them head-to-head with the competitors and why the competitor wins>",' : ""}
   ${audit.moneyMap ? '"moneyMap": [ { "treatment": "<name>", "status": "invisible|close|strong", "yourRank": <number or null>, "leader": "<who owns this search, or null>", "insight": "<1-2 sentences: what this means in patients/PKR, labelled estimate>" } ], "moneyMapVerdict": "<one sentence: strongest area + biggest missed high-value opportunity>",' : ""}
+  ${audit.gmb ? '"gmbInsight": "<2-4 sentences on their Google Business Profile vs rivals, with the one fix to do today>",' : ""}
   "nextStep": "<one warm sentence inviting them to get Alliance Tech to fix it>"
 }
 Keep criticalIssues to the top 3, improvements to 3-5, doingWell to 3-5.`;

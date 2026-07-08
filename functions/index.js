@@ -11,6 +11,7 @@ const { runPageSpeed } = require("./lib/pagespeed");
 const { analyzeSeo } = require("./lib/seo");
 const { findCompetitors } = require("./lib/competitors");
 const { buildMoneyMap } = require("./lib/treatments");
+const { buildGmbCheck } = require("./lib/gmb");
 const { generateReport } = require("./lib/ai");
 const { initCache, getCache, setCache, checkRateLimit } = require("./lib/cache");
 
@@ -93,6 +94,7 @@ exports.auditWebsite = onRequest(
       // Competitor benchmark + treatment money map (optional — need SERPER_API_KEY).
       let competitors = null;
       let moneyMap = null;
+      let gmb = null;
       const serperKey = SERPER_API_KEY.value();
       if (serperKey && seo && !seo.error) {
         competitors = await findCompetitors(url, seo, serperKey).catch((e) => {
@@ -100,16 +102,25 @@ exports.auditWebsite = onRequest(
           return null;
         });
         if (competitors) {
-          moneyMap = await buildMoneyMap(url, competitors.specialty, competitors.city, serperKey).catch((e) => {
-            console.warn("Money map failed:", e.message);
-            return null;
-          });
+          // Money map + GMB check run in parallel (independent data sources).
+          [moneyMap, gmb] = await Promise.all([
+            buildMoneyMap(url, competitors.specialty, competitors.city, serperKey).catch((e) => {
+              console.warn("Money map failed:", e.message);
+              return null;
+            }),
+            psApiKey
+              ? buildGmbCheck(url, seo, competitors, psApiKey).catch((e) => {
+                  console.warn("GMB check failed:", e.message);
+                  return null;
+                })
+              : Promise.resolve(null),
+          ]);
         }
       }
 
       // AI turns data into the report.
       const report = await generateReport(
-        { url, pagespeed, seo, competitors, moneyMap },
+        { url, pagespeed, seo, competitors, moneyMap, gmb },
         {
           provider,
           openaiKey: OPENAI_API_KEY.value() || undefined,
@@ -121,7 +132,7 @@ exports.auditWebsite = onRequest(
       const doc = await db.collection("audits").add({
         url,
         report,
-        rawData: { pagespeed, seo, competitors, moneyMap },
+        rawData: { pagespeed, seo, competitors, moneyMap, gmb },
         provider,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
@@ -130,6 +141,7 @@ exports.auditWebsite = onRequest(
         id: doc.id,
         url,
         report,
+        gmb,
         competitors: competitors
           ? {
               searchQuery: competitors.searchQuery,

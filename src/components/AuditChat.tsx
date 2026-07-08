@@ -43,6 +43,23 @@ interface CompetitorData {
   list: CompetitorRow[];
   localMapPack?: { name: string; rating?: number; reviews?: number }[];
 }
+interface GmbListing {
+  name: string;
+  rating: number | null;
+  reviews: number;
+  photosCount: number;
+  hasHours: boolean;
+  hasWebsite: boolean;
+  hasPhone: boolean;
+  reviewsPerMonth: number | null;
+}
+interface GmbData {
+  found: boolean;
+  matchedByDomain?: boolean;
+  searchedFor: string;
+  you: GmbListing | null;
+  rivals: GmbListing[];
+}
 interface Report {
   overallScore: number;
   verdict: string;
@@ -56,7 +73,9 @@ interface Report {
   moneyMap?: MoneyMapRow[];
   moneyMapVerdict?: string;
   nextStep?: string;
+  gmbInsight?: string;
   competitorData?: CompetitorData | null;
+  gmbData?: GmbData | null;
 }
 
 type Msg =
@@ -212,6 +231,62 @@ function CompetitorLeaderboard({ data }: { data: CompetitorData }) {
   );
 }
 
+function GmbCard({ data, insight }: { data: GmbData; insight?: string }) {
+  if (!data.found || !data.you) {
+    return (
+      <div>
+        <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-1">📍 Google Business Profile</p>
+        <p className="text-sm text-gray-600">
+          {insight || `We couldn't find a Google Business listing for "${data.searchedFor}". Patients searching on Google Maps can't find you — creating a free listing is your fastest win.`}
+        </p>
+      </div>
+    );
+  }
+  const cols: GmbListing[] = [data.you, ...data.rivals.slice(0, 2)];
+  const rows: Array<[string, (l: GmbListing) => React.ReactNode]> = [
+    ["Rating", (l) => (l.rating ? `⭐${l.rating}` : "—")],
+    ["Reviews", (l) => l.reviews ?? "—"],
+    ["Review pace", (l) => (l.reviewsPerMonth != null ? `~${l.reviewsPerMonth}/mo` : "—")],
+    ["Photos", (l) => (l.photosCount >= 10 ? "10+" : l.photosCount)],
+    ["Hours listed", (l) => (l.hasHours ? "✓" : "✗")],
+    ["Website link", (l) => (l.hasWebsite ? "✓" : "✗")],
+    ["Phone", (l) => (l.hasPhone ? "✓" : "✗")],
+  ];
+  return (
+    <div>
+      <p className="flex items-center gap-1.5 font-bold text-[#00283C] mb-1">📍 Google Business Profile — you vs. map pack</p>
+      {!data.matchedByDomain && (
+        <p className="text-[10px] text-gray-400 mb-1">Closest listing match: “{data.you.name}”</p>
+      )}
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr>
+              <th className="text-left text-gray-400 font-semibold py-1 pr-2"></th>
+              {cols.map((c, i) => (
+                <th key={i} className={`text-left font-bold py-1 pr-2 ${i === 0 ? "text-[#0077A8]" : "text-[#00283C]"}`}>
+                  {i === 0 ? "You" : c.name.slice(0, 14)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(([label, fn]) => (
+              <tr key={label} className="border-t border-gray-100">
+                <td className="text-gray-400 py-1 pr-2">{label}</td>
+                {cols.map((c, i) => (
+                  <td key={i} className={`py-1 pr-2 font-semibold ${i === 0 ? "text-[#0077A8]" : "text-gray-600"}`}>{fn(c)}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {insight && <p className="mt-2 text-sm text-gray-600">{insight}</p>}
+    </div>
+  );
+}
+
 function MoneyMapCard({ report }: { report: Report }) {
   return (
     <div>
@@ -339,7 +414,7 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
       clearInterval(progressTimer);
       if (!res.ok) throw new Error(data.error || "Audit failed");
 
-      const report: Report = { ...data.report, competitorData: data.competitors || null };
+      const report: Report = { ...data.report, competitorData: data.competitors || null, gmbData: data.gmb || null };
       const url: string = data.url || rawUrl;
 
       replaceTyping({ from: "bot", kind: "text", text: "Done! Here's what I found. 👇" });
@@ -424,7 +499,8 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
                     <p className="text-gray-600">{m.report.competitorComparison}</p>
                   </div>
                 )}
-                {m.report.moneyMap?.length ? <MoneyMapCard report={m.report} /> : null}
+                {m.report.moneyMap?.length ? <div className="mb-3"><MoneyMapCard report={m.report} /></div> : null}
+                {m.report.gmbData ? <GmbCard data={m.report.gmbData} insight={m.report.gmbInsight} /> : null}
               </Bubble>
             ) : null;
             if (m.kind === "score") return (
