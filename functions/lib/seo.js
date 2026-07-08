@@ -25,12 +25,42 @@ async function analyzeSeo(url) {
 
   // Conversion / UX signals that matter for clinics specifically.
   const htmlLower = html.toLowerCase();
-  const hasWhatsApp = /wa\.me|whatsapp|api\.whatsapp/.test(htmlLower);
-  const hasPhoneLink = $('a[href^="tel:"]').length > 0;
-  const hasBooking = /book|appointment|schedule|consultation/.test(htmlLower);
-  const hasMap = /google\.com\/maps|maps\.google|goo\.gl\/maps|<iframe[^>]+maps/.test(htmlLower);
-  const hasReviews = /review|testimonial|rating|stars?/.test(htmlLower);
-  const hasForm = $("form").length > 0;
+  let hasWhatsApp = /wa\.me|whatsapp|api\.whatsapp/.test(htmlLower);
+  let hasPhoneLink = $('a[href^="tel:"]').length > 0;
+  let hasBooking = /book|appointment|schedule|consultation/.test(htmlLower);
+  let hasMap = /google\.com\/maps|maps\.google|goo\.gl\/maps|<iframe[^>]+maps/.test(htmlLower);
+  let hasReviews = /review|testimonial|rating|stars?/.test(htmlLower);
+  let hasForm = $("form").length > 0;
+
+  // SPA handling: JS-rendered sites (React/Vue/Next CSR) have near-empty raw
+  // HTML — the real content lives in their JS bundles. Scan those too so we
+  // don't falsely report missing WhatsApp/call/booking options.
+  const wordCount = bodyText ? bodyText.split(" ").length : 0;
+  const scriptSrcs = $("script[src]")
+    .map((_, el) => $(el).attr("src"))
+    .get()
+    .filter(Boolean)
+    .map((src) => { try { return new URL(src, finalUrl).toString(); } catch { return null; } })
+    .filter((u) => u && new URL(u).origin === new URL(finalUrl).origin)
+    .slice(0, 3);
+
+  const isSpa = wordCount < 200 && scriptSrcs.length > 0;
+  if (isSpa) {
+    const bundles = await Promise.all(
+      scriptSrcs.map((u) =>
+        fetch(u, { signal: AbortSignal.timeout(15000) })
+          .then((r) => (r.ok ? r.text() : ""))
+          .catch(() => "")
+      )
+    );
+    const js = bundles.join(" ").toLowerCase();
+    hasWhatsApp = hasWhatsApp || /wa\.me|api\.whatsapp|whatsapp/.test(js);
+    hasPhoneLink = hasPhoneLink || /["'`]tel:/.test(js);
+    hasBooking = hasBooking || /book|appointment|schedule|consultation/.test(js);
+    hasMap = hasMap || /google\.com\/maps|maps\.google|goo\.gl\/maps/.test(js);
+    hasReviews = hasReviews || /review|testimonial|rating/.test(js);
+    hasForm = hasForm || /<form|onsubmit|handlesubmit/.test(js);
+  }
 
   return {
     finalUrl,
@@ -55,7 +85,8 @@ async function analyzeSeo(url) {
     hasStructuredData: $('script[type="application/ld+json"]').length > 0,
     robotsMeta: $('meta[name="robots"]').attr("content") || "",
     // Content depth
-    wordCount: bodyText ? bodyText.split(" ").length : 0,
+    wordCount,
+    isSpa, // JS-rendered app: raw-HTML word count / tag checks are unreliable
     imageCount: images.length,
     imagesMissingAlt,
     // Conversion / UX signals

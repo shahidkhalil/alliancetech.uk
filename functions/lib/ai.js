@@ -46,6 +46,7 @@ function slimData(audit) {
         hasOgImage: s.hasOgImage,
         hasStructuredData: s.hasStructuredData,
         wordCount: s.wordCount,
+        isSpa: s.isSpa,
         imagesMissingAlt: s.imagesMissingAlt,
         conversion: s.conversion,
       };
@@ -96,7 +97,7 @@ WEBSITE: ${audit.url}
 ${psOk ? "" : "NOTE: Speed measurement FAILED — you have no speed data. Do not mention speed anywhere in the report.\n"}${JSON.stringify(slim.pagespeed)}
 
 === ON-PAGE SEO & UX SIGNALS ===
-${JSON.stringify(slim.seo)}
+${slim.seo.isSpa ? "NOTE: This is a JavaScript-rendered app. Content signals were extracted from its JS bundles. Do NOT criticise 'thin content' or low word count — that measurement is unreliable for such sites. Do note that JS-only rendering can hurt Google indexing (a legitimate SEO point).\n" : ""}${JSON.stringify(slim.seo)}
 
 ${slim.competitors ? `=== LOCAL COMPETITOR BENCHMARK (real Google results for "${slim.competitors.searchQuery}") ===
 Their Google rank for this search: ${slim.competitors.yourGoogleRank ?? "NOT in the top 10 — patients never see them"}
