@@ -21,8 +21,9 @@ exports.leadAlert = onDocumentCreated(
     const lead = event.data?.data();
     if (!lead) return;
 
-    const user = GMAIL_USER.value();
-    const pass = GMAIL_APP_PASSWORD.value();
+    const user = (GMAIL_USER.value() || "").trim();
+    // App passwords are 16 letters; strip any (non-breaking) spaces from pasting.
+    const pass = (GMAIL_APP_PASSWORD.value() || "").replace(/[\s ]+/g, "");
     if (!user || !pass) {
       console.warn("Gmail secrets not configured — skipping lead alert");
       return;
