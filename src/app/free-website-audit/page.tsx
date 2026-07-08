@@ -1,7 +1,45 @@
 "use client";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Gauge, Search, Users, Wallet, MapPin, ChevronDown } from "lucide-react";
+import { useState } from "react";
 import PageWrapper from "@/components/PageWrapper";
 import AuditChat, { BotAvatar } from "@/components/AuditChat";
+
+const checks = [
+  { icon: Gauge, title: "Website Speed Test", desc: "Real Google PageSpeed (Lighthouse) data for your mobile load time and Core Web Vitals — the same metrics Google uses to rank you. Slow sites lose over half their visitors before the page even appears." },
+  { icon: Search, title: "SEO Audit", desc: "Title tags, meta descriptions, headings, structured data, indexability, and the on-page factors that decide whether patients in Pakistan can find your clinic on Google." },
+  { icon: Users, title: "Patient Experience Check", desc: "Our AI walks through your site like a real patient booking on a phone: is there a WhatsApp button, tap-to-call, online booking, a visible location map? Every missing step costs appointments." },
+  { icon: Wallet, title: "Revenue Impact Estimate", desc: "Every issue is translated into what actually matters — lost patients and lost revenue per month — so you know which fix pays for itself first." },
+  { icon: Sparkles, title: "Competitor Benchmark", desc: "We check the real Google results patients see (e.g. \"dentist in Lahore\") and show the exact clinics ranking above you — plus what their websites have that yours doesn't." },
+  { icon: MapPin, title: "Google Business Profile Check", desc: "Your Google Maps listing vs. the map-pack winners: rating, review count, review pace, photos, and listed hours — the factors that decide who gets the call." },
+];
+
+const steps = [
+  { n: "1", title: "Paste your website link", desc: "Type your clinic's web address into the chat — no signup, no credit card." },
+  { n: "2", title: "AI runs a real audit (≈30 sec)", desc: "We pull live Google PageSpeed data, scan your pages and Google Business listing, and check real search rankings." },
+  { n: "3", title: "Get your report & fixes", desc: "A plain-English report: your score, your biggest problems, who's beating you, and exactly what to fix first." },
+];
+
+const faqs = [
+  { q: "Is the website audit really free?", a: "Yes — completely free, no signup and no credit card. Paste your link in the chat and you get your score and top issue immediately. The full report (competitor benchmark, treatment rankings, Google Business comparison) unlocks with just your name and WhatsApp number so we can send it to you." },
+  { q: "What does the AI website audit check?", a: "Six things: website speed (real Google PageSpeed data), on-page SEO, patient booking experience (WhatsApp, tap-to-call, online booking), estimated revenue impact, your Google ranking vs. local competitors, and your Google Business Profile compared to the map-pack winners." },
+  { q: "Is the audit accurate, or generic advice?", a: "Every finding is backed by real measured data — Google Lighthouse scores, your actual HTML, live Google search results, and your real Google Business listing. Our system is built to never report an issue the data can't prove: if we couldn't verify something, we say so instead of guessing." },
+  { q: "Who is this audit for?", a: "It's built for healthcare practices in Pakistan — dental clinics, aesthetic clinics, dermatologists, and other doctors — but it works for any business website. The competitor and treatment analysis is tuned for clinics in cities like Lahore, Karachi, and Islamabad." },
+  { q: "How is this different from Google PageSpeed or other free checkers?", a: "Those tools give you a technical score and jargon. Ours translates the same data into patients and rupees, names the actual competitors outranking you, maps your rankings for high-value treatments like implants and braces, and compares your Google Business Profile against local rivals — then tells you what to fix first." },
+  { q: "What happens after the audit?", a: "You get the full report right in the chat. If you want the problems fixed, you can book a free strategy call with our team — we build websites, run local SEO, and set up WhatsApp booking for clinics across Pakistan. No obligation either way." },
+];
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border border-gray-100 rounded-xl bg-white">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
+        <span className="font-bold text-[#00283C] text-sm">{q}</span>
+        <ChevronDown className={`w-4 h-4 text-gray-400 flex-shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && <p className="px-5 pb-4 text-sm text-gray-500 leading-relaxed">{a}</p>}
+    </div>
+  );
+}
 
 export default function FreeWebsiteAudit() {
   return (
@@ -41,6 +79,100 @@ export default function FreeWebsiteAudit() {
             Powered by real Google PageSpeed data + AI analysis. Your audit is free — no signup needed.
           </p>
         </div>
+      </section>
+
+      {/* What the audit checks — SEO content */}
+      <section className="py-16 bg-[#F8FAFC] border-t border-gray-100">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] tracking-tight mb-3">
+              What Our Free AI Website Audit <span className="gradient-heading">Checks</span>
+            </h2>
+            <p className="text-gray-500 max-w-2xl mx-auto text-sm">
+              Most free website checkers give you a score and jargon. Ours audits your clinic&apos;s website the way a patient — and Google — actually experiences it, then tells you what it&apos;s costing you.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {checks.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="card-white rounded-xl p-6">
+                <div className="w-10 h-10 rounded-lg bg-[#00283C] flex items-center justify-center mb-4">
+                  <Icon className="w-5 h-5 text-[#9FD3E8]" />
+                </div>
+                <h3 className="font-bold text-[#00283C] mb-2">{title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-6">
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] tracking-tight text-center mb-10">
+            How the Website Audit Works
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {steps.map((s) => (
+              <div key={s.n} className="text-center">
+                <div className="w-10 h-10 rounded-full bg-[#00283C] text-white font-extrabold flex items-center justify-center mx-auto mb-4">{s.n}</div>
+                <h3 className="font-bold text-[#00283C] mb-2">{s.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <a href="#top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="btn-dark px-7 py-3.5 text-sm inline-block">
+              Run My Free Audit Now →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Why clinics need it — keyword-rich copy */}
+      <section className="py-16 bg-[#F8FAFC] border-t border-gray-100">
+        <div className="max-w-3xl mx-auto px-6">
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] tracking-tight text-center mb-6">
+            Why Every Clinic in Pakistan Should Audit Its Website
+          </h2>
+          <div className="space-y-4 text-gray-600 text-sm leading-relaxed">
+            <p>
+              Patients in Lahore, Karachi, and Islamabad don&apos;t find their dentist or dermatologist through a signboard anymore — they Google. They search &ldquo;dentist near me&rdquo;, &ldquo;braces price in Lahore&rdquo;, or &ldquo;best skin specialist in Karachi&rdquo;, compare the top results, check reviews, and message the clinic that makes it easiest. If your website loads slowly, isn&apos;t ranking, or has no WhatsApp or online booking, those patients quietly go to the clinic that does.
+            </p>
+            <p>
+              A <strong>website audit</strong> shows you exactly where that leak is. Our free AI audit combines a <strong>website speed test</strong>, an <strong>SEO check</strong>, a <strong>Google Business Profile comparison</strong>, and a <strong>local competitor analysis</strong> into one plain-English report — built specifically for healthcare practices in Pakistan. You&apos;ll see which high-value treatments (implants, braces, veneers, laser treatments) you&apos;re invisible for, which local clinics own those searches today, and the shortest path to winning them back.
+            </p>
+            <p>
+              It takes 30 seconds, uses real measured data, and costs nothing. The clinics beating you have probably already checked theirs.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ + schema */}
+      <section className="py-16 bg-white">
+        <div className="max-w-3xl mx-auto px-6">
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] tracking-tight text-center mb-8">
+            Free Website Audit — FAQs
+          </h2>
+          <div className="space-y-3">
+            {faqs.map((f) => <FaqItem key={f.q} q={f.q} a={f.a} />)}
+          </div>
+        </div>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faqs.map((f) => ({
+                "@type": "Question",
+                name: f.q,
+                acceptedAnswer: { "@type": "Answer", text: f.a },
+              })),
+            }),
+          }}
+        />
       </section>
     </PageWrapper>
   );
