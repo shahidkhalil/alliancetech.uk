@@ -69,7 +69,7 @@ exports.auditWebsite = onRequest(
       // Full-audit cache: same URL within a week returns the stored result —
       // zero PageSpeed, Serper, or OpenAI spend.
       const auditCacheKey = `audit:${url}`;
-      const cached = await getCache(auditCacheKey);
+      const cached = req.body?.force === true ? null : await getCache(auditCacheKey);
       if (cached) {
         res.status(200).json({ ...cached, meta: { ...cached.meta, cached: true } });
         return;

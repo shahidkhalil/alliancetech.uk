@@ -11,56 +11,69 @@ const { getCache, setCache } = require("./cache");
 
 const TTL_DAYS = 3;
 
+// Places API (New) — https://places.googleapis.com/v1
+const SEARCH_FIELDS = "places.id,places.displayName,places.rating,places.userRatingCount";
+const DETAIL_FIELDS = "id,displayName,rating,userRatingCount,photos,regularOpeningHours,websiteUri,nationalPhoneNumber,reviews";
+
 async function placesTextSearch(query, apiKey) {
-  const cacheKey = `places:search:${query.toLowerCase()}`;
+  const cacheKey = `placesv2:search:${query.toLowerCase()}`;
   const hit = await getCache(cacheKey);
   if (hit) return hit;
 
-  const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&region=pk&key=${apiKey}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
+  const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Goog-Api-Key": apiKey,
+      "X-Goog-FieldMask": SEARCH_FIELDS,
+    },
+    body: JSON.stringify({ textQuery: query, regionCode: "PK", maxResultCount: 3 }),
+    signal: AbortSignal.timeout(12000),
+  });
+  if (!res.ok) throw new Error(`Places search ${res.status}: ${(await res.text()).slice(0, 150)}`);
   const data = await res.json();
-  if (data.status !== "OK" && data.status !== "ZERO_RESULTS") {
-    throw new Error(`Places search ${data.status}`);
-  }
-  const slim = (data.results || []).slice(0, 3).map((r) => ({
-    placeId: r.place_id,
-    name: r.name,
+  const slim = (data.places || []).slice(0, 3).map((r) => ({
+    placeId: r.id,
+    name: r.displayName?.text || "",
     rating: r.rating,
-    reviews: r.user_ratings_total,
+    reviews: r.userRatingCount,
   }));
   await setCache(cacheKey, slim, TTL_DAYS);
   return slim;
 }
 
 async function placeDetails(placeId, apiKey) {
-  const cacheKey = `places:details:${placeId}`;
+  const cacheKey = `placesv2:details:${placeId}`;
   const hit = await getCache(cacheKey);
   if (hit) return hit;
 
-  const fields = "name,rating,user_ratings_total,photos,opening_hours,website,formatted_phone_number,reviews";
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${apiKey}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(12000) });
-  const data = await res.json();
-  if (data.status !== "OK") throw new Error(`Places details ${data.status}`);
-  const r = data.result || {};
+  const res = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
+    headers: { "X-Goog-Api-Key": apiKey, "X-Goog-FieldMask": DETAIL_FIELDS },
+    signal: AbortSignal.timeout(12000),
+  });
+  if (!res.ok) throw new Error(`Places details ${res.status}`);
+  const r = await res.json();
 
-  // Review velocity: Places returns up to 5 most-recent reviews with unix times.
+  // Review velocity: up to 5 most-recent reviews with publish times.
   let reviewsPerMonth = null;
-  const times = (r.reviews || []).map((rv) => rv.time).filter(Boolean).sort();
+  const times = (r.reviews || [])
+    .map((rv) => (rv.publishTime ? Date.parse(rv.publishTime) / 1000 : null))
+    .filter(Boolean)
+    .sort();
   if (times.length >= 2) {
     const spanDays = (Date.now() / 1000 - times[0]) / 86400;
     if (spanDays > 0) reviewsPerMonth = Math.round((times.length / spanDays) * 30 * 10) / 10;
   }
 
   const slim = {
-    name: r.name,
+    name: r.displayName?.text || "",
     rating: r.rating ?? null,
-    reviews: r.user_ratings_total ?? 0,
+    reviews: r.userRatingCount ?? 0,
     photosCount: (r.photos || []).length, // API caps at 10; ">=10" means plenty
-    hasHours: !!r.opening_hours,
-    hasWebsite: !!r.website,
-    website: r.website || null,
-    hasPhone: !!r.formatted_phone_number,
+    hasHours: !!r.regularOpeningHours,
+    hasWebsite: !!r.websiteUri,
+    website: r.websiteUri || null,
+    hasPhone: !!r.nationalPhoneNumber,
     reviewsPerMonth,
   };
   await setCache(cacheKey, slim, TTL_DAYS);
@@ -91,28 +104,45 @@ async function buildGmbCheck(auditedUrl, seo, competitors, apiKey) {
   if (!name) return null;
 
   const ownDomain = rootDomain(auditedUrl);
+  // Domain root without TLD often IS the business name (alinadentalclinic → "alinadentalclinic").
+  const domainName = (ownDomain || "").split(".")[0];
 
-  // 1. Find their own listing.
-  const candidates = await placesTextSearch(`${name} ${city}`, apiKey);
-  if (!candidates.length) {
+  // 1. Find their own listing — try title-derived name, then the domain itself.
+  //    A candidate whose website matches their domain is a verified match.
+  const queries = [`${name} ${city}`, `${domainName} ${city}`];
+  let own = null;
+  let fallback = null;
+  for (const q of queries) {
+    const candidates = await placesTextSearch(q, apiKey).catch(() => []);
+    for (const c of candidates) {
+      const d = await placeDetails(c.placeId, apiKey).catch(() => null);
+      if (!d) continue;
+      if (d.website && rootDomain(d.website) === ownDomain) { own = d; break; }
+      if (!fallback) fallback = d;
+    }
+    if (own) break;
+  }
+  const matchedByDomain = !!own;
+  if (!own) own = fallback;
+  if (!own) {
     return { found: false, searchedFor: `${name} ${city}`, you: null, rivals: [] };
   }
 
-  // Prefer a candidate whose website matches their domain.
-  let own = null;
-  for (const c of candidates) {
-    const d = await placeDetails(c.placeId, apiKey).catch(() => null);
-    if (!d) continue;
-    if (d.website && rootDomain(d.website) === ownDomain) { own = d; break; }
-    if (!own) own = d; // fallback: first resolvable result
-  }
-  const matchedByDomain = !!(own?.website && rootDomain(own.website) === ownDomain);
-
-  // 2. Profile the top 2 map-pack rivals (names from the Serper map pack).
-  const rivalNames = (competitors?.localMapPack || [])
+  // 2. Rivals: map-pack names from Serper; if empty, ask Places directly
+  //    for the top clinics of this specialty in the city.
+  let rivalNames = (competitors?.localMapPack || [])
     .map((p) => p.name)
-    .filter((n) => n && own && n.toLowerCase() !== own.name.toLowerCase())
+    .filter((n) => n && n.toLowerCase() !== own.name.toLowerCase())
     .slice(0, 2);
+
+  if (!rivalNames.length) {
+    const specialty = competitors?.specialty || "clinic";
+    const top = await placesTextSearch(`best ${specialty} ${city}`, apiKey).catch(() => []);
+    rivalNames = top
+      .map((p) => p.name)
+      .filter((n) => n && n.toLowerCase() !== own.name.toLowerCase())
+      .slice(0, 2);
+  }
 
   const rivals = [];
   for (const rn of rivalNames) {
