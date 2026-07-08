@@ -17,6 +17,7 @@ import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import AuditChatWidget from "@/components/AuditChatWidget";
+import AuditPromo from "@/components/AuditPromo";
 
 function HomeContent() {
   const { isOpen, closeForm } = useForm();
@@ -27,6 +28,7 @@ function HomeContent() {
       <Navigation />
       <Hero />
       <Problems />
+      <AuditPromo />
       <Solutions />
       <WhatsAppDemo />
       <EHRDashboard />
