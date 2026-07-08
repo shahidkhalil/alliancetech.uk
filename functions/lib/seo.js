@@ -32,9 +32,10 @@ async function analyzeSeo(url) {
   let hasReviews = /review|testimonial|rating|stars?/.test(htmlLower);
   let hasForm = $("form").length > 0;
 
-  // SPA handling: JS-rendered sites (React/Vue/Next CSR) have near-empty raw
-  // HTML — the real content lives in their JS bundles. Scan those too so we
-  // don't falsely report missing WhatsApp/call/booking options.
+  // DEEP SCAN (zero API credits — our own fetches only).
+  // A signal missing from the homepage HTML is NOT proof it's missing from
+  // the site: it may live in JS bundles (SPAs) or on the contact/booking
+  // page. Before reporting anything as "not detected", look there too.
   const wordCount = bodyText ? bodyText.split(" ").length : 0;
   const scriptSrcs = $("script[src]")
     .map((_, el) => $(el).attr("src"))
@@ -45,21 +46,58 @@ async function analyzeSeo(url) {
     .slice(0, 3);
 
   const isSpa = wordCount < 200 && scriptSrcs.length > 0;
-  if (isSpa) {
-    const bundles = await Promise.all(
-      scriptSrcs.map((u) =>
-        fetch(u, { signal: AbortSignal.timeout(15000) })
-          .then((r) => (r.ok ? r.text() : ""))
-          .catch(() => "")
-      )
-    );
-    const js = bundles.join(" ").toLowerCase();
-    hasWhatsApp = hasWhatsApp || /wa\.me|api\.whatsapp|whatsapp/.test(js);
-    hasPhoneLink = hasPhoneLink || /["'`]tel:/.test(js);
-    hasBooking = hasBooking || /book|appointment|schedule|consultation/.test(js);
-    hasMap = hasMap || /google\.com\/maps|maps\.google|goo\.gl\/maps/.test(js);
-    hasReviews = hasReviews || /review|testimonial|rating/.test(js);
-    hasForm = hasForm || /<form|onsubmit|handlesubmit/.test(js);
+  const anySignalMissing = !(hasWhatsApp && hasPhoneLink && hasBooking && hasMap && hasReviews && hasForm);
+  let pagesScanned = 1;
+
+  if (anySignalMissing) {
+    const extraTexts = [];
+
+    // 1. JS bundles (always when something is missing, not only for SPAs —
+    //    hybrid sites hide buttons in JS too).
+    if (scriptSrcs.length) {
+      const bundles = await Promise.all(
+        scriptSrcs.map((u) =>
+          fetch(u, { signal: AbortSignal.timeout(15000) })
+            .then((r) => (r.ok ? r.text() : ""))
+            .catch(() => "")
+        )
+      );
+      extraTexts.push(bundles.join(" "));
+    }
+
+    // 2. Likely conversion pages (contact / book / appointment), same origin.
+    const innerLinks = $("a[href]")
+      .map((_, el) => $(el).attr("href"))
+      .get()
+      .filter((h) => h && /contact|book|appointment|about/i.test(h))
+      .map((h) => { try { return new URL(h, finalUrl).toString(); } catch { return null; } })
+      .filter((u) => u && new URL(u).origin === new URL(finalUrl).origin && u !== finalUrl);
+    const uniquePages = [...new Set(innerLinks)].slice(0, 2);
+
+    if (uniquePages.length) {
+      const pages = await Promise.all(
+        uniquePages.map((u) =>
+          fetch(u, {
+            headers: { "User-Agent": "Mozilla/5.0 (compatible; AllianceAuditBot/1.0)" },
+            signal: AbortSignal.timeout(15000),
+          })
+            .then((r) => (r.ok ? r.text() : ""))
+            .catch(() => "")
+        )
+      );
+      pagesScanned += pages.filter(Boolean).length;
+      extraTexts.push(pages.join(" "));
+    }
+
+    const extra = extraTexts.join(" ").toLowerCase();
+    if (extra) {
+      hasWhatsApp = hasWhatsApp || /wa\.me|api\.whatsapp|whatsapp/.test(extra);
+      hasPhoneLink = hasPhoneLink || /["'`]tel:|href="tel:|href='tel:/.test(extra);
+      hasBooking = hasBooking || /book|appointment|schedule|consultation/.test(extra);
+      hasMap = hasMap || /google\.com\/maps|maps\.google|goo\.gl\/maps/.test(extra);
+      hasReviews = hasReviews || /review|testimonial|rating/.test(extra);
+      hasForm = hasForm || /<form|onsubmit|handlesubmit/.test(extra);
+    }
   }
 
   return {
@@ -87,6 +125,7 @@ async function analyzeSeo(url) {
     // Content depth
     wordCount,
     isSpa, // JS-rendered app: raw-HTML word count / tag checks are unreliable
+    pagesScanned,
     imageCount: images.length,
     imagesMissingAlt,
     // Conversion / UX signals

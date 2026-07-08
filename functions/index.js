@@ -14,6 +14,7 @@ const { buildMoneyMap } = require("./lib/treatments");
 const { buildGmbCheck } = require("./lib/gmb");
 const { generateReport } = require("./lib/ai");
 const { initCache, getCache, setCache, checkRateLimit } = require("./lib/cache");
+const { sanitizeReport } = require("./lib/validate");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -127,6 +128,12 @@ exports.auditWebsite = onRequest(
           anthropicKey: process.env.ANTHROPIC_API_KEY || undefined,
         }
       );
+
+      // Contradiction guard: drop any AI claim the collected data disproves.
+      const removedFindings = sanitizeReport(report, { pagespeed, seo });
+      if (removedFindings > 0) {
+        console.warn(`sanitizeReport removed ${removedFindings} contradicted finding(s) for ${url}`);
+      }
 
       // Store the audit (lead intelligence + analytics).
       const doc = await db.collection("audits").add({

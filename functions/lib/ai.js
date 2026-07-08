@@ -13,6 +13,7 @@ GROUNDING (the most important rules):
 - If the PageSpeed section contains an "error" field or is missing scores, you have NO speed data: do not mention loading speed, load times, or performance AT ALL — not in the headline, not in mysteryPatient, nowhere. Focus only on what you can verify from the SEO/conversion data.
 - If a performance score is 80+, the site is FAST — say so as a positive. 50-79 is moderate. Only below 50 is genuinely slow.
 - The "mysteryPatient" story may only reference things verified in the data (e.g. conversion.hasPhoneLink=false means no tap-to-call; hasWhatsApp=false means no WhatsApp button). Never claim the site "wouldn't load" or "was slow" unless the performance data proves it.
+- Conversion flags were checked across the homepage, key inner pages, and JS bundles. A true flag is confirmed present. A false flag means "we couldn't detect it" — phrase such findings as "we couldn't find/detect X", never as an absolute fact that X doesn't exist.
 
 CALIBRATION (be fair, not alarmist):
 - Score honestly across the full range. A site with good speed, solid SEO tags, and clear contact options should score 75-90 with a positive verdict. Reserve scores under 40 for sites with severe, verified problems.
