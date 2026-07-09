@@ -175,7 +175,7 @@ function ScoreCard({ report, url }: { report: Report; url: string }) {
 
 const LEAD_KEY = "at_audit_lead";
 
-function getSavedLead(): { name: string; phone: string } | null {
+function getSavedLead(): { name: string; phone: string; email?: string } | null {
   try {
     const raw = localStorage.getItem(LEAD_KEY);
     return raw ? JSON.parse(raw) : null;
@@ -184,13 +184,16 @@ function getSavedLead(): { name: string; phone: string } | null {
   }
 }
 
-function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string) => void; onSkip: () => void }) {
+function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string, email: string) => void; onSkip: () => void }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const phoneOk = phone.replace(/\D/g, "").length >= 10;
-  const canSubmit = name.trim().length >= 2 && phoneOk && !saving;
+  // Email is optional, but if provided it must look valid.
+  const emailOk = email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const canSubmit = name.trim().length >= 2 && phoneOk && emailOk && !saving;
 
   if (done) return <p className="text-sm text-green-600 font-semibold">✓ Unlocked — here comes your full report…</p>;
 
@@ -214,11 +217,19 @@ function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string
           inputMode="tel"
           className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-[#00283C] outline-none focus:border-[#0077A8]"
         />
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email (optional)"
+          type="email"
+          inputMode="email"
+          className={`w-full px-3 py-2.5 rounded-lg border text-sm text-[#00283C] outline-none focus:border-[#0077A8] ${emailOk ? "border-gray-200" : "border-red-300"}`}
+        />
         <button
           disabled={!canSubmit}
           onClick={async () => {
             setSaving(true);
-            await onUnlock(name.trim(), phone.trim());
+            await onUnlock(name.trim(), phone.trim(), email.trim());
             setDone(true);
           }}
           className="btn-dark w-full py-2.5 text-sm disabled:opacity-40"
@@ -542,16 +553,17 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
     runAudit(v);
   };
 
-  const unlockReport = async (name: string, phone: string) => {
+  const unlockReport = async (name: string, phone: string, email: string) => {
     const pending = pendingRef.current;
     unlockedRef.current = true;
-    try { localStorage.setItem(LEAD_KEY, JSON.stringify({ name, phone })); } catch { /* ignore */ }
+    try { localStorage.setItem(LEAD_KEY, JSON.stringify({ name, phone, email })); } catch { /* ignore */ }
 
     // Save the lead with full audit intelligence attached.
     try {
       await addDoc(collection(db, "leads"), {
         name,
         phone,
+        email: email || "",
         source: "audit_bot",
         website: pending?.url || "",
         auditScore: pending?.report?.overallScore ?? null,
