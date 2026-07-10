@@ -1,10 +1,51 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { ArrowUpRight, Check } from "lucide-react";
+import { useState, useEffect, createContext, useContext } from "react";
+import { ArrowUpRight, Check, X, ChevronLeft, ChevronRight } from "lucide-react";
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import FinalCTA from "@/components/FinalCTA";
+
+// Shared lightbox: any gallery image opens a full-screen viewer.
+const LightboxContext = createContext<(images: string[], index: number) => void>(() => {});
+
+function BrowserFrame({ src, alt, onClick }: { src: string; alt: string; onClick?: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="group block w-full text-left rounded-xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-shadow"
+    >
+      {/* Browser chrome bar */}
+      <div className="flex items-center gap-1.5 px-3 py-2 bg-[#EEF2F6] border-b border-gray-200">
+        <span className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]" />
+        <span className="w-2.5 h-2.5 rounded-full bg-[#28C840]" />
+      </div>
+      <div className="overflow-hidden bg-white aspect-[16/10]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} alt={alt} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500" />
+      </div>
+    </button>
+  );
+}
+
+function ScreenshotGallery({ images, client, accent }: { images: string[]; client: string; accent: string }) {
+  const openLightbox = useContext(LightboxContext);
+  return (
+    <div className="px-7 lg:px-10 py-8 bg-[#F8FAFC] border-b border-gray-100">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: accent }}>The Full Build</span>
+        <span className="h-px flex-1" style={{ background: "#E2E8F0" }} />
+        <span className="text-[11px] text-gray-400">{images.length} screens · tap to enlarge</span>
+      </div>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {images.map((src, i) => (
+          <BrowserFrame key={src} src={src} alt={`${client} website screen ${i + 1}`} onClick={() => openLightbox(images, i)} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 interface CaseStudy {
   client: string;
@@ -14,6 +55,7 @@ interface CaseStudy {
   liveLabel?: string;
   afterImage?: string;
   beforeImage?: string;
+  gallery?: string[];
   services: string[];
   challenge: string;
   built: string;
@@ -28,10 +70,16 @@ const caseStudies: CaseStudy[] = [
     client: "Dr. Syeda Nida Batool",
     category: "Clinical Psychologist — Website Redesign & Booking Platform",
     tagline: "A complete rebuild of a clinical psychologist's website — transforming a basic profile page into a credibility-first platform that turns visitors into booked appointments.",
-    liveUrl: "https://drnidabatool.com/",
-    liveLabel: "View Live Site",
     afterImage: "/portfolio/dr-nida-after.png",
     beforeImage: "/portfolio/dr-nida-before.png",
+    gallery: [
+      "/portfolio/dr-nida-1.jpg",
+      "/portfolio/dr-nida-2.jpg",
+      "/portfolio/dr-nida-3.jpg",
+      "/portfolio/dr-nida-4.jpg",
+      "/portfolio/dr-nida-5.jpg",
+      "/portfolio/dr-nida-6.jpg",
+    ],
     services: ["Website Redesign", "Online Booking System", "WhatsApp Integration", "Blog CMS", "SEO Setup"],
     challenge:
       "Dr. Nida is one of Pakistan's most credentialed clinical psychologists — PhD, 15+ years of practice, internationally certified in NLP and Timeline Therapy. Her original website, however, was a basic single-page profile: it stated who she was but did little to build trust or drive action. There was no real way to verify her credentials, explore her services, or book a session without picking up the phone. Her online presence didn't match the calibre of her expertise.",
@@ -58,9 +106,15 @@ const caseStudies: CaseStudy[] = [
     client: "Dental Tribe",
     category: "Dental Clinic (Dr. Shahab & Associates, Lahore) — Website & Booking",
     tagline: "A bold, modern website for a premium Lahore dental clinic — built to fill evening appointment slots and turn browsers into booked patients.",
-    liveUrl: "https://dental-13-f1510.web.app/",
-    liveLabel: "View Live Site",
     afterImage: "/portfolio/dental-tribe.png",
+    gallery: [
+      "/portfolio/dental-tribe-1.jpg",
+      "/portfolio/dental-tribe-2.jpg",
+      "/portfolio/dental-tribe-3.jpg",
+      "/portfolio/dental-tribe-4.jpg",
+      "/portfolio/dental-tribe-5.jpg",
+      "/portfolio/dental-tribe-6.jpg",
+    ],
     services: ["Custom Website Design", "Online Booking", "WhatsApp Confirmation", "Services & Blog Pages", "Local SEO"],
     challenge:
       "Dental Tribe offers premium dental care in Lahore with dedicated evening hours — but had no digital storefront to match. Patients had no easy way to discover the clinic, understand its treatments, or book a slot online. Evening appointments, their key differentiator, weren't being marketed anywhere prospective patients could actually find and act on them.",
@@ -129,17 +183,12 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
               </div>
             )}
             {c.afterImage && (
-              <a
-                href={c.liveUrl}
-                target={c.liveUrl ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                className="group block"
-              >
+              <div className="block">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-[11px] font-bold uppercase tracking-widest text-[#0077A8]">After — By Alliance Tech</span>
                   <span className="h-px flex-1 bg-[#9FD3E8]" />
                 </div>
-                <div className={`rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white ring-2 ring-transparent group-hover:ring-[#0077A8] transition ${c.beforeImage ? "aspect-[16/10]" : ""}`}>
+                <div className={`rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white ${c.beforeImage ? "aspect-[16/10]" : ""}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={c.afterImage}
@@ -147,11 +196,14 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
                     className={c.beforeImage ? "w-full h-full object-cover object-top" : "w-full h-auto"}
                   />
                 </div>
-              </a>
+              </div>
             )}
           </div>
         </div>
       )}
+
+      {/* Full screenshot gallery */}
+      {c.gallery?.length ? <ScreenshotGallery images={c.gallery} client={c.client} accent={c.accent} /> : null}
 
       <div className="px-7 lg:px-10 py-8 lg:py-10">
         <p className="text-lg lg:text-xl font-bold text-[#00283C] leading-snug tracking-tight mb-7">
@@ -210,11 +262,57 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
   );
 }
 
+function Lightbox({ images, index, onClose, onNav }: { images: string[]; index: number; onClose: () => void; onNav: (dir: number) => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") onNav(1);
+      if (e.key === "ArrowLeft") onNav(-1);
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = ""; };
+  }, [onClose, onNav]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 sm:p-10"
+      onClick={onClose}
+    >
+      <button onClick={onClose} className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20" aria-label="Close">
+        <X className="w-5 h-5" />
+      </button>
+      <button onClick={(e) => { e.stopPropagation(); onNav(-1); }} className="absolute left-3 sm:left-6 w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20" aria-label="Previous">
+        <ChevronLeft className="w-6 h-6" />
+      </button>
+      <button onClick={(e) => { e.stopPropagation(); onNav(1); }} className="absolute right-3 sm:right-6 w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20" aria-label="Next">
+        <ChevronRight className="w-6 h-6" />
+      </button>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <motion.img
+        key={index}
+        initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
+        src={images[index]}
+        alt={`Screenshot ${index + 1}`}
+        onClick={(e) => e.stopPropagation()}
+        className="max-w-full max-h-full rounded-lg shadow-2xl object-contain"
+      />
+      <span className="absolute bottom-5 left-1/2 -translate-x-1/2 text-white/60 text-xs">{index + 1} / {images.length}</span>
+    </motion.div>
+  );
+}
+
 export default function Portfolio() {
   const [selected, setSelected] = useState(0);
   const active = caseStudies[selected];
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
+  const openLightbox = (images: string[], index: number) => setLightbox({ images, index });
+  const navLightbox = (dir: number) =>
+    setLightbox((lb) => (lb ? { ...lb, index: (lb.index + dir + lb.images.length) % lb.images.length } : lb));
 
   return (
+    <LightboxContext.Provider value={openLightbox}>
     <PageWrapper>
       <ServicePageHero
         badge="OUR WORK"
@@ -283,5 +381,16 @@ export default function Portfolio() {
 
       <FinalCTA />
     </PageWrapper>
+    <AnimatePresence>
+      {lightbox && (
+        <Lightbox
+          images={lightbox.images}
+          index={lightbox.index}
+          onClose={() => setLightbox(null)}
+          onNav={navLightbox}
+        />
+      )}
+    </AnimatePresence>
+    </LightboxContext.Provider>
   );
 }
