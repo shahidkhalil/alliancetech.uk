@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, CalendarCheck2, Phone, Clock, Sparkles, Mic, Square } from "lucide-react";
+import { Send, Loader2, CalendarCheck2, Phone, Clock, Sparkles, Mic, Square, Trash2, Volume2, VolumeX } from "lucide-react";
 
 const ENDPOINT =
   process.env.NEXT_PUBLIC_RECEPTIONIST_ENDPOINT ||
@@ -145,9 +145,35 @@ export default function ReceptionistDemo() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, busy]);
 
-  const playAudio = (b64: string) => {
+  // ---- Maya's voice playback (with mute + stop controls) ----
+  const [muted, setMuted] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const mutedRef = useRef(false);
+
+  const stopSpeaking = () => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    setSpeaking(false);
+  };
+
+  const toggleMute = () => {
+    setMuted((m) => {
+      mutedRef.current = !m;
+      if (!m) stopSpeaking(); // muting also silences the current reply
+      return !m;
+    });
+  };
+
+  const playAudio = (b64: string, force = false) => {
+    if (mutedRef.current && !force) return; // muted: no auto-play (manual ▶ still works)
     try {
-      new Audio(`data:audio/mp3;base64,${b64}`).play().catch(() => {});
+      stopSpeaking();
+      const a = new Audio(`data:audio/mp3;base64,${b64}`);
+      audioRef.current = a;
+      a.onended = () => setSpeaking(false);
+      a.onpause = () => setSpeaking(false);
+      a.play().then(() => setSpeaking(true)).catch(() => setSpeaking(false));
     } catch { /* ignore */ }
   };
 
@@ -206,8 +232,15 @@ export default function ReceptionistDemo() {
   };
 
   // ---- Voice notes (tap mic → speak → tap stop → Whisper → send) ----
+  const cancelledRef = useRef(false);
+
   const stopRecording = () => {
     recorderRef.current?.state === "recording" && recorderRef.current.stop();
+  };
+
+  const cancelRecording = () => {
+    cancelledRef.current = true;
+    stopRecording();
   };
 
   const startRecording = async () => {
@@ -223,6 +256,11 @@ export default function ReceptionistDemo() {
       rec.onstop = async () => {
         stream.getTracks().forEach((t) => t.stop());
         if (recTimerRef.current) clearInterval(recTimerRef.current);
+        if (cancelledRef.current) {
+          cancelledRef.current = false;
+          setRecState("idle");
+          return; // discarded — nothing is transcribed or sent
+        }
         setRecState("transcribing");
         try {
           const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" });
@@ -247,6 +285,7 @@ export default function ReceptionistDemo() {
         }
       };
       recorderRef.current = rec;
+      cancelledRef.current = false;
       rec.start();
       setRecSeconds(0);
       setRecState("recording");
@@ -275,6 +314,15 @@ export default function ReceptionistDemo() {
             <p className="text-[15px] font-bold text-white leading-tight">Maya</p>
             <p className="text-[11px] text-white/60 leading-tight">Receptionist · Bright Smile Dental Care</p>
           </div>
+          <button
+            type="button"
+            onClick={toggleMute}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${muted ? "bg-white/20 text-white" : "bg-white/10 text-white/70 hover:text-white"}`}
+            aria-label={muted ? "Unmute Maya's voice" : "Mute Maya's voice"}
+            title={muted ? "Voice replies muted" : "Mute voice replies"}
+          >
+            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </button>
           <div className="text-right">
             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-white/80 bg-white/10 px-2.5 py-1 rounded-full">
               <Sparkles className="w-3 h-3" /> LIVE DEMO
@@ -314,7 +362,7 @@ export default function ReceptionistDemo() {
                         {m.audio && (
                           <button
                             type="button"
-                            onClick={() => playAudio(m.audio!)}
+                            onClick={() => playAudio(m.audio!, true)}
                             className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-[#0E7C6B] bg-[#0E7C6B]/8 border border-[#0E7C6B]/20 rounded-full px-3 py-1.5 hover:bg-[#0E7C6B]/15 transition-colors"
                           >
                             🔊 Play Maya&apos;s voice reply
@@ -393,6 +441,28 @@ export default function ReceptionistDemo() {
           <div ref={bottomRef} />
         </div>
 
+        {/* Maya speaking bar */}
+        <AnimatePresence>
+          {speaking && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-[#0E7C6B]/5 border-t border-[#0E7C6B]/10 px-4 py-2 flex items-center gap-2"
+            >
+              <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }}>🔊</motion.span>
+              <span className="text-xs text-[#0E7C6B] font-semibold flex-1">Maya is speaking…</span>
+              <button
+                type="button"
+                onClick={stopSpeaking}
+                className="text-xs font-bold text-[#0E7C6B] bg-white border border-[#0E7C6B]/25 rounded-full px-3 py-1 hover:bg-[#0E7C6B] hover:text-white transition-colors"
+              >
+                ⏹ Stop
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Input */}
         <form
           onSubmit={(e) => {
@@ -409,16 +479,24 @@ export default function ReceptionistDemo() {
           className="bg-white border-t border-gray-100 px-4 py-3.5 flex items-center gap-2.5"
         >
           {recState === "recording" ? (
-            <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-full bg-red-50 border border-red-200">
+            <div className="flex-1 flex items-center gap-3 px-2 py-1.5 rounded-full bg-red-50 border border-red-200">
+              <button
+                type="button"
+                onClick={cancelRecording}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-100 transition-colors flex-shrink-0"
+                aria-label="Cancel recording"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
               <motion.span
                 className="w-2.5 h-2.5 rounded-full bg-red-500"
                 animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ repeat: Infinity, duration: 1 }}
               />
               <span className="text-sm text-red-600 font-semibold flex-1">
-                Recording… {String(Math.floor(recSeconds / 60))}:{String(recSeconds % 60).padStart(2, "0")} / 0:30
+                {String(Math.floor(recSeconds / 60))}:{String(recSeconds % 60).padStart(2, "0")} / 0:30
               </span>
-              <span className="text-[11px] text-red-400 hidden sm:inline">tap ■ when done</span>
+              <span className="text-[11px] text-red-400 hidden sm:inline pr-2">🗑 cancel · ■ send</span>
             </div>
           ) : (
             <input
