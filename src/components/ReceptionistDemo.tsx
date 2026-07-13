@@ -12,7 +12,7 @@ const TRANSCRIBE_ENDPOINT =
 
 const MAX_RECORD_SECONDS = 30;
 
-interface ChatMsg { role: "user" | "assistant"; content: string; form?: { service: string; done?: boolean } }
+interface ChatMsg { role: "user" | "assistant"; content: string; form?: { service: string; done?: boolean }; audio?: string; voiceNote?: boolean }
 interface Booking { name: string; phone: string; service: string; preferredTime: string; clinicName?: string }
 
 const SUGGESTIONS = [
@@ -145,29 +145,36 @@ export default function ReceptionistDemo() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, busy]);
 
-  const send = async (text: string) => {
+  const playAudio = (b64: string) => {
+    try {
+      new Audio(`data:audio/mp3;base64,${b64}`).play().catch(() => {});
+    } catch { /* ignore */ }
+  };
+
+  const send = async (text: string, opts?: { voice?: boolean }) => {
     const v = text.trim();
     if (!v || busy) return;
     setInput("");
     setShowSuggestions(false);
-    const next: ChatMsg[] = [...messages, { role: "user", content: v }];
+    const next: ChatMsg[] = [...messages, { role: "user", content: v, voiceNote: opts?.voice }];
     setMessages(next);
     setBusy(true);
     try {
       const res = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clinicId: "demo", messages: next.filter((m) => m.content) }),
+        body: JSON.stringify({ clinicId: "demo", speak: !!opts?.voice, messages: next.filter((m) => m.content) }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Something went wrong");
       setMessages((prev) => {
-        const out: ChatMsg[] = [...prev, { role: "assistant", content: data.reply }];
+        const out: ChatMsg[] = [...prev, { role: "assistant", content: data.reply, audio: data.audio || undefined }];
         if (!data.booking && ASKS_DETAILS.test(data.reply || "")) {
           out.push({ role: "assistant", content: "", form: { service: "" } });
         }
         return out;
       });
+      if (data.audio) playAudio(data.audio);
       if (data.booking) setBooking(data.booking);
     } catch (err) {
       setMessages((prev) => [...prev, { role: "assistant", content: `😕 ${err instanceof Error ? err.message : "Please try again."}` }]);
@@ -233,7 +240,7 @@ export default function ReceptionistDemo() {
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Transcription failed");
           setRecState("idle");
-          send(data.text);
+          send(data.text, { voice: true });
         } catch (err) {
           setRecState("idle");
           setMessages((prev) => [...prev, { role: "assistant", content: `🎤 ${err instanceof Error ? err.message : "Couldn't process the voice note."}` }]);
@@ -302,7 +309,17 @@ export default function ReceptionistDemo() {
                         }`}
                         style={!isBot ? { background: "linear-gradient(135deg, #0E7C6B, #14A08A)" } : undefined}
                       >
+                        {m.voiceNote && <span className="block text-[10px] opacity-70 mb-1">🎤 voice note</span>}
                         {m.content}
+                        {m.audio && (
+                          <button
+                            type="button"
+                            onClick={() => playAudio(m.audio!)}
+                            className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-[#0E7C6B] bg-[#0E7C6B]/8 border border-[#0E7C6B]/20 rounded-full px-3 py-1.5 hover:bg-[#0E7C6B]/15 transition-colors"
+                          >
+                            🔊 Play Maya&apos;s voice reply
+                          </button>
+                        )}
                       </div>
                     )}
                     {m.form && !m.form.done && !booking && (

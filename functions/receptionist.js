@@ -182,7 +182,41 @@ exports.clinicReceptionist = onRequest(
         msg = data.choices[0].message;
       }
 
-      res.status(200).json({ reply: msg.content || "Sorry, could you say that again?", booking });
+      const replyText = msg.content || "Sorry, could you say that again?";
+
+      // Voice reply (when the patient spoke to us): OpenAI TTS -> base64 mp3.
+      let audio = null;
+      if (req.body?.speak === true && replyText) {
+        try {
+          const ttsBody = (model) => ({
+            model,
+            voice: "nova",
+            input: replyText.slice(0, 600),
+            response_format: "mp3",
+          });
+          let tts = await fetch("https://api.openai.com/v1/audio/speech", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+            body: JSON.stringify(ttsBody("gpt-4o-mini-tts")),
+            signal: AbortSignal.timeout(30000),
+          });
+          if (!tts.ok) {
+            tts = await fetch("https://api.openai.com/v1/audio/speech", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+              body: JSON.stringify(ttsBody("tts-1")),
+              signal: AbortSignal.timeout(30000),
+            });
+          }
+          if (tts.ok) {
+            audio = Buffer.from(await tts.arrayBuffer()).toString("base64");
+          }
+        } catch (e) {
+          console.warn("TTS failed (reply sent as text only):", e.message);
+        }
+      }
+
+      res.status(200).json({ reply: replyText, booking, audio });
     } catch (err) {
       console.error("Receptionist error:", err);
       res.status(500).json({ error: "I'm having a moment — please try again or WhatsApp us." });
