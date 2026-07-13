@@ -56,11 +56,13 @@ function MayaAvatar({ size = "w-8 h-8" }: { size?: string }) {
 function BookingForm({ service, onSubmit }: { service: string; onSubmit: (msg: string) => void }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [svc, setSvc] = useState(service);
   const [day, setDay] = useState("");
   const [time, setTime] = useState("");
   const phoneOk = phone.replace(/\D/g, "").length >= 10;
-  const canBook = name.trim().length >= 2 && phoneOk && svc && day && time;
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const canBook = name.trim().length >= 2 && phoneOk && emailOk && svc && day && time;
 
   const field = "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-[#0E7C6B] focus:ring-2 focus:ring-[#0E7C6B]/10 bg-white transition-all";
   const label = "block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1";
@@ -81,6 +83,10 @@ function BookingForm({ service, onSubmit }: { service: string; onSubmit: (msg: s
       <div>
         <label className={label}>Phone / WhatsApp</label>
         <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="03XX XXXXXXX" inputMode="tel" className={field} />
+      </div>
+      <div>
+        <label className={label}>Email <span className="normal-case font-normal">(for your confirmation)</span></label>
+        <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" type="email" inputMode="email" className={field} />
       </div>
       <div>
         <label className={label}>Service</label>
@@ -107,7 +113,7 @@ function BookingForm({ service, onSubmit }: { service: string; onSubmit: (msg: s
       </div>
       <button
         disabled={!canBook}
-        onClick={() => onSubmit(`Please book my appointment. Name: ${name.trim()}. Phone: ${phone.trim()}. Service: ${svc}. Preferred time: ${day} at ${time}.`)}
+        onClick={() => onSubmit(`Please book my appointment. Name: ${name.trim()}. Phone: ${phone.trim()}. Email: ${email.trim()}. Service: ${svc}. Preferred time: ${day} at ${time}.`)}
         className="w-full py-3 rounded-xl bg-gradient-to-r from-[#0E7C6B] to-[#14A08A] text-white text-sm font-bold hover:shadow-lg hover:shadow-[#0E7C6B]/20 transition-all disabled:opacity-40 disabled:shadow-none"
       >
         Confirm Booking ✓

@@ -11,11 +11,48 @@ const { onRequest } = require("firebase-functions/v2/https");
 const { defineSecret } = require("firebase-functions/params");
 const admin = require("firebase-admin");
 
+const nodemailer = require("nodemailer");
 const { getClinic } = require("./lib/clinicKB");
 const { checkRateLimit } = require("./lib/cache");
 
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
+const GMAIL_USER = defineSecret("GMAIL_USER");
+const GMAIL_APP_PASSWORD = defineSecret("GMAIL_APP_PASSWORD");
 const DAILY_LIMIT_PER_IP = 60; // generous for a conversation
+
+/** Best-effort appointment confirmation email to the patient. */
+async function sendConfirmationEmail(booking, clinic, reference) {
+  const user = (GMAIL_USER.value() || "").trim();
+  const pass = (GMAIL_APP_PASSWORD.value() || "").replace(/[\s ]+/g, "");
+  if (!user || !pass || !booking.email) return;
+
+  const transporter = nodemailer.createTransport({ service: "gmail", auth: { user, pass } });
+  await transporter.sendMail({
+    from: `"${clinic.name}" <${user}>`,
+    to: booking.email,
+    subject: `✅ Appointment Confirmed — ${clinic.name} (Ref ${reference})`,
+    text: [
+      `Dear ${booking.name},`,
+      ``,
+      `Your appointment has been booked. Here are the details:`,
+      ``,
+      `  Service:   ${booking.service}`,
+      `  When:      ${booking.preferredTime}`,
+      `  Reference: ${reference}`,
+      ``,
+      `Clinic: ${clinic.name}`,
+      `Address: ${clinic.address}`,
+      `Hours: ${clinic.hours.weekdays} (Sunday: ${clinic.hours.sunday})`,
+      `Phone/WhatsApp: ${clinic.phone}`,
+      ``,
+      `${clinic.policies.firstVisit}`,
+      `${clinic.policies.cancellation}`,
+      ``,
+      `We look forward to seeing you!`,
+      `— ${clinic.name}`,
+    ].join("\n"),
+  });
+}
 
 function systemPrompt(c) {
   return `You are the friendly front-desk receptionist for "${c.name}" — ${c.tagline} in ${c.city}. You chat with patients on the clinic's website.
@@ -39,7 +76,7 @@ ${c.faqs.map((f) => `Q: ${f.q} A: ${f.a}`).join("\n")}
 RULES:
 - Answer questions using only the facts above. If asked something you don't know (e.g. a price not listed, medical diagnosis), say you'll have a team member confirm and offer to note their number — never guess.
 - Never give specific medical/clinical advice or diagnoses. Encourage booking a check-up instead.
-- Guide interested patients toward booking an appointment. To book, you MUST collect: patient name, phone number, the service they want, and a preferred day/time. Once you have all four, call the book_appointment tool. Confirm the details back to them warmly after booking.
+- Guide interested patients toward booking an appointment. To book, you MUST collect: patient name, phone number, the service they want, and a preferred day/time. Also ask for their email so we can send a written confirmation (if they'd rather not share it, book without it). Once you have the required details, call the book_appointment tool. Confirm warmly after booking — and if an email was provided, mention the confirmation email is on its way.
 - If a patient is unsure which treatment they need, suggest starting with a Consultation & Check-up.`;
 }
 
@@ -54,6 +91,7 @@ const TOOLS = [
         properties: {
           name: { type: "string" },
           phone: { type: "string" },
+          email: { type: "string", description: "Patient email for the confirmation email, if provided." },
           service: { type: "string" },
           preferredTime: { type: "string", description: "Preferred day and time in the patient's words, e.g. 'Saturday evening around 7pm'." },
           notes: { type: "string", description: "Any extra context (symptoms, preferences)." },
@@ -70,7 +108,7 @@ exports.clinicReceptionist = onRequest(
     cors: true,
     timeoutSeconds: 60,
     memory: "256MiB",
-    secrets: [OPENAI_API_KEY],
+    secrets: [OPENAI_API_KEY, GMAIL_USER, GMAIL_APP_PASSWORD],
   },
   async (req, res) => {
     if (req.method !== "POST") { res.status(405).json({ error: "Use POST" }); return; }
@@ -123,6 +161,7 @@ exports.clinicReceptionist = onRequest(
         await admin.firestore().collection("leads").add({
           name: args.name,
           phone: args.phone,
+          email: args.email || "",
           source: "ai_receptionist",
           clinicName: clinic.name,
           message: `Appointment: ${args.service} — ${args.preferredTime}${args.notes ? ` (${args.notes})` : ""}`,
@@ -130,9 +169,15 @@ exports.clinicReceptionist = onRequest(
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         }).catch(() => {});
 
+        // Confirmation email to the patient (best-effort, never blocks the reply).
+        const reference = doc.id.slice(0, 6).toUpperCase();
+        sendConfirmationEmail(args, clinic, reference).catch((e) =>
+          console.warn("Confirmation email failed:", e.message)
+        );
+
         // Feed the tool result back so the model writes a natural confirmation.
         messages.push(msg);
-        messages.push({ role: "tool", tool_call_id: toolCall.id, content: JSON.stringify({ booked: true, reference: doc.id.slice(0, 6).toUpperCase() }) });
+        messages.push({ role: "tool", tool_call_id: toolCall.id, content: JSON.stringify({ booked: true, reference, confirmationEmailSentTo: args.email || null }) });
         data = await call({ model: "gpt-4o-mini", temperature: 0.6, max_tokens: 300, messages });
         msg = data.choices[0].message;
       }
