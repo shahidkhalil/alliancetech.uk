@@ -32,6 +32,9 @@ const SERPER_API_KEY = defineSecret("SERPER_API_KEY");
 // Email alert on every new lead (audit bot + consultation form).
 exports.leadAlert = require("./leadAlert").leadAlert;
 
+// AI Receptionist for clinics (product demo).
+exports.clinicReceptionist = require("./receptionist").clinicReceptionist;
+
 function normalizeUrl(input) {
   if (!input || typeof input !== "string") return null;
   let u = input.trim();
