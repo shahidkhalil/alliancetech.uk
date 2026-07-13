@@ -1,11 +1,16 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, CalendarCheck2, Phone, Clock, Sparkles } from "lucide-react";
+import { Send, Loader2, CalendarCheck2, Phone, Clock, Sparkles, Mic, Square } from "lucide-react";
 
 const ENDPOINT =
   process.env.NEXT_PUBLIC_RECEPTIONIST_ENDPOINT ||
   "https://asia-south1-alliancepak.cloudfunctions.net/clinicReceptionist";
+const TRANSCRIBE_ENDPOINT =
+  process.env.NEXT_PUBLIC_TRANSCRIBE_ENDPOINT ||
+  "https://asia-south1-alliancepak.cloudfunctions.net/transcribeAudio";
+
+const MAX_RECORD_SECONDS = 30;
 
 interface ChatMsg { role: "user" | "assistant"; content: string; form?: { service: string; done?: boolean } }
 interface Booking { name: string; phone: string; service: string; preferredTime: string; clinicName?: string }
@@ -130,6 +135,10 @@ export default function ReceptionistDemo() {
   const [busy, setBusy] = useState(false);
   const [booking, setBooking] = useState<Booking | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [recState, setRecState] = useState<"idle" | "recording" | "transcribing">("idle");
+  const [recSeconds, setRecSeconds] = useState(0);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const recTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -187,6 +196,62 @@ export default function ReceptionistDemo() {
   const submitForm = (idx: number, msg: string) => {
     setMessages((prev) => prev.map((m, i) => (i === idx && m.form ? { ...m, form: { ...m.form, done: true } } : m)));
     send(msg);
+  };
+
+  // ---- Voice notes (tap mic → speak → tap stop → Whisper → send) ----
+  const stopRecording = () => {
+    recorderRef.current?.state === "recording" && recorderRef.current.stop();
+  };
+
+  const startRecording = async () => {
+    if (busy || recState !== "idle") return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "";
+      const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      const chunks: BlobPart[] = [];
+      rec.ondataavailable = (e) => e.data.size > 0 && chunks.push(e.data);
+      rec.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        if (recTimerRef.current) clearInterval(recTimerRef.current);
+        setRecState("transcribing");
+        try {
+          const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" });
+          const b64 = await new Promise<string>((resolve, reject) => {
+            const fr = new FileReader();
+            fr.onload = () => resolve(String(fr.result).split(",")[1] || "");
+            fr.onerror = reject;
+            fr.readAsDataURL(blob);
+          });
+          const res = await fetch(TRANSCRIBE_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ audio: b64, mime: blob.type }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Transcription failed");
+          setRecState("idle");
+          send(data.text);
+        } catch (err) {
+          setRecState("idle");
+          setMessages((prev) => [...prev, { role: "assistant", content: `🎤 ${err instanceof Error ? err.message : "Couldn't process the voice note."}` }]);
+        }
+      };
+      recorderRef.current = rec;
+      rec.start();
+      setRecSeconds(0);
+      setRecState("recording");
+      recTimerRef.current = setInterval(() => {
+        setRecSeconds((s) => {
+          if (s + 1 >= MAX_RECORD_SECONDS) stopRecording();
+          return s + 1;
+        });
+      }, 1000);
+    } catch {
+      setMessages((prev) => [...prev, { role: "assistant", content: "🎤 I couldn't access your microphone — please allow mic access and try again, or just type." }]);
+    }
   };
 
   return (
@@ -326,16 +391,46 @@ export default function ReceptionistDemo() {
           }}
           className="bg-white border-t border-gray-100 px-4 py-3.5 flex items-center gap-2.5"
         >
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message… English ya Urdu"
-            disabled={busy}
-            className="flex-1 px-4.5 py-3 pl-4 rounded-full bg-[#F4F8F7] border border-transparent text-sm text-gray-800 outline-none focus:border-[#0E7C6B]/40 focus:bg-white transition-all disabled:opacity-60"
-          />
+          {recState === "recording" ? (
+            <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-full bg-red-50 border border-red-200">
+              <motion.span
+                className="w-2.5 h-2.5 rounded-full bg-red-500"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ repeat: Infinity, duration: 1 }}
+              />
+              <span className="text-sm text-red-600 font-semibold flex-1">
+                Recording… {String(Math.floor(recSeconds / 60))}:{String(recSeconds % 60).padStart(2, "0")} / 0:30
+              </span>
+              <span className="text-[11px] text-red-400 hidden sm:inline">tap ■ when done</span>
+            </div>
+          ) : (
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={recState === "transcribing" ? "🎤 Listening to your voice note…" : "Type or tap the mic… English ya Urdu"}
+              disabled={busy || recState === "transcribing"}
+              className="flex-1 px-4.5 py-3 pl-4 rounded-full bg-[#F4F8F7] border border-transparent text-sm text-gray-800 outline-none focus:border-[#0E7C6B]/40 focus:bg-white transition-all disabled:opacity-60"
+            />
+          )}
+
+          {/* Mic / stop */}
+          <button
+            type="button"
+            onClick={recState === "recording" ? stopRecording : startRecording}
+            disabled={busy || recState === "transcribing"}
+            className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-40 ${
+              recState === "recording"
+                ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
+                : "bg-[#F4F8F7] text-[#0E7C6B] border border-[#0E7C6B]/20 hover:bg-[#0E7C6B]/10"
+            }`}
+            aria-label={recState === "recording" ? "Stop recording" : "Record a voice note"}
+          >
+            {recState === "transcribing" ? <Loader2 className="w-4 h-4 animate-spin" /> : recState === "recording" ? <Square className="w-4 h-4 fill-current" /> : <Mic className="w-4 h-4" />}
+          </button>
+
           <button
             type="submit"
-            disabled={busy || !input.trim()}
+            disabled={busy || !input.trim() || recState !== "idle"}
             className="w-11 h-11 rounded-full text-white flex items-center justify-center hover:shadow-lg hover:shadow-[#0E7C6B]/25 transition-all disabled:opacity-40 disabled:shadow-none flex-shrink-0"
             style={{ background: "linear-gradient(135deg, #0E7C6B, #14A08A)" }}
             aria-label="Send"

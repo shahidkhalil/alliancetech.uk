@@ -35,6 +35,9 @@ exports.leadAlert = require("./leadAlert").leadAlert;
 // AI Receptionist for clinics (product demo).
 exports.clinicReceptionist = require("./receptionist").clinicReceptionist;
 
+// Voice-note transcription for the receptionist chat.
+exports.transcribeAudio = require("./transcribe").transcribeAudio;
+
 function normalizeUrl(input) {
   if (!input || typeof input !== "string") return null;
   let u = input.trim();
