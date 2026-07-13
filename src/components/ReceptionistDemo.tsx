@@ -7,8 +7,55 @@ const ENDPOINT =
   process.env.NEXT_PUBLIC_RECEPTIONIST_ENDPOINT ||
   "https://asia-south1-alliancepak.cloudfunctions.net/clinicReceptionist";
 
-interface ChatMsg { role: "user" | "assistant"; content: string }
+interface ChatMsg { role: "user" | "assistant"; content: string; form?: { service: string; done?: boolean } }
 interface Booking { name: string; phone: string; service: string; preferredTime: string; clinicName?: string }
+
+const DAYS = ["Today", "Tomorrow", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const TIMES = ["11:00 AM", "1:00 PM", "3:00 PM", "5:00 PM", "7:00 PM", "8:30 PM"];
+
+function BookingForm({ service, onSubmit }: { service: string; onSubmit: (msg: string) => void }) {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [svc, setSvc] = useState(service);
+  const [day, setDay] = useState("");
+  const [time, setTime] = useState("");
+  const phoneOk = phone.replace(/\D/g, "").length >= 10;
+  const canBook = name.trim().length >= 2 && phoneOk && svc && day && time;
+
+  const field = "w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-800 outline-none focus:border-[#0E7C6B] bg-white";
+
+  return (
+    <div className="w-full max-w-[85%] rounded-2xl rounded-bl-sm border border-[#0E7C6B]/20 bg-white shadow-sm p-4 space-y-2.5">
+      <p className="text-sm font-bold text-[#0E7C6B]">📅 Book your appointment</p>
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className={field} />
+      <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone / WhatsApp (03XX…)" inputMode="tel" className={field} />
+      <select value={svc} onChange={(e) => setSvc(e.target.value)} className={field}>
+        <option value="" disabled>Select service</option>
+        {SERVICES.map((s) => <option key={s} value={s}>{s}</option>)}
+      </select>
+      <div className="grid grid-cols-2 gap-2">
+        <select value={day} onChange={(e) => setDay(e.target.value)} className={field}>
+          <option value="" disabled>Day</option>
+          {DAYS.map((d) => <option key={d} value={d}>{d}</option>)}
+        </select>
+        <select value={time} onChange={(e) => setTime(e.target.value)} className={field}>
+          <option value="" disabled>Time</option>
+          {TIMES.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+      </div>
+      <button
+        disabled={!canBook}
+        onClick={() => onSubmit(`Please book my appointment. Name: ${name.trim()}. Phone: ${phone.trim()}. Service: ${svc}. Preferred time: ${day} at ${time}.`)}
+        className="w-full py-2.5 rounded-lg bg-[#0E7C6B] text-white text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40"
+      >
+        Confirm Booking →
+      </button>
+    </div>
+  );
+}
+
+// The bot asked for booking details in plain text — offer the form instead.
+const ASKS_DETAILS = /(provide|share|need|tell me|may i have|could i get).{0,40}(name|number|phone)|name.{0,30}phone number|apna naam/i;
 
 const SUGGESTIONS = [
   "What services do you offer?",
@@ -68,13 +115,36 @@ export default function ReceptionistDemo() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Something went wrong");
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      setMessages((prev) => {
+        const out: ChatMsg[] = [...prev, { role: "assistant", content: data.reply }];
+        // If the bot asked for details in text, offer the quick form instead.
+        if (!data.booking && ASKS_DETAILS.test(data.reply || "")) {
+          out.push({ role: "assistant", content: "…or just fill this in — faster! 👇", form: { service: "" } });
+        }
+        return out;
+      });
       if (data.booking) setBooking(data.booking);
     } catch (err) {
       setMessages((prev) => [...prev, { role: "assistant", content: `😕 ${err instanceof Error ? err.message : "Please try again."}` }]);
     } finally {
       setBusy(false);
     }
+  };
+
+  // Service chip tapped: open the booking form instantly (no AI round-trip).
+  const openFormFor = (service: string) => {
+    if (busy) return;
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: `I'd like to book: ${service}` },
+      { role: "assistant", content: `Great choice! Fill this in and I'll book your ${service} right away. 👇`, form: { service } },
+    ]);
+  };
+
+  // Form submitted: hide the form and let the AI complete the booking.
+  const submitForm = (idx: number, msg: string) => {
+    setMessages((prev) => prev.map((m, i) => (i === idx && m.form ? { ...m, form: { ...m.form, done: true } } : m)));
+    send(msg);
   };
 
   return (
@@ -100,7 +170,7 @@ export default function ReceptionistDemo() {
           <AnimatePresence initial={false}>
             {messages.map((m, i) => {
               const isLast = i === messages.length - 1;
-              const mentioned = m.role === "assistant" && isLast ? servicesIn(m.content) : [];
+              const mentioned = m.role === "assistant" && isLast && !m.form ? servicesIn(m.content) : [];
               return (
                 <motion.div
                   key={i}
@@ -108,21 +178,28 @@ export default function ReceptionistDemo() {
                   animate={{ opacity: 1, y: 0 }}
                   className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}
                 >
-                  <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
-                      m.role === "user"
-                        ? "bg-[#0E7C6B] text-white rounded-br-sm"
-                        : "bg-white border border-gray-100 shadow-sm text-gray-700 rounded-bl-sm"
-                    }`}
-                  >
-                    {m.content}
-                  </div>
+                  {m.content && (
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                        m.role === "user"
+                          ? "bg-[#0E7C6B] text-white rounded-br-sm"
+                          : "bg-white border border-gray-100 shadow-sm text-gray-700 rounded-bl-sm"
+                      }`}
+                    >
+                      {m.content}
+                    </div>
+                  )}
+                  {m.form && !m.form.done && !booking && (
+                    <div className="mt-2 w-full flex justify-start">
+                      <BookingForm service={m.form.service} onSubmit={(msg) => submitForm(i, msg)} />
+                    </div>
+                  )}
                   {mentioned.length > 0 && !busy && (
                     <div className="flex flex-wrap gap-1.5 mt-2 max-w-[85%]">
                       {mentioned.map((s) => (
                         <button
                           key={s}
-                          onClick={() => send(`I'd like to book: ${s}`)}
+                          onClick={() => openFormFor(s)}
                           className="text-xs px-3 py-1.5 rounded-full bg-[#0E7C6B]/10 text-[#0E7C6B] font-semibold border border-[#0E7C6B]/20 hover:bg-[#0E7C6B] hover:text-white transition-colors"
                         >
                           📅 {s}
