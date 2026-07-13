@@ -173,8 +173,14 @@ export default function ReceptionistDemo() {
     setShowSuggestions(false);
     setMessages((prev) => [
       ...prev,
-      { role: "user", content: `I'd like to book: ${service}` },
-      { role: "assistant", content: `Lovely choice! Fill this in and I'll lock in your ${service}. 👇`, form: { service } },
+      { role: "user", content: service ? `I'd like to book: ${service}` : "Book me an appointment" },
+      {
+        role: "assistant",
+        content: service
+          ? `Lovely choice! Fill this in and I'll lock in your ${service}. 👇`
+          : "Of course! Just fill this in and I'll book you right away. 👇",
+        form: { service },
+      },
     ]);
   };
 
@@ -294,7 +300,7 @@ export default function ReceptionistDemo() {
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s.label}
-                  onClick={() => send(s.label)}
+                  onClick={() => (s.label === "Book me an appointment" ? openFormFor("") : send(s.label))}
                   className="text-xs px-3.5 py-2 rounded-full bg-white text-gray-600 border border-gray-200 shadow-sm hover:border-[#0E7C6B]/40 hover:text-[#0E7C6B] transition-all"
                 >
                   {s.icon} {s.label}
@@ -307,7 +313,17 @@ export default function ReceptionistDemo() {
 
         {/* Input */}
         <form
-          onSubmit={(e) => { e.preventDefault(); send(input); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            const v = input.trim();
+            // Typed booking intent → open the form directly (no AI round-trip).
+            if (/^(book|appointment)\b|book (me|an|my)? ?(appointment|slot|visit)|appointment (book|chahiye|karni|karna)/i.test(v) && !/name:|phone:/i.test(v)) {
+              setInput("");
+              openFormFor("");
+              return;
+            }
+            send(v);
+          }}
           className="bg-white border-t border-gray-100 px-4 py-3.5 flex items-center gap-2.5"
         >
           <input
