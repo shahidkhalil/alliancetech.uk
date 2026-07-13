@@ -11,11 +11,34 @@ interface ChatMsg { role: "user" | "assistant"; content: string }
 interface Booking { name: string; phone: string; service: string; preferredTime: string; clinicName?: string }
 
 const SUGGESTIONS = [
+  "What services do you offer?",
   "What are your timings?",
   "Braces ki price kya hai?",
   "I have tooth pain, can I come today?",
-  "Book me an appointment",
 ];
+
+// Mirror of the clinic KB service names — used to make services tappable in replies.
+const SERVICES = [
+  "Consultation & Check-up",
+  "Scaling & Polishing",
+  "Tooth Filling",
+  "Root Canal",
+  "Dental Implants",
+  "Braces",
+  "Clear Aligners",
+  "Teeth Whitening",
+  "Veneers",
+  "Wisdom Tooth Extraction",
+];
+
+/** Find which known services an assistant message mentions. */
+function servicesIn(text: string): string[] {
+  const lower = text.toLowerCase();
+  return SERVICES.filter((s) => {
+    const key = s.toLowerCase().replace(" & check-up", "").replace(" & polishing", "");
+    return lower.includes(key) || lower.includes(s.toLowerCase());
+  });
+}
 
 export default function ReceptionistDemo() {
   const [messages, setMessages] = useState<ChatMsg[]>([
@@ -75,24 +98,41 @@ export default function ReceptionistDemo() {
         {/* Messages */}
         <div className="h-[420px] overflow-y-auto px-4 py-4 space-y-3 bg-[#F7FAF9]">
           <AnimatePresence initial={false}>
-            {messages.map((m, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
-                    m.role === "user"
-                      ? "bg-[#0E7C6B] text-white rounded-br-sm"
-                      : "bg-white border border-gray-100 shadow-sm text-gray-700 rounded-bl-sm"
-                  }`}
+            {messages.map((m, i) => {
+              const isLast = i === messages.length - 1;
+              const mentioned = m.role === "assistant" && isLast ? servicesIn(m.content) : [];
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}
                 >
-                  {m.content}
-                </div>
-              </motion.div>
-            ))}
+                  <div
+                    className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+                      m.role === "user"
+                        ? "bg-[#0E7C6B] text-white rounded-br-sm"
+                        : "bg-white border border-gray-100 shadow-sm text-gray-700 rounded-bl-sm"
+                    }`}
+                  >
+                    {m.content}
+                  </div>
+                  {mentioned.length > 0 && !busy && (
+                    <div className="flex flex-wrap gap-1.5 mt-2 max-w-[85%]">
+                      {mentioned.map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => send(`I'd like to book: ${s}`)}
+                          className="text-xs px-3 py-1.5 rounded-full bg-[#0E7C6B]/10 text-[#0E7C6B] font-semibold border border-[#0E7C6B]/20 hover:bg-[#0E7C6B] hover:text-white transition-colors"
+                        >
+                          📅 {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
 
           {booking && (
