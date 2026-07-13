@@ -24,7 +24,7 @@ exports.transcribeAudio = onRequest(
     if (req.method !== "POST") { res.status(405).json({ error: "Use POST" }); return; }
 
     const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
-    if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP))) {
+    if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP, "voice"))) {
       res.status(429).json({ error: "Voice limit reached for today." });
       return;
     }

@@ -41,11 +41,14 @@ async function setCache(key, value, ttlDays) {
   }
 }
 
-/** Per-IP daily counter. Returns true if the caller is within `limit`. */
-async function checkRateLimit(ip, limit) {
+/**
+ * Per-IP daily counter, namespaced per feature so chatting doesn't
+ * consume the voice/audit quota. Returns true if within `limit`.
+ */
+async function checkRateLimit(ip, limit, scope = "global") {
   if (!db || !ip) return true;
   const day = new Date().toISOString().slice(0, 10);
-  const ref = db.collection("cache").doc(keyToId(`rate:${ip}:${day}`));
+  const ref = db.collection("cache").doc(keyToId(`rate:${scope}:${ip}:${day}`));
   try {
     const n = await db.runTransaction(async (tx) => {
       const snap = await tx.get(ref);

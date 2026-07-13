@@ -87,7 +87,7 @@ exports.auditWebsite = onRequest(
 
       // Per-IP daily limit protects the API budget from abuse.
       const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
-      if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP))) {
+      if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP, "audit"))) {
         res.status(429).json({ error: "Daily audit limit reached. Try again tomorrow, or book a free call with our team." });
         return;
       }

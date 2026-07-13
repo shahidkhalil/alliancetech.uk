@@ -114,7 +114,7 @@ exports.clinicReceptionist = onRequest(
     if (req.method !== "POST") { res.status(405).json({ error: "Use POST" }); return; }
 
     const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
-    if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP))) {
+    if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP, "chat"))) {
       res.status(429).json({ error: "Too many messages today. Please WhatsApp us to continue." });
       return;
     }
