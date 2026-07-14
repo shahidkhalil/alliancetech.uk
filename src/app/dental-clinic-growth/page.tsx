@@ -29,7 +29,7 @@ export default function DentalClinicGrowth() {
         badge="DIGITAL MARKETING FOR DENTISTS"
         headline="More Dental Patients,"
         highlight="Every Single Month"
-        subheadline="We build websites, run ads, and create mobile apps for dental clinics in Pakistan — everything under one roof, so you can focus on treating patients."
+        subheadline="We build websites, run ads, and create mobile apps for dental clinics across the United States — everything under one roof, so you can focus on treating patients."
         ctaText="Get Your Free Clinic Audit"
       />
 

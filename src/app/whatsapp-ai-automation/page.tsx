@@ -10,7 +10,7 @@ const features = [
   { icon: "⚡", title: "Instant Replies", desc: "Patients get a response within 5 seconds — any time of day. No waiting. No ghosting." },
   { icon: "📅", title: "Auto Appointment Booking", desc: "The AI qualifies the patient, checks availability, and confirms the slot — all on WhatsApp." },
   { icon: "🔔", title: "Reminders & Confirmations", desc: "Sends automated appointment reminders 24 hours and 1 hour before — dramatically reduces no-shows." },
-  { icon: "💬", title: "Handles FAQs", desc: "Pricing, procedures, directions, availability — the AI answers in Urdu or English, accurately, every time." },
+  { icon: "💬", title: "Handles FAQs", desc: "Pricing, procedures, directions, availability — the AI answers in English, accurately, every time." },
   { icon: "🔁", title: "Re-engagement Campaigns", desc: "Automatically follows up with patients who haven't visited in 3–6 months. Brings them back." },
   { icon: "📊", title: "Conversation Analytics", desc: "See every conversation, lead status, and booking outcome in your clinic dashboard." },
 ];
@@ -88,7 +88,7 @@ export default function WhatsAppAIAutomation() {
         badge="WHATSAPP AI FOR CLINICS"
         headline="Reply to Every Patient"
         highlight="in Under 5 Seconds"
-        subheadline="Our WhatsApp AI handles patient messages, books appointments, and sends reminders — automatically, in Urdu and English, round the clock."
+        subheadline="Our WhatsApp AI handles patient messages, books appointments, and sends reminders — automatically, in English, round the clock."
         ctaText="Get Your Free Clinic Audit"
       />
 

@@ -127,7 +127,7 @@ export default function ServicesHub() {
           ))}
         </div>
 
-        {/* Lahore CTA */}
+        {/* Houston CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -138,14 +138,14 @@ export default function ServicesHub() {
           <div className="flex items-center gap-4">
             <span className="text-3xl">📍</span>
             <div>
-              <p className="font-bold text-white text-sm">Based in Lahore?</p>
-              <p className="text-white/50 text-xs">We have a dedicated growth strategy for Lahore dental clinics.</p>
+              <p className="font-bold text-white text-sm">Based in Houston?</p>
+              <p className="text-white/50 text-xs">We have a dedicated growth strategy for Houston dental clinics.</p>
             </div>
           </div>
-          <a href="/dental-clinic-lahore"
+          <a href="/dental-clinic-houston"
             className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:scale-105"
             style={{ background: "linear-gradient(135deg, #0066FF, #00D4FF)" }}>
-            See Lahore Page <ArrowRight className="w-4 h-4" />
+            See Houston Page <ArrowRight className="w-4 h-4" />
           </a>
         </motion.div>
       </div>

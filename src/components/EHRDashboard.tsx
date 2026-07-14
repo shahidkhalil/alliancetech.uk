@@ -97,7 +97,7 @@ export default function EHRDashboard() {
               <span className="gradient-heading">Go Fully Digital</span>
             </h2>
             <p className="text-gray-500 leading-relaxed mb-6">
-              Built for dental and aesthetic clinics in Pakistan. Patient records, appointments, prescriptions, and billing — all on one screen, accessible from any device.
+              Built for dental and aesthetic clinics across the United States. Patient records, appointments, prescriptions, and billing — all on one screen, accessible from any device.
             </p>
             <ul className="space-y-3 mb-8">
               {[

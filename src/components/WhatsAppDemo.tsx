@@ -30,12 +30,12 @@ export default function WhatsAppDemo() {
               <span className="gradient-heading">While You Sleep</span>
             </h2>
             <p className="text-gray-500 leading-relaxed mb-6">
-              Pakistani patients prefer WhatsApp over phone calls. Our AI replies instantly in Urdu and English, qualifies the patient, and books the appointment — all automatically, 24/7.
+              American patients prefer WhatsApp over phone calls. Our AI replies instantly in English, qualifies the patient, and books the appointment — all automatically, 24/7.
             </p>
             <ul className="space-y-3 mb-8">
               {[
                 "Instant replies in under 5 seconds",
-                "Urdu & English — natural conversation",
+                "English — natural conversation",
                 "Books directly into your calendar",
                 "Handles pricing, FAQ, directions",
                 "Sends reminders to cut no-shows",

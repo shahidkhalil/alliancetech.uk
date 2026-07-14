@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free AI Website Audit for Clinics & Dentists in Pakistan | Alliance Tech",
+  title: "Free AI Website Audit for Clinics & Dentists in the US | Alliance Tech",
   description:
-    "Free 30-second AI website audit for clinics in Pakistan: speed test, SEO check, Google Business Profile comparison, and the exact competitors outranking you — with fixes in plain English.",
+    "Free 30-second AI website audit for clinics across the United States: speed test, SEO check, Google Business Profile comparison, and the exact competitors outranking you — with fixes in plain English.",
   keywords: [
     "free website audit",
-    "website audit Pakistan",
+    "website audit the United States",
     "clinic website checker",
     "dental website audit",
-    "SEO audit Pakistan",
+    "SEO audit the United States",
     "website speed test",
     "SEO checker for clinics",
     "Google Business Profile audit",
     "competitor analysis for clinics",
-    "dentist website check Lahore",
-    "clinic marketing audit Karachi",
+    "dentist website check Houston",
+    "clinic marketing audit Los Angeles",
   ],
   alternates: { canonical: "/free-website-audit" },
   openGraph: {

@@ -21,7 +21,7 @@ const services = [
     href: "/digital-marketing-for-clinics",
     category: "Growth",
     tagline: "More patients. Every month.",
-    desc: "We run Google Ads, Meta campaigns, and reputation strategies built exclusively for dental and aesthetic clinics in Pakistan. No generic templates — every campaign is tailored to your clinic type, location, and patient target.",
+    desc: "We run Google Ads, Meta campaigns, and reputation strategies built exclusively for dental and aesthetic clinics across the United States. No generic templates — every campaign is tailored to your clinic type, location, and patient target.",
     stat1: { value: "4x", label: "Avg. return on ad spend" },
     stat2: { value: "30 days", label: "To first patient results" },
     includes: [
@@ -81,7 +81,7 @@ const services = [
     href: "/local-seo-for-clinics",
     category: "SEO",
     tagline: "Rank #1 on Google Maps in your area.",
-    desc: "When a patient searches 'dentist near me' or 'skin clinic in Lahore', your clinic should be the first result they see. We optimise your Google Business Profile, build local citations, and generate a stream of 5-star reviews.",
+    desc: "When a patient searches 'dentist near me' or 'skin clinic in Houston', your clinic should be the first result they see. We optimise your Google Business Profile, build local citations, and generate a stream of 5-star reviews.",
     stat1: { value: "#1", label: "Google Maps ranking" },
     stat2: { value: "60 days", label: "To top 3 results" },
     includes: [
@@ -121,11 +121,11 @@ const services = [
     href: "/ai-receptionist",
     category: "AI",
     tagline: "24/7. Never misses a call. Never gets tired.",
-    desc: "An AI that answers every incoming call to your clinic, in Urdu and English. It qualifies the patient, answers their questions, and books them directly into your calendar — whether it's 2pm or 2am.",
+    desc: "An AI that answers every incoming call to your clinic, in English. It qualifies the patient, answers their questions, and books them directly into your calendar — whether it's 2pm or 2am.",
     stat1: { value: "0", label: "Missed calls" },
     stat2: { value: "24/7", label: "Always on" },
     includes: [
-      "Urdu & English call handling",
+      "English call handling",
       "Live appointment booking",
       "Patient qualification flow",
       "After-hours coverage",
@@ -141,11 +141,11 @@ const services = [
     href: "/whatsapp-ai-automation",
     category: "AI",
     tagline: "Replies in 5 seconds. Books in 2 minutes.",
-    desc: "Pakistani patients prefer WhatsApp over phone calls. Our AI handles every incoming WhatsApp message — replying naturally in Urdu or English, answering questions, and converting inquiries into booked appointments automatically.",
+    desc: "American patients prefer WhatsApp over phone calls. Our AI handles every incoming WhatsApp message — replying naturally in English, answering questions, and converting inquiries into booked appointments automatically.",
     stat1: { value: "< 5 sec", label: "Reply time" },
     stat2: { value: "3x", label: "More WhatsApp bookings" },
     includes: [
-      "Natural Urdu & English replies",
+      "Natural English replies",
       "Automated appointment booking",
       "Pricing & FAQ handling",
       "Appointment confirmation & reminders",
@@ -161,7 +161,7 @@ const services = [
     href: "/ehr-platform",
     category: "Platform",
     tagline: "Replace your paper register today.",
-    desc: "A complete digital clinic management system built for Pakistani dental and aesthetic clinics. Patient records, digital prescriptions, appointment management, billing, and a patient app — all in one place.",
+    desc: "A complete digital clinic management system built for American dental and aesthetic clinics. Patient records, digital prescriptions, appointment management, billing, and a patient app — all in one place.",
     stat1: { value: "100%", label: "Paperless" },
     stat2: { value: "2 min", label: "Avg. prescription time" },
     includes: [
@@ -215,7 +215,7 @@ function ServicesContent() {
                   <span className="gradient-heading">in one agency.</span>
                 </h1>
                 <p className="text-gray-500 leading-relaxed text-base mb-6">
-                  We don&apos;t do general marketing. Every service we offer is built specifically for dental and aesthetic clinics in Pakistan — the right strategy, the right channels, measurable results.
+                  We don&apos;t do general marketing. Every service we offer is built specifically for dental and aesthetic clinics across the United States — the right strategy, the right channels, measurable results.
                 </p>
                 <button onClick={openForm} className="btn-dark px-7 py-3.5 text-sm">
                   Get a Free Clinic Audit

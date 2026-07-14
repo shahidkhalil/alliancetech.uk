@@ -20,7 +20,7 @@ const services = [
     Icon: Globe,
     title: "Clinic Websites",
     subtitle: "Fast. Professional. Converting.",
-    desc: "Built for Pakistani clinics — mobile-first, SEO-ready, and designed to turn visitors into booked appointments.",
+    desc: "Built for American clinics — mobile-first, SEO-ready, and designed to turn visitors into booked appointments.",
     stat: "Live in 7 days",
     href: "/clinic-website-design",
     popular: false,
@@ -56,7 +56,7 @@ const services = [
     Icon: PhoneCall,
     title: "AI Receptionist",
     subtitle: "24/7. Never misses a call.",
-    desc: "Answers every call, books appointments, handles queries — in Urdu and English, round the clock.",
+    desc: "Answers every call, books appointments, handles queries — in English, round the clock.",
     stat: "0 missed calls",
     href: "/ai-receptionist",
     popular: false,
@@ -74,7 +74,7 @@ const services = [
     Icon: ClipboardList,
     title: "EHR Platform",
     subtitle: "Go fully paperless",
-    desc: "Patient records, prescriptions, billing, and appointments — all in one screen. Built for Pakistan clinics.",
+    desc: "Patient records, prescriptions, billing, and appointments — all in one screen. Built for the United States clinics.",
     stat: "100% paperless",
     href: "/ehr-platform",
     popular: false,
@@ -102,7 +102,7 @@ export default function Solutions() {
             <span className="gradient-heading">under one roof.</span>
           </h2>
           <p className="text-gray-500 text-base leading-relaxed">
-            We don&apos;t do general marketing. Everything we build is designed for dental and aesthetic clinics in Pakistan — the right audience, the right channels, real results.
+            We don&apos;t do general marketing. Everything we build is designed for dental and aesthetic clinics across the United States — the right audience, the right channels, real results.
           </p>
         </motion.div>
 
@@ -170,12 +170,12 @@ export default function Solutions() {
           <div className="flex items-center gap-3">
             <MapPin className="w-5 h-5 text-[#00B4D8] flex-shrink-0" strokeWidth={2} />
             <div>
-              <p className="text-[#00283C] font-bold text-sm">Lahore-based — serving clinics across Pakistan</p>
-              <p className="text-gray-400 text-xs mt-0.5">Lahore · Karachi · Islamabad · Rawalpindi · and beyond</p>
+              <p className="text-[#00283C] font-bold text-sm">Houston-based — serving clinics across the United States</p>
+              <p className="text-gray-400 text-xs mt-0.5">Houston · Los Angeles · Chicago · Dallas · and beyond</p>
             </div>
           </div>
-          <a href="/dental-clinic-lahore" className="flex-shrink-0 btn-dark px-5 py-2.5 text-sm whitespace-nowrap">
-            Lahore Clinics →
+          <a href="/dental-clinic-houston" className="flex-shrink-0 btn-dark px-5 py-2.5 text-sm whitespace-nowrap">
+            Houston Clinics →
           </a>
         </motion.div>
       </div>

@@ -65,7 +65,7 @@ export default function ForWho() {
               {[
                 "Instagram & TikTok campaigns that convert",
                 "Before & after content strategy that builds trust",
-                "WhatsApp AI handling inquiries in Urdu & English",
+                "WhatsApp AI handling inquiries in English",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-gray-600">
                   <svg className="w-4 h-4 text-[#00B4D8] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

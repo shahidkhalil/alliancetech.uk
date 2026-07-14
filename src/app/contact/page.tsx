@@ -51,7 +51,7 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-lg bg-[#E6F4F8] flex items-center justify-center flex-shrink-0 text-lg">📍</div>
                 <div>
                   <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Location</p>
-                  <p className="text-[#00283C] font-semibold">Lahore, Pakistan</p>
+                  <p className="text-[#00283C] font-semibold">Houston, the United States</p>
                   <p className="text-xs text-gray-400 mt-0.5">Serving clinics nationwide</p>
                 </div>
               </div>

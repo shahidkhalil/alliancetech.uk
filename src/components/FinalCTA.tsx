@@ -27,7 +27,7 @@ export default function FinalCTA() {
             Chat on WhatsApp
           </a>
         </div>
-        <p className="text-white/30 text-xs mt-6">★★★★★ Rated 4.9/5 by 100+ clinics across Pakistan · 3–6 month minimum · Results guaranteed</p>
+        <p className="text-white/30 text-xs mt-6">★★★★★ Rated 4.9/5 by 100+ clinics across the United States · 3–6 month minimum · Results guaranteed</p>
       </div>
     </section>
   );

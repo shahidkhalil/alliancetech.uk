@@ -21,7 +21,7 @@ export default function Footer() {
           <div className="md:col-span-1">
             <Image src="/logo.png" alt="Alliance Tech" width={140} height={50} className="h-12 w-auto brightness-0 invert mb-4" />
             <p className="text-white/40 text-sm leading-relaxed">
-              Pakistan&apos;s specialist digital marketing agency for dental and aesthetic clinics.
+              the United States&apos;s specialist digital marketing agency for dental and aesthetic clinics.
             </p>
             <p className="text-white/30 text-xs mt-3 font-semibold italic">Digitally Yours</p>
 
@@ -69,9 +69,9 @@ export default function Footer() {
               {[
                 { label: "About Us", href: "/about" },
                 { label: "Case Studies", href: "/portfolio" },
-                { label: "Pricing", href: "/#pricing" },
+                { label: "Pricing", href: "/pricing" },
                 { label: "Contact", href: "/contact" },
-                { label: "Dental Clinics Lahore", href: "/dental-clinic-lahore" },
+                { label: "Dental Clinics Houston", href: "/dental-clinic-houston" },
               ].map((l) => (
                 <li key={l.label}>
                   <a href={l.href} className="text-sm text-white/50 hover:text-white transition-colors">{l.label}</a>
@@ -94,14 +94,14 @@ export default function Footer() {
               <a href="mailto:Sales@alliancetechltd.com" className="block text-sm text-white/50 hover:text-white transition-colors">
                 Sales@alliancetechltd.com
               </a>
-              <p className="text-sm text-white/40">Lahore, Pakistan</p>
+              <p className="text-sm text-white/40">Houston, the United States</p>
             </div>
           </div>
         </div>
 
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/25">
           <p>© {new Date().getFullYear()} Alliance Tech (PVT) LTD. All rights reserved.</p>
-          <p>Specialist digital marketing for dental & aesthetic clinics in Pakistan.</p>
+          <p>Specialist digital marketing for dental & aesthetic clinics across the United States.</p>
           <div className="flex items-center gap-4">
             <a href="/privacy-policy" className="hover:text-white/50 transition-colors">Privacy Policy</a>
             <a href="/terms-of-service" className="hover:text-white/50 transition-colors">Terms of Service</a>

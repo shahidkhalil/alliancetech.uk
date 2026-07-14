@@ -4,8 +4,8 @@ import { useRef } from "react";
 
 const results = [
   { name: "Generic Dental Directory", url: "dentaldirectory.pk", you: false },
-  { name: "Competitor Clinic Lahore", url: "competitorclinic.com", you: false },
-  { name: "Your Clinic — Dental Implants Lahore", url: "yourclinic.com", you: true },
+  { name: "Competitor Clinic Houston", url: "competitorclinic.com", you: false },
+  { name: "Your Clinic — Dental Implants Houston", url: "yourclinic.com", you: true },
 ];
 
 export default function SEORankingMockup() {
@@ -16,7 +16,7 @@ export default function SEORankingMockup() {
     <div ref={ref} className="rounded-2xl overflow-hidden shadow-2xl border border-gray-200 max-w-2xl mx-auto">
       <div className="bg-white px-5 py-3.5 border-b border-gray-100 flex items-center gap-2">
         <span className="text-[#0077A8]">🔍</span>
-        <span className="text-sm text-gray-600">dental implants cost Lahore</span>
+        <span className="text-sm text-gray-600">dental implants cost Houston</span>
       </div>
 
       <div className="bg-white px-5 py-4 space-y-4">
@@ -36,7 +36,7 @@ export default function SEORankingMockup() {
                 )}
               </div>
               <p className={`text-sm ${isYou ? "font-bold text-[#0077A8]" : "text-[#1A0DAB]"}`}>{r.name}</p>
-              <p className="text-xs text-gray-400 mt-0.5">★★★★★ 4.9 (210 reviews) — Trusted dental implant specialists in Lahore. Free consultation available.</p>
+              <p className="text-xs text-gray-400 mt-0.5">★★★★★ 4.9 (210 reviews) — Trusted dental implant specialists in Houston. Free consultation available.</p>
             </motion.div>
           );
         })}

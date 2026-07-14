@@ -6,7 +6,7 @@ import ReceptionistDemo from "@/components/ReceptionistDemo";
 import FinalCTA from "@/components/FinalCTA";
 
 const features = [
-  { icon: "📞", title: "Answers Every Call", desc: "No more missed calls. The AI picks up 24/7 — nights, weekends, public holidays — in Urdu and English." },
+  { icon: "📞", title: "Answers Every Call", desc: "No more missed calls. The AI picks up 24/7 — nights, weekends, public holidays — in English." },
   { icon: "📅", title: "Books Appointments", desc: "It checks your calendar and books the next available slot automatically. No human needed." },
   { icon: "🔁", title: "Handles Follow-Ups", desc: "Calls back missed numbers, sends WhatsApp reminders, and confirms appointments — all automated." },
   { icon: "🧠", title: "Learns Your Clinic", desc: "Trained on your services, prices, and FAQs — gives accurate answers without ever putting patients on hold." },
@@ -22,13 +22,13 @@ const stats = [
 ];
 
 const faqs = [
-  { q: "Does it speak Urdu?", a: "Yes. The AI handles both Urdu and English fluently — no accent issues, no hold music." },
+  { q: "Does it sound natural?", a: "Yes. The AI speaks natural, fluent English — no accent issues, no hold music." },
   { q: "What if a patient has a complex query?", a: "It handles common questions automatically and escalates complex cases to your human staff via WhatsApp." },
   { q: "How long to set up?", a: "Typically 3–5 days. We train it on your clinic, test it, and go live." },
   { q: "Does it work with my existing number?", a: "Yes. We port your existing clinic number or set up a new dedicated line." },
   { q: "How many calls can it handle at once?", a: "Unlimited — it answers every call and website chat simultaneously. Unlike a human front desk, it never puts patients on hold or misses a call during peak hours, lunch, or after closing." },
   { q: "Will it reduce no-shows at my clinic?", a: "Yes. It sends automatic WhatsApp confirmations and reminders before each appointment, which typically cuts no-shows significantly for busy clinics." },
-  { q: "How much does an AI receptionist cost in Pakistan?", a: "Pricing depends on your call volume and features. For most busy clinics it costs a fraction of a full-time receptionist's salary while handling far more calls. Book a free demo and we'll quote based on your clinic." },
+  { q: "How much does an AI receptionist cost in the US?", a: "Pricing depends on your call volume and features. For most busy clinics it costs a fraction of a full-time receptionist's salary while handling far more calls. Book a free demo and we'll quote based on your clinic." },
   { q: "Can it book appointments into my calendar?", a: "Yes. It qualifies the patient, checks the service and preferred time, and books the appointment directly — then confirms by email and WhatsApp, with the booking landing in your system instantly." },
   { q: "Is it only for dental clinics?", a: "No. It works for dental, aesthetic, dermatology, hair transplant, and multi-specialty clinics — any high-volume practice losing patients to missed calls. It's trained on your specific services and prices." },
 ];
@@ -40,7 +40,7 @@ export default function AIReceptionist() {
         badge="AI RECEPTIONIST FOR BUSY CLINICS"
         headline="Too Many Calls, Too Few Staff?"
         highlight="Never Miss a Patient Again"
-        subheadline="Busy clinics miss 25–40% of calls at peak hours — every one a lost patient. Our AI receptionist answers every call and chat at once, 24/7 in Urdu & English, and books them automatically. Try the live demo below."
+        subheadline="Busy clinics miss 25–40% of calls at peak hours — every one a lost patient. Our AI receptionist answers every call and chat at once, 24/7 in English, and books them automatically. Try the live demo below."
         ctaText="Get Your Free Clinic Audit"
       />
 
@@ -61,7 +61,7 @@ export default function AIReceptionist() {
             Try It <span className="gradient-heading">Right Now</span>
           </h2>
           <p className="text-gray-500">
-            This is a live AI receptionist for a sample clinic. Ask about prices, timings, treatments — or book an appointment. English or Urdu, it just works.
+            This is a live AI receptionist for a sample clinic. Ask about prices, hours, treatments — or book an appointment.
           </p>
         </div>
         <ReceptionistDemo />
@@ -108,7 +108,7 @@ export default function AIReceptionist() {
               If your clinic takes dozens of calls a day, your front desk is drowning. During peak hours the line is busy, patients hang up, and every unanswered call is a patient who just booked with the clinic down the road instead. Research shows clinics miss <strong>25–40% of incoming calls</strong> at their busiest — and most callers never try again.
             </p>
             <p>
-              An <strong>AI receptionist</strong> removes that ceiling. It answers <strong>every call and website chat at once</strong>, 24/7, in Urdu and English — no hold music, no voicemail, no missed patients after hours or during Friday prayers. While your staff handles the patient in the chair, the AI handles the twenty patients trying to reach you: answering price and timing questions, qualifying them, and <strong>booking appointments straight into your calendar</strong>.
+              An <strong>AI receptionist</strong> removes that ceiling. It answers <strong>every call and website chat at once</strong>, 24/7, in English — no hold music, no voicemail, no missed patients after hours or on weekends. While your staff handles the patient in the chair, the AI handles the twenty patients trying to reach you: answering price and timing questions, qualifying them, and <strong>booking appointments straight into your calendar</strong>.
             </p>
             <p>
               For a busy dental, aesthetic, dermatology, or multi-specialty clinic, the math is simple. Recovering even <strong>5 missed bookings a day</strong> — at an average patient value of PKR 15,000 — is over <strong>PKR 20 lakh a month</strong> in appointments you were already paying marketing to generate but losing at the phone. That&apos;s the leak an AI receptionist closes.

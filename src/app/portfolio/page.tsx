@@ -82,7 +82,7 @@ const caseStudies: CaseStudy[] = [
     ],
     services: ["Website Redesign", "Online Booking System", "WhatsApp Integration", "Blog CMS", "SEO Setup"],
     challenge:
-      "Dr. Nida is one of Pakistan's most credentialed clinical psychologists — PhD, 15+ years of practice, internationally certified in NLP and Timeline Therapy. Her original website, however, was a basic single-page profile: it stated who she was but did little to build trust or drive action. There was no real way to verify her credentials, explore her services, or book a session without picking up the phone. Her online presence didn't match the calibre of her expertise.",
+      "Dr. Nida is one of America's most credentialed clinical psychologists — PhD, 15+ years of practice, internationally certified in NLP and Timeline Therapy. Her original website, however, was a basic single-page profile: it stated who she was but did little to build trust or drive action. There was no real way to verify her credentials, explore her services, or book a session without picking up the phone. Her online presence didn't match the calibre of her expertise.",
     built:
       "We rebuilt the site from the ground up into a modern, conversion-focused platform. The centerpiece is a smooth multi-step booking flow that lets clients pick a service, choose a date and time, and confirm — with details delivered straight to WhatsApp. We added a self-serve blog dashboard so she can publish articles herself, a verified certifications gallery to build instant trust, and a clean services section covering everything from CBT to corporate coaching.",
     result:
@@ -104,8 +104,8 @@ const caseStudies: CaseStudy[] = [
   },
   {
     client: "Dental Tribe",
-    category: "Dental Clinic (Dr. Shahab & Associates, Lahore) — Website & Booking",
-    tagline: "A bold, modern website for a premium Lahore dental clinic — built to fill evening appointment slots and turn browsers into booked patients.",
+    category: "Dental Clinic (Dr. Shahab & Associates, Houston) — Website & Booking",
+    tagline: "A bold, modern website for a premium Houston dental clinic — built to fill evening appointment slots and turn browsers into booked patients.",
     afterImage: "/portfolio/dental-tribe.png",
     gallery: [
       "/portfolio/dental-tribe-1.jpg",
@@ -117,7 +117,7 @@ const caseStudies: CaseStudy[] = [
     ],
     services: ["Custom Website Design", "Online Booking", "WhatsApp Confirmation", "Services & Blog Pages", "Local SEO"],
     challenge:
-      "Dental Tribe offers premium dental care in Lahore with dedicated evening hours — but had no digital storefront to match. Patients had no easy way to discover the clinic, understand its treatments, or book a slot online. Evening appointments, their key differentiator, weren't being marketed anywhere prospective patients could actually find and act on them.",
+      "Dental Tribe offers premium dental care in Houston with dedicated evening hours — but had no digital storefront to match. Patients had no easy way to discover the clinic, understand its treatments, or book a slot online. Evening appointments, their key differentiator, weren't being marketed anywhere prospective patients could actually find and act on them.",
     built:
       "We designed and built a striking, high-end website that positions Dental Tribe as a premium choice. It leads with a bold hero and clear 'Book Evening Slot' and 'Chat on WhatsApp' actions, backed by an online booking flow that confirms straight to WhatsApp. We added a problem-and-solution services section covering everything from everyday concerns to full smile makeovers, plus About and Blog pages — all mobile-first and fast.",
     result:
@@ -318,7 +318,7 @@ export default function Portfolio() {
         badge="OUR WORK"
         headline="Real Builds."
         highlight="Real Results."
-        subheadline="A look at the websites, booking systems, and growth platforms we've built for healthcare professionals across Pakistan — and the impact they've made."
+        subheadline="A look at the websites, booking systems, and growth platforms we've built for healthcare professionals across the United States — and the impact they've made."
         ctaText="Start Your Project"
       />
 

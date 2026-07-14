@@ -14,8 +14,8 @@ interface Booking { name: string; phone: string; service: string; preferredTime:
 
 const SUGGESTIONS = [
   { icon: "🦷", label: "What services do you offer?" },
-  { icon: "🕐", label: "What are your timings?" },
-  { icon: "💰", label: "Braces ki price kya hai?" },
+  { icon: "🕐", label: "What are your hours?" },
+  { icon: "💰", label: "How much are braces?" },
   { icon: "📅", label: "Book me an appointment" },
 ];
 
@@ -80,11 +80,11 @@ function BookingForm({ service, onSubmit }: { service: string; onSubmit: (msg: s
       </div>
       <div>
         <label className={label}>Your name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Ayesha Khan" className={field} />
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jane Smith" className={field} />
       </div>
       <div>
         <label className={label}>Phone / WhatsApp</label>
-        <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="03XX XXXXXXX" inputMode="tel" className={field} />
+        <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(555) 123-4567" inputMode="tel" className={field} />
       </div>
       <div>
         <label className={label}>Email <span className="normal-case font-normal">(for your confirmation)</span></label>
@@ -126,7 +126,7 @@ function BookingForm({ service, onSubmit }: { service: string; onSubmit: (msg: s
 
 export default function ReceptionistDemo() {
   const [messages, setMessages] = useState<ChatMsg[]>([
-    { role: "assistant", content: "Assalam-o-Alaikum! 😊 I'm Maya, the virtual receptionist at Bright Smile Dental Care. Ask me anything — prices, timings, treatments — or I can book your appointment right here." },
+    { role: "assistant", content: "Hi there! 😊 I'm Maya, the virtual receptionist at Bright Smile Dental Care. Ask me anything — prices, hours, treatments — or I can book your appointment right here." },
   ]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -527,7 +527,7 @@ export default function ReceptionistDemo() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={recState === "transcribing" ? "🎤 Listening to your voice note…" : "Type or tap the mic… English ya Urdu"}
+              placeholder={recState === "transcribing" ? "🎤 Listening to your voice note…" : "Type or tap the mic…"}
               disabled={busy || recState === "transcribing"}
               className="flex-1 px-4.5 py-3 pl-4 rounded-full bg-[#F4F8F7] border border-transparent text-sm text-gray-800 outline-none focus:border-[#0E7C6B]/40 focus:bg-white transition-all disabled:opacity-60"
             />

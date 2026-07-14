@@ -7,7 +7,7 @@ import FinalCTA from "@/components/FinalCTA";
 
 const beliefs = [
   { lead: "Every patient lost is preventable.", desc: "A missed call, an unanswered WhatsApp message, a Google listing buried on page two. None of that is inevitable. It's a system failing the doctor behind it, and systems can be fixed." },
-  { lead: "Local context isn't optional.", desc: "Urdu and English, Lahore and Karachi, the way Pakistani patients actually search and book. Software built for another market and translated at the edges will always feel foreign here." },
+  { lead: "Local context isn't optional.", desc: "English, New York and Los Angeles, the way American patients actually search and book. Software built for another market and translated at the edges will always feel foreign here." },
   { lead: "Automation should feel human.", desc: "An AI receptionist that books an appointment correctly but sounds like a machine has only solved half the problem. We build for warmth and accuracy together, not one at the cost of the other." },
 ];
 
@@ -45,14 +45,14 @@ export default function OurMission() {
         badge="OUR MISSION"
         headline="Healthcare Growth Shouldn't"
         highlight="Depend on Luck"
-        subheadline="Pakistan has thousands of skilled doctors running clinics that deserve to be full. We build the systems that make sure they are."
+        subheadline="the United States has thousands of skilled doctors running clinics that deserve to be full. We build the systems that make sure they are."
         ctaText="Get Your Free Clinic Audit"
       />
 
       <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <p className="text-2xl lg:text-3xl font-bold text-[#00283C] leading-snug tracking-tight">
-            Most clinics that struggle aren't struggling because the care is lacking. They're struggling because the digital infrastructure around them was never built for healthcare in Pakistan. We started Alliance Tech to close that gap.
+            Most clinics that struggle aren't struggling because the care is lacking. They're struggling because the digital infrastructure around them was never built for healthcare in the United States. We started Alliance Tech to close that gap.
           </p>
         </div>
       </section>

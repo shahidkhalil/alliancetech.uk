@@ -9,7 +9,7 @@ import FinalCTA from "@/components/FinalCTA";
 const featured = {
   icon: "📣",
   title: "Google Search & Display Ads",
-  desc: "Show up the moment a patient searches 'dental implants Lahore' or 'botox near me.' Targeted to your treatments and your city, not generic clicks bought in bulk.",
+  desc: "Show up the moment a patient searches 'dental implants Houston' or 'botox near me.' Targeted to your treatments and your city, not generic clicks bought in bulk.",
 };
 
 const features = [
@@ -59,7 +59,7 @@ export default function DigitalMarketingForClinics() {
         badge="DIGITAL MARKETING FOR CLINICS"
         headline="Patients Actively Searching"
         highlight="For Your Treatments"
-        subheadline="Google and Meta ad campaigns built exclusively for dental and aesthetic clinics in Pakistan, targeted by city and treatment, not generic templates."
+        subheadline="Google and Meta ad campaigns built exclusively for dental and aesthetic clinics across the United States, targeted by city and treatment, not generic templates."
         ctaText="Get Your Free Clinic Audit"
       />
 

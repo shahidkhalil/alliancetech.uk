@@ -62,7 +62,7 @@ const testimonials = [
   {
     name: "Muhammad Hamza",
     role: "Verified Google Review",
-    quote: "Professional, responsive, and results-driven. Their healthcare marketing expertise helped us grow our clinic's reputation in Lahore.",
+    quote: "Professional, responsive, and results-driven. Their healthcare marketing expertise helped us grow our clinic's reputation in Houston.",
     stars: 5,
     initials: "MH",
   },
@@ -106,7 +106,7 @@ export default function Testimonials() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} className="text-center mb-12">
           <span className="badge-light mb-4">WHAT CLINICS SAY</span>
           <h2 className="text-3xl lg:text-4xl font-extrabold text-[#00283C] tracking-tight mt-4 mb-3">
-            Loved by Doctors Across <span className="gradient-heading">Pakistan</span>
+            Loved by Doctors Across <span className="gradient-heading">the United States</span>
           </h2>
           <div className="flex items-center justify-center gap-2 mt-2">
             <span className="text-amber-400 text-xl">★★★★★</span>

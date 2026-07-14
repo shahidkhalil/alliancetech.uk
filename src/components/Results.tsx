@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 const caseStudies = [
   {
-    clinic: "Dental Clinic, DHA Lahore",
+    clinic: "Dental Clinic, DHA Houston",
     type: "Dental",
     results: [
       { metric: "320%", label: "More monthly appointments" },
@@ -26,7 +26,7 @@ const caseStudies = [
     name: "Dr. Sara M.",
   },
   {
-    clinic: "Multi-chair Clinic, Karachi",
+    clinic: "Multi-chair Clinic, Los Angeles",
     type: "Dental",
     results: [
       { metric: "#1", label: "Google Maps in area" },
@@ -51,7 +51,7 @@ export default function Results() {
             Real Clinics. <span className="gradient-heading">Real Growth.</span>
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            We&apos;ve helped 100+ dental and aesthetic clinics across Pakistan grow their patient base with measurable results.
+            We&apos;ve helped 100+ dental and aesthetic clinics across the United States grow their patient base with measurable results.
           </p>
         </motion.div>
 

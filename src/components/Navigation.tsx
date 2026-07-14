@@ -32,7 +32,7 @@ const navLinks = [
       links: [
         { label: "Dental Clinics", href: "/dental-clinic-growth" },
         { label: "Aesthetic Clinics", href: "/aesthetic-clinic-growth" },
-        { label: "Clinics in Lahore", href: "/dental-clinic-lahore" },
+        { label: "Clinics in Houston", href: "/dental-clinic-houston" },
       ],
     },
   },
@@ -55,13 +55,17 @@ const navLinks = [
     dropdown: null,
   },
   {
+    label: "Pricing",
+    href: "/pricing",
+    dropdown: null,
+  },
+  {
     label: "Resources",
     href: "#",
     dropdown: {
       heading: "Resources",
       links: [
         { label: "Free Website Audit", href: "/free-website-audit" },
-        { label: "Pricing", href: "/#pricing" },
         { label: "FAQ", href: "/#faq" },
         { label: "WhatsApp AI Demo", href: "/whatsapp-ai-automation" },
         { label: "EHR Platform Demo", href: "/ehr-platform" },

@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 import { useForm } from "@/context/FormContext";
 
 const marqueeItems = [
-  "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Lahore", "🏙️ Karachi",
-  "🌆 Islamabad", "🤖 AI Receptionist", "💬 WhatsApp AI", "🌐 Clinic Websites",
+  "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Houston", "🏙️ Los Angeles",
+  "🌆 Chicago", "🤖 AI Receptionist", "💬 WhatsApp AI", "🌐 Clinic Websites",
   "📱 Patient Apps", "🔍 Local SEO", "📣 Google Ads", "🏥 EHR Platform",
-  "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Lahore", "🏙️ Karachi",
-  "🌆 Islamabad", "🤖 AI Receptionist", "💬 WhatsApp AI", "🌐 Clinic Websites",
+  "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Houston", "🏙️ Los Angeles",
+  "🌆 Chicago", "🤖 AI Receptionist", "💬 WhatsApp AI", "🌐 Clinic Websites",
   "📱 Patient Apps", "🔍 Local SEO", "📣 Google Ads", "🏥 EHR Platform",
 ];
 
@@ -43,7 +43,7 @@ export default function Hero() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <span className="badge-light inline-flex items-center gap-2 mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-[#00B4D8] animate-pulse" />
-              Top Reviewed Clinic Growth Agency in Pakistan
+              Top Reviewed Clinic Growth Agency in the US
             </span>
           </motion.div>
 
