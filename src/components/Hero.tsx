@@ -1,6 +1,30 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { useForm } from "@/context/FormContext";
+
+const heroSlides = [
+  {
+    badge: "Top Reviewed Clinic Growth Agency in the US",
+    headline: <>Most Dental Clinics Lose Patients<br />to Competitors Every Day. <span className="gradient-heading">We Fix That.</span></>,
+    sub: "We fix the three things costing you patients: invisible Google ranking, missed WhatsApp inquiries, and wasted ad spend. One agency, every channel.",
+  },
+  {
+    badge: "AI Automation for Busy Clinics",
+    headline: <>Your Front Desk Can&apos;t Answer<br />Every Call. <span className="gradient-heading">Our AI Can.</span></>,
+    sub: "A 24/7 AI receptionist that answers calls, chats, and WhatsApp, books appointments, and sends reminders — so you never miss another patient.",
+  },
+  {
+    badge: "Websites & Local SEO That Convert",
+    headline: <>Patients Search Google First.<br /><span className="gradient-heading">Make Sure They Find You.</span></>,
+    sub: "Fast, mobile-first clinic websites and local SEO that put you at the top of 'dentist near me' — and turn searchers into booked appointments.",
+  },
+  {
+    badge: "Google & Meta Ads for Clinics",
+    headline: <>Stop Wasting Ad Spend.<br /><span className="gradient-heading">Fill Your Calendar Instead.</span></>,
+    sub: "Targeted campaigns built only for dental and aesthetic clinics — every dollar tracked, every lead measured, an average 4x return on ad spend.",
+  },
+];
 
 const marqueeItems = [
   "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Houston", "🏙️ Los Angeles",
@@ -13,6 +37,15 @@ const marqueeItems = [
 
 export default function Hero() {
   const { openForm } = useForm();
+  const [slide, setSlide] = useState(0);
+  const n = heroSlides.length;
+
+  useEffect(() => {
+    const t = setInterval(() => setSlide((p) => (p + 1) % n), 4000);
+    return () => clearInterval(t);
+  }, [n]);
+
+  const s = heroSlides[slide];
 
   return (
     <section className="relative pt-28 pb-0 overflow-hidden bg-white">
@@ -40,27 +73,36 @@ export default function Hero() {
 
       <div className="relative min-h-[70vh] flex items-center">
         <div className="max-w-4xl mx-auto px-6 text-center py-16">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <span className="badge-light inline-flex items-center gap-2 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00B4D8] animate-pulse" />
-              Top Reviewed Clinic Growth Agency in the US
-            </span>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={slide}
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.45 }}
+            >
+              <span className="badge-light inline-flex items-center gap-2 mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00B4D8] animate-pulse" />
+                {s.badge}
+              </span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#00283C] tracking-tight leading-[1.1] mb-6"
-          >
-            Most Dental Clinics Lose Patients<br />
-            to Competitors Every Day. <span className="gradient-heading">We Fix That.</span>
-          </motion.h1>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#00283C] tracking-tight leading-[1.1] mb-6">
+                {s.headline}
+              </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-gray-500 max-w-2xl mx-auto mb-9 leading-relaxed"
-          >
-            We fix the three things costing you patients: invisible Google ranking, missed WhatsApp inquiries, and wasted ad spend. One agency, every channel.
-          </motion.p>
+              <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed">
+                {s.sub}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Slide dots */}
+          <div className="flex items-center justify-center gap-2 mb-9">
+            {heroSlides.map((_, di) => (
+              <button key={di} onClick={() => setSlide(di)} aria-label={`Slide ${di + 1}`}
+                className={`h-1.5 rounded-full transition-all ${di === slide ? "w-6 bg-[#0077A8]" : "w-1.5 bg-gray-300 hover:bg-gray-400"}`} />
+            ))}
+          </div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
