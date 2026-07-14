@@ -20,7 +20,7 @@ export default function MobileAppMockup() {
         {/* App header */}
         <div className="bg-[#00283C] px-4 pb-4 pt-1">
           <p className="text-white/50 text-[10px]">Welcome back,</p>
-          <p className="text-white font-bold text-sm">Ahmed Khan</p>
+          <p className="text-white font-bold text-sm">John Miller</p>
         </div>
 
         {/* Calendar */}

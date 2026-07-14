@@ -3,9 +3,9 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 const campaigns = [
-  { name: "Google Search — Implants", platform: "🔍", impressions: "12.4K", clicks: "412", cpa: "PKR 380", bar: "85%" },
-  { name: "Meta Feed — Aesthetic", platform: "📘", impressions: "8.9K", clicks: "298", cpa: "PKR 290", bar: "68%" },
-  { name: "Instagram Stories — Whitening", platform: "📸", impressions: "15.2K", clicks: "501", cpa: "PKR 210", bar: "94%" },
+  { name: "Google Search — Implants", platform: "🔍", impressions: "12.4K", clicks: "412", cpa: "$24", bar: "85%" },
+  { name: "Meta Feed — Aesthetic", platform: "📘", impressions: "8.9K", clicks: "298", cpa: "$18", bar: "68%" },
+  { name: "Instagram Stories — Whitening", platform: "📸", impressions: "15.2K", clicks: "501", cpa: "$14", bar: "94%" },
 ];
 
 export default function AdsCampaignMockup() {
@@ -28,9 +28,9 @@ export default function AdsCampaignMockup() {
 
       <div className="bg-white px-5 py-3 grid grid-cols-3 gap-3 border-b border-gray-100">
         {[
-          { label: "Total Spend Today", value: "PKR 18,400" },
+          { label: "Total Spend Today", value: "$1,200" },
           { label: "Leads Generated", value: "34" },
-          { label: "Avg. Cost / Lead", value: "PKR 290" },
+          { label: "Avg. Cost / Lead", value: "$18" },
         ].map((s) => (
           <div key={s.label} className="text-center py-1">
             <div className="text-lg font-extrabold text-[#00283C]">{s.value}</div>

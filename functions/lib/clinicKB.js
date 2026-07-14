@@ -20,8 +20,8 @@ const CLINICS = {
     },
     languages: ["English", "Spanish"],
     doctors: [
-      { name: "Dr. Ahmed Raza", role: "Lead Dentist, Implantology", experience: "15+ years" },
-      { name: "Dr. Sara Malik", role: "Orthodontist (braces & aligners)", experience: "10+ years" },
+      { name: "Dr. James Miller", role: "Lead Dentist, Implantology", experience: "15+ years" },
+      { name: "Dr. Sarah Johnson", role: "Orthodontist (braces & aligners)", experience: "10+ years" },
     ],
     services: [
       { name: "Consultation & Check-up", price: "$75", note: "Waived if you proceed with treatment." },

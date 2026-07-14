@@ -8,8 +8,8 @@ const messages = [
   { from: "ai", text: "Hello! We're open 9 AM to 7 PM, Monday through Saturday. Would you like to book an appointment?", time: "9:02 AM" },
   { from: "patient", text: "Yes, I need an appointment for a teeth cleaning", time: "9:03 AM" },
   { from: "ai", text: "Sure! What's your name and preferred date/time? I'll book it for you right now. 😊", time: "9:03 AM" },
-  { from: "patient", text: "Ahmed Khan, tomorrow Saturday 11am", time: "9:04 AM" },
-  { from: "ai", text: "✅ Done! Ahmed Khan — Saturday 11 AM. Confirmation sent. See you at the clinic!", time: "9:04 AM" },
+  { from: "patient", text: "John Miller, tomorrow Saturday 11am", time: "9:04 AM" },
+  { from: "ai", text: "✅ Done! John Miller — Saturday 11 AM. Confirmation sent. See you at the clinic!", time: "9:04 AM" },
 ];
 
 export default function WhatsAppDemo() {

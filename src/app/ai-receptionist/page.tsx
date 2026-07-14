@@ -111,7 +111,7 @@ export default function AIReceptionist() {
               An <strong>AI receptionist</strong> removes that ceiling. It answers <strong>every call and website chat at once</strong>, 24/7, in English — no hold music, no voicemail, no missed patients after hours or on weekends. While your staff handles the patient in the chair, the AI handles the twenty patients trying to reach you: answering price and timing questions, qualifying them, and <strong>booking appointments straight into your calendar</strong>.
             </p>
             <p>
-              For a busy dental, aesthetic, dermatology, or multi-specialty clinic, the math is simple. Recovering even <strong>5 missed bookings a day</strong> — at an average patient value of PKR 15,000 — is over <strong>PKR 20 lakh a month</strong> in appointments you were already paying marketing to generate but losing at the phone. That&apos;s the leak an AI receptionist closes.
+              For a busy dental, aesthetic, dermatology, or multi-specialty clinic, the math is simple. Recovering even <strong>5 missed bookings a day</strong> — at an average patient value of $500 — is over <strong>$40,000 a month</strong> in appointments you were already paying marketing to generate but losing at the phone. That&apos;s the leak an AI receptionist closes.
             </p>
             <p>
               It also cuts your <strong>no-show rate</strong> with automatic confirmations and reminders, and gives you a record of every conversation — so you finally see how many patients are calling after hours. It works alongside your existing staff and phone number, not instead of them: your team stops firefighting the phone and starts closing high-value treatments.

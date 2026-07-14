@@ -1,7 +1,7 @@
 /**
  * Voice-note transcription for the AI Receptionist.
  * POST { audio: <base64>, mime?: "audio/webm" } -> { text }
- * Uses OpenAI Whisper — handles Urdu, English, and Roman-Urdu speech.
+ * Uses OpenAI Whisper — handles clear English speech.
  */
 
 const { onRequest } = require("firebase-functions/v2/https");

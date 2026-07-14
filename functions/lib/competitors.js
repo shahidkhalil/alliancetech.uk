@@ -20,15 +20,15 @@ const SPECIALTIES = [
 ];
 
 const CITIES = [
-  "Lahore", "Karachi", "Islamabad", "Rawalpindi", "Faisalabad", "Multan",
-  "Peshawar", "Quetta", "Sialkot", "Gujranwala", "Hyderabad", "Bahawalpur",
+  "Houston", "Los Angeles", "Chicago", "Dallas", "New York", "Phoenix",
+  "San Antonio", "Austin", "Miami", "Dallas", "Seattle", "Denver",
 ];
 
 /** Infer "what would a patient google" from the site's own content. */
 function inferQuery(seo) {
   const haystack = [seo.title, seo.metaDescription, seo.h1Text].filter(Boolean).join(" ");
   const specialty = (SPECIALTIES.find((s) => s.re.test(haystack)) || SPECIALTIES.at(-1)).term;
-  const city = CITIES.find((c) => new RegExp(c, "i").test(haystack)) || "Lahore";
+  const city = CITIES.find((c) => new RegExp(c, "i").test(haystack)) || "Houston";
   return { query: `${specialty} in ${city}`, specialty, city };
 }
 

@@ -43,7 +43,7 @@ export default function Contact() {
                 <div>
                   <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">WhatsApp</p>
                   <a href="https://wa.me/923207800010" target="_blank" rel="noopener noreferrer" className="text-[#0077A8] font-semibold hover:underline">
-                    +92 320 7800010
+                    Message us on WhatsApp
                   </a>
                 </div>
               </div>

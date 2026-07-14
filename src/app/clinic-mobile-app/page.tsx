@@ -9,7 +9,7 @@ const features = [
   { icon: "📅", title: "Appointment Booking & Management", desc: "Patients book, reschedule, or cancel appointments themselves — no phone calls, no front-desk bottleneck." },
   { icon: "🗂️", title: "Digital Patient Records Access", desc: "Patients view their treatment history, prescriptions, and reports anytime, right from the app." },
   { icon: "🔔", title: "Push Notification Reminders", desc: "Automated appointment reminders and aftercare notifications that cut no-shows dramatically." },
-  { icon: "💳", title: "JazzCash & Easypaisa Payments", desc: "Patients pay for appointments and treatments directly in the app, with the payment methods they already use." },
+  { icon: "💳", title: "Stripe & Apple Pay Payments", desc: "Patients pay for appointments and treatments directly in the app, with the payment methods they already use." },
   { icon: "🖥️", title: "Staff Admin Dashboard", desc: "Your team manages bookings, patients, and notifications from one simple dashboard." },
 ];
 

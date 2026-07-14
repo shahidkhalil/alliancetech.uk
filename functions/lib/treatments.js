@@ -3,36 +3,36 @@
  * services a clinic actually makes money on. Uses Serper (one search per
  * treatment, capped) and grounds revenue math in typical case values.
  *
- * avgCaseValuePKR are conservative market-typical figures for Pakistan,
+ * avgCaseValueUSD are conservative market-typical figures for the US market,
  * clearly labelled as estimates in the report.
  */
 
 // High-value treatments per specialty. Order = business priority.
 const TREATMENTS = {
   dentist: [
-    { name: "Dental Implants", query: "dental implants", avgCaseValuePKR: 100000 },
-    { name: "Braces / Orthodontics", query: "braces price", avgCaseValuePKR: 150000 },
-    { name: "Veneers", query: "dental veneers", avgCaseValuePKR: 80000 },
-    { name: "Teeth Whitening", query: "teeth whitening", avgCaseValuePKR: 25000 },
+    { name: "Dental Implants", query: "dental implants", avgCaseValueUSD: 3000 },
+    { name: "Braces / Orthodontics", query: "braces price", avgCaseValueUSD: 5000 },
+    { name: "Veneers", query: "dental veneers", avgCaseValueUSD: 150 },
+    { name: "Teeth Whitening", query: "teeth whitening", avgCaseValueUSD: 500 },
   ],
   "aesthetic clinic": [
-    { name: "Botox / Fillers", query: "botox fillers", avgCaseValuePKR: 40000 },
-    { name: "Laser Hair Removal", query: "laser hair removal", avgCaseValuePKR: 60000 },
-    { name: "Hydrafacial", query: "hydrafacial", avgCaseValuePKR: 15000 },
-    { name: "PRP / Skin Rejuvenation", query: "prp treatment", avgCaseValuePKR: 35000 },
+    { name: "Botox / Fillers", query: "botox fillers", avgCaseValueUSD: 600 },
+    { name: "Laser Hair Removal", query: "laser hair removal", avgCaseValueUSD: 2500 },
+    { name: "Hydrafacial", query: "hydrafacial", avgCaseValueUSD: 200 },
+    { name: "PRP / Skin Rejuvenation", query: "prp treatment", avgCaseValueUSD: 1200 },
   ],
   dermatologist: [
-    { name: "Acne Treatment", query: "acne treatment", avgCaseValuePKR: 20000 },
-    { name: "Laser Treatments", query: "laser skin treatment", avgCaseValuePKR: 50000 },
-    { name: "Hair Loss Treatment", query: "hair loss treatment", avgCaseValuePKR: 45000 },
+    { name: "Acne Treatment", query: "acne treatment", avgCaseValueUSD: 1500 },
+    { name: "Laser Treatments", query: "laser skin treatment", avgCaseValueUSD: 2000 },
+    { name: "Hair Loss Treatment", query: "hair loss treatment", avgCaseValueUSD: 3000 },
   ],
   "hair transplant clinic": [
-    { name: "FUE Hair Transplant", query: "fue hair transplant", avgCaseValuePKR: 200000 },
-    { name: "PRP for Hair", query: "prp hair treatment", avgCaseValuePKR: 45000 },
+    { name: "FUE Hair Transplant", query: "fue hair transplant", avgCaseValueUSD: 150 },
+    { name: "PRP for Hair", query: "prp hair treatment", avgCaseValueUSD: 3000 },
   ],
   psychologist: [
-    { name: "Therapy Sessions", query: "best psychologist", avgCaseValuePKR: 8000 },
-    { name: "Couples Counselling", query: "couples counselling", avgCaseValuePKR: 10000 },
+    { name: "Therapy Sessions", query: "best psychologist", avgCaseValueUSD: 150 },
+    { name: "Couples Counselling", query: "couples counselling", avgCaseValueUSD: 200 },
   ],
 };
 
@@ -68,7 +68,7 @@ async function buildMoneyMap(auditedUrl, specialty, city, apiKey) {
         return {
           treatment: t.name,
           searchQuery: `${t.query} ${city}`,
-          avgCaseValuePKR: t.avgCaseValuePKR,
+          avgCaseValueUSD: t.avgCaseValueUSD,
           yourRank, // null = not in top 10
           leader: leader ? { title: leader.title, domain: leader.domain, position: leader.position } : null,
           topMapListing: topPlace

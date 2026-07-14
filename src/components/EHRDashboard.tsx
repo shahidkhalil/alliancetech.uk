@@ -5,10 +5,10 @@ import { useForm } from "@/context/FormContext";
 import React from "react";
 
 const patients = [
-  { name: "Ahmed Khan", treatment: "Teeth Cleaning", time: "11:00 AM", status: "Confirmed" },
-  { name: "Fatima Ali", treatment: "Braces Checkup", time: "12:30 PM", status: "Arrived" },
-  { name: "Sara Malik", treatment: "Whitening", time: "02:00 PM", status: "Pending" },
-  { name: "Usman Raza", treatment: "Root Canal", time: "03:30 PM", status: "Confirmed" },
+  { name: "John Miller", treatment: "Teeth Cleaning", time: "11:00 AM", status: "Confirmed" },
+  { name: "Emily Johnson", treatment: "Braces Checkup", time: "12:30 PM", status: "Arrived" },
+  { name: "Sarah Williams", treatment: "Whitening", time: "02:00 PM", status: "Pending" },
+  { name: "Michael Davis", treatment: "Root Canal", time: "03:30 PM", status: "Confirmed" },
 ];
 
 const statusStyles: Record<string, React.CSSProperties> = {
@@ -46,7 +46,7 @@ export default function EHRDashboard() {
                 {[
                   { label: "Today's Patients", value: "12" },
                   { label: "Pending", value: "4" },
-                  { label: "Revenue Today", value: "PKR 24,500" },
+                  { label: "Revenue Today", value: "$4,200" },
                 ].map((s) => (
                   <div key={s.label} className="text-center py-1">
                     <div className="text-lg font-extrabold text-[#00283C]">{s.value}</div>
@@ -104,7 +104,7 @@ export default function EHRDashboard() {
                 "Digital patient records — searchable, secure",
                 "Appointment calendar with SMS reminders",
                 "Digital prescriptions — print or WhatsApp",
-                "Billing & invoice tracking in PKR",
+                "Billing & invoice tracking in USD",
                 "Patient mobile app with booking",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2.5 text-sm text-gray-600">

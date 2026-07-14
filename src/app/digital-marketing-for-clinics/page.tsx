@@ -28,9 +28,9 @@ const stats = [
 ];
 
 const faqs = [
-  { q: "How much should I budget for ads?", a: "Most clinics start between PKR 50,000 and 150,000 per month in ad spend, scaled up once we see what's converting. We'll recommend a number based on your city and treatments." },
+  { q: "How much should I budget for ads?", a: "Most clinics start between $2,000 and $6,000 per month in ad spend, scaled up once we see what's converting. We'll recommend a number based on your city and treatments." },
   { q: "How is this different from a generic marketing agency?", a: "We only run campaigns for dental and aesthetic clinics. Every targeting strategy, ad angle, and landing page is built specifically for healthcare patient acquisition, not adapted from a retail or e-commerce playbook." },
-  { q: "Do you handle the ad spend or just management?", a: "You keep control of your own ad account and budget. We manage strategy, creative, targeting, and optimisation, with full transparency on every rupee spent." },
+  { q: "Do you handle the ad spend or just management?", a: "You keep control of your own ad account and budget. We manage strategy, creative, targeting, and optimisation, with full transparency on every dollar spent." },
 ];
 
 function FeatureRow({ f, i }: { f: { icon: string; title: string; desc: string }; i: number }) {

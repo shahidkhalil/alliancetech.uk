@@ -43,7 +43,7 @@ export default function GoogleMapsMockup() {
             <span className="text-xs font-bold text-gray-600">4.9</span>
             <span className="text-xs text-gray-400">(312 reviews)</span>
           </div>
-          <p className="text-xs text-gray-400 mb-3">Dental clinic · Gulberg, Houston</p>
+          <p className="text-xs text-gray-400 mb-3">Dental clinic · River Oaks, Houston</p>
           <motion.span initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ delay: 0.6 }}
             className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full bg-green-100 text-green-700 mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Open Now

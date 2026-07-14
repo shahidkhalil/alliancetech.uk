@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 const caseStudies = [
   {
-    clinic: "Dental Clinic, DHA Houston",
+    clinic: "Dental Clinic, Downtown Houston",
     type: "Dental",
     results: [
       { metric: "320%", label: "More monthly appointments" },
@@ -12,10 +12,10 @@ const caseStudies = [
       { metric: "60 days", label: "To full results" },
     ],
     quote: "We went from 40 patients a month to 170+ in under two months. Alliance Tech is the real deal.",
-    name: "Dr. Ahmed R.",
+    name: "Dr. James M.",
   },
   {
-    clinic: "Aesthetic Clinic, Gulberg",
+    clinic: "Aesthetic Clinic, River Oaks",
     type: "Aesthetic",
     results: [
       { metric: "280%", label: "More booking inquiries" },
@@ -23,7 +23,7 @@ const caseStudies = [
       { metric: "55%", label: "Reduction in no-shows" },
     ],
     quote: "Our WhatsApp was getting 5 messages a week. Now it's 50+ — and the AI handles all of them.",
-    name: "Dr. Sara M.",
+    name: "Dr. Sarah W.",
   },
   {
     clinic: "Multi-chair Clinic, Los Angeles",
@@ -34,7 +34,7 @@ const caseStudies = [
       { metric: "0", label: "Missed calls since AI" },
     ],
     quote: "We were losing patients to clinics with worse doctors but better online presence. Not anymore.",
-    name: "Dr. Faisal K.",
+    name: "Dr. Robert K.",
   },
 ];
 

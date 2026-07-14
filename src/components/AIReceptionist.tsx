@@ -14,7 +14,7 @@ const capabilities = [
 
 const demoMessages = [
   { from: "patient", text: "Hi, I'm interested in teeth whitening. How much does it cost?", delay: 0 },
-  { from: "ai", text: "Hello! 😊 Our professional teeth whitening starts from PKR 8,000. We offer two options:\n\n• In-clinic laser whitening (60 min)\n• Take-home kit (14 days)\n\nWould you like to book a free consultation?", delay: 800 },
+  { from: "ai", text: "Hello! 😊 Our professional teeth whitening starts from $300. We offer two options:\n\n• In-clinic laser whitening (60 min)\n• Take-home kit (14 days)\n\nWould you like to book a free consultation?", delay: 800 },
   { from: "patient", text: "Yes, I'd like to book!", delay: 1800 },
   { from: "ai", text: "Perfect! I have availability this week:\n\n📅 Tuesday, June 23 – 3:00 PM\n📅 Wednesday, June 24 – 11:00 AM\n📅 Thursday, June 25 – 5:00 PM\n\nWhich time works best for you?", delay: 2600 },
   { from: "patient", text: "Tuesday 3pm works for me", delay: 3600 },

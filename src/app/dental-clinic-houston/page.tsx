@@ -4,7 +4,7 @@ import ServicePageHero from "@/components/ServicePageHero";
 import FinalCTA from "@/components/FinalCTA";
 
 const features = [
-  { icon: "📣", title: "Houston-Targeted Ads", desc: "Google and Meta campaigns geo-targeted to Houston — Defence, Gulberg, Johar Town, Bahria, and more." },
+  { icon: "📣", title: "Houston-Targeted Ads", desc: "Google and Meta campaigns geo-targeted to Houston — Downtown, The Heights, Montrose, River Oaks, and more." },
   { icon: "📍", title: "Google Maps Dominance", desc: "Rank in the top 3 for every dental search in your Houston neighbourhood within 60 days." },
   { icon: "🌐", title: "Houston Dental Website", desc: "Professional website with local SEO baked in — pages for every area you serve." },
   { icon: "⭐", title: "5-Star Reviews", desc: "Build your Google rating to 4.9+ with automated review requests after every appointment." },
@@ -19,13 +19,13 @@ const stats = [
   { stat: "50+", label: "Houston clinics served" },
 ];
 
-const areas = ["DHA Houston", "Gulberg", "Johar Town", "Bahria Town", "Model Town", "Garden Town", "Cantt", "Wapda Town", "Allama Iqbal Town", "Faisal Town"];
+const areas = ["Downtown", "The Heights", "Montrose", "River Oaks", "Midtown", "Katy", "Sugar Land", "The Woodlands", "Pearland", "Bellaire"];
 
 export default function DentalClinicHouston() {
   return (
     <PageWrapper>
       <ServicePageHero
-        badge="DENTAL MARKETING — LAHORE"
+        badge="DENTAL MARKETING — HOUSTON"
         headline="The #1 Dental Marketing Agency"
         highlight="in Houston"
         subheadline="We help Houston dental clinics dominate Google Maps, run profitable ads, and fill their appointment books — guaranteed results in 60 days."

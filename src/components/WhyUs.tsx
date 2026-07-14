@@ -19,7 +19,7 @@ const comparisons = [
     aspect: "Communication",
     them: "Monthly report PDF, if you're lucky",
     us: "Real-time dashboard + WhatsApp updates",
-    detail: "You see every lead captured, every booking made, every PKR spent on ads — in real time.",
+    detail: "You see every lead captured, every booking made, every dollar spent on ads — in real time.",
   },
   {
     aspect: "Technology",

@@ -8,8 +8,8 @@ const features = [
   { icon: "📍", title: "Google Business Profile", desc: "Full optimisation of your GBP listing — photos, categories, hours, Q&A, posts, and review responses." },
   { icon: "🗺️", title: "Google Maps Ranking", desc: "Local citation building, NAP consistency, and map pack optimisation to rank #1 in your area." },
   { icon: "⭐", title: "Review Generation", desc: "Automated post-appointment review requests that grow your Google rating to 4.9+ stars fast." },
-  { icon: "🔍", title: "Local Keyword Targeting", desc: "'Dentist in DHA', 'aesthetic clinic Gulberg' — we rank you for every local search your patients make." },
-  { icon: "📄", title: "Local Landing Pages", desc: "Area-specific pages that rank for neighbourhood searches — Defence, Gulberg, Johar Town, and more." },
+  { icon: "🔍", title: "Local Keyword Targeting", desc: "'Dentist in Midtown', 'aesthetic clinic River Oaks' — we rank you for every local search your patients make." },
+  { icon: "📄", title: "Local Landing Pages", desc: "Area-specific pages that rank for neighbourhood searches — Downtown, The Heights, Montrose, and more." },
   { icon: "🔗", title: "Citation & Link Building", desc: "50+ local directory listings and local backlinks that signal authority to Google." },
 ];
 
@@ -20,7 +20,7 @@ const stats = [
   { stat: "4.9★", label: "Average review score" },
 ];
 
-const cities = ["Houston", "Los Angeles", "Chicago", "Dallas", "Faisalabad", "Multan", "Peshawar", "Gujranwala"];
+const cities = ["Houston", "Los Angeles", "Chicago", "Dallas", "Austin", "San Antonio", "Phoenix", "Miami"];
 
 export default function LocalSEOForClinics() {
   return (

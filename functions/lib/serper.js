@@ -1,6 +1,6 @@
 /**
  * Shared Serper client with Firestore caching.
- * Search results for a query like "dentist in Lahore" barely change day to
+ * Search results for a query like "dentist in Houston" barely change day to
  * day, and the SAME queries repeat across audits of every clinic in that
  * city+specialty — so caching them 3 days cuts Serper spend to near zero.
  */
@@ -17,7 +17,7 @@ async function serperSearch(q, apiKey) {
   const res = await fetch("https://google.serper.dev/search", {
     method: "POST",
     headers: { "X-API-KEY": apiKey, "Content-Type": "application/json" },
-    body: JSON.stringify({ q, gl: "pk", num: 10 }),
+    body: JSON.stringify({ q, gl: "us", num: 10 }),
     signal: AbortSignal.timeout(15000),
   });
   if (!res.ok) throw new Error(`Serper ${res.status}`);

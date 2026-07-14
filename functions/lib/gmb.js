@@ -27,7 +27,7 @@ async function placesTextSearch(query, apiKey) {
       "X-Goog-Api-Key": apiKey,
       "X-Goog-FieldMask": SEARCH_FIELDS,
     },
-    body: JSON.stringify({ textQuery: query, regionCode: "PK", maxResultCount: 3 }),
+    body: JSON.stringify({ textQuery: query, regionCode: "US", maxResultCount: 3 }),
     signal: AbortSignal.timeout(12000),
   });
   if (!res.ok) throw new Error(`Places search ${res.status}: ${(await res.text()).slice(0, 150)}`);
@@ -99,7 +99,7 @@ function businessName(seo) {
  * Build the GMB comparison: the clinic's own listing vs. the top map-pack rivals.
  */
 async function buildGmbCheck(auditedUrl, seo, competitors, apiKey) {
-  const city = competitors?.city || "Lahore";
+  const city = competitors?.city || "Houston";
   const name = businessName(seo);
   if (!name) return null;
 
