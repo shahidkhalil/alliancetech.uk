@@ -4,12 +4,12 @@ import { useRef } from "react";
 import { useForm } from "@/context/FormContext";
 
 const messages = [
-  { from: "patient", text: "السلام علیکم، آپ کے کلینک کا کیا ٹائم ہے؟", time: "9:02 AM" },
-  { from: "ai", text: "وعلیکم السلام! ہم صبح 9 بجے سے شام 7 بجے تک کھلے ہیں۔ کیا آپ اپوائنٹمنٹ بک کرنا چاہتے ہیں؟", time: "9:02 AM" },
-  { from: "patient", text: "Haan, teeth cleaning ke liye appointment chahiye", time: "9:03 AM" },
-  { from: "ai", text: "Sure! Aapka naam aur preferred date/time batayein — mai abhi book kar deta hoon. 😊", time: "9:03 AM" },
-  { from: "patient", text: "Ahmed Khan, kal Saturday 11am", time: "9:04 AM" },
-  { from: "ai", text: "✅ Done! Ahmed Khan — Saturday 11am. Confirmation message bhej diya. Clinic mein milte hain!", time: "9:04 AM" },
+  { from: "patient", text: "Hi, what are your clinic hours?", time: "9:02 AM" },
+  { from: "ai", text: "Hello! We're open 9 AM to 7 PM, Monday through Saturday. Would you like to book an appointment?", time: "9:02 AM" },
+  { from: "patient", text: "Yes, I need an appointment for a teeth cleaning", time: "9:03 AM" },
+  { from: "ai", text: "Sure! What's your name and preferred date/time? I'll book it for you right now. 😊", time: "9:03 AM" },
+  { from: "patient", text: "Ahmed Khan, tomorrow Saturday 11am", time: "9:04 AM" },
+  { from: "ai", text: "✅ Done! Ahmed Khan — Saturday 11 AM. Confirmation sent. See you at the clinic!", time: "9:04 AM" },
 ];
 
 export default function WhatsAppDemo() {
