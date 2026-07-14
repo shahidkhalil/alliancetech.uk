@@ -7,10 +7,6 @@ import { LiveCallLauncher } from "./LiveCall";
 const ENDPOINT =
   process.env.NEXT_PUBLIC_RECEPTIONIST_ENDPOINT ||
   "https://asia-south1-alliancepak.cloudfunctions.net/clinicReceptionist";
-const TRANSCRIBE_ENDPOINT =
-  process.env.NEXT_PUBLIC_TRANSCRIBE_ENDPOINT ||
-  "https://asia-south1-alliancepak.cloudfunctions.net/transcribeAudio";
-
 const MAX_RECORD_SECONDS = 30;
 
 interface ChatMsg { role: "user" | "assistant"; content: string; form?: { service: string; done?: boolean }; audio?: string; voiceNote?: boolean }
@@ -271,17 +267,44 @@ export default function ReceptionistDemo() {
             fr.onerror = reject;
             fr.readAsDataURL(blob);
           });
-          const res = await fetch(TRANSCRIBE_ENDPOINT, {
+
+          // One round trip: audio in -> transcript + reply + Maya's voice out.
+          setShowSuggestions(false);
+          setBusy(true);
+          setMessages((prev) => [...prev, { role: "user", content: "🎤 Voice note…", voiceNote: true }]);
+          setRecState("idle");
+
+          const res = await fetch(ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ audio: b64, mime: blob.type }),
+            body: JSON.stringify({
+              clinicId: "demo",
+              speak: true,
+              audio: b64,
+              mime: blob.type,
+              messages: messages.filter((m) => m.content && !m.content.startsWith("🎤 Voice note")),
+            }),
           });
           const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Transcription failed");
-          setRecState("idle");
-          send(data.text, { voice: true });
+          if (!res.ok) throw new Error(data.error || "Voice note failed");
+
+          setMessages((prev) => {
+            const out = [...prev];
+            // Swap the placeholder for the real transcript.
+            const idx = out.map((m) => m.content).lastIndexOf("🎤 Voice note…");
+            if (idx >= 0 && data.transcript) out[idx] = { ...out[idx], content: data.transcript };
+            out.push({ role: "assistant", content: data.reply, audio: data.audio || undefined });
+            if (!data.booking && ASKS_DETAILS.test(data.reply || "")) {
+              out.push({ role: "assistant", content: "", form: { service: "" } });
+            }
+            return out;
+          });
+          if (data.audio) playAudio(data.audio);
+          if (data.booking) setBooking(data.booking);
+          setBusy(false);
         } catch (err) {
           setRecState("idle");
+          setBusy(false);
           setMessages((prev) => [...prev, { role: "assistant", content: `🎤 ${err instanceof Error ? err.message : "Couldn't process the voice note."}` }]);
         }
       };

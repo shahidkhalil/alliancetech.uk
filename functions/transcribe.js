@@ -44,7 +44,7 @@ exports.transcribeAudio = onRequest(
 
       const form = new FormData();
       form.append("file", new Blob([buf], { type: mime }), `note.${ext}`);
-      form.append("model", "whisper-1");
+      form.append("model", "gpt-4o-mini-transcribe");
 
       const r = await fetch("https://api.openai.com/v1/audio/transcriptions", {
         method: "POST",

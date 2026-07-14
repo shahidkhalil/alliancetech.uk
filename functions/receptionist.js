@@ -73,7 +73,8 @@ exports.clinicReceptionist = onRequest(
     region: "asia-south1",
     cors: true,
     timeoutSeconds: 60,
-    memory: "256MiB",
+    memory: "512MiB",
+    minInstances: 1, // stay warm — no cold-start lag on the first message
     secrets: [OPENAI_API_KEY, GMAIL_USER, GMAIL_APP_PASSWORD],
   },
   async (req, res) => {
@@ -94,6 +95,33 @@ exports.clinicReceptionist = onRequest(
 
     try {
       const key = OPENAI_API_KEY.value();
+
+      // Voice note attached: transcribe here (one round trip instead of two).
+      let transcript = null;
+      if (typeof req.body?.audio === "string" && req.body.audio.length > 100) {
+        const buf = Buffer.from(req.body.audio, "base64");
+        if (buf.length > 1000 && buf.length < 6 * 1024 * 1024) {
+          const mime = typeof req.body?.mime === "string" ? req.body.mime : "audio/webm";
+          const ext = mime.includes("mp4") || mime.includes("m4a") ? "m4a" : mime.includes("ogg") ? "ogg" : "webm";
+          const form = new FormData();
+          form.append("file", new Blob([buf], { type: mime }), `note.${ext}`);
+          form.append("model", "gpt-4o-mini-transcribe");
+          const tr = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${key}` },
+            body: form,
+            signal: AbortSignal.timeout(30000),
+          });
+          if (tr.ok) {
+            transcript = ((await tr.json()).text || "").trim();
+          }
+        }
+        if (!transcript) {
+          res.status(422).json({ error: "Couldn't hear the voice note — please try again or type." });
+          return;
+        }
+        messages.push({ role: "user", content: transcript.slice(0, 1000) });
+      }
       const call = (body) =>
         fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
@@ -164,7 +192,7 @@ exports.clinicReceptionist = onRequest(
         }
       }
 
-      res.status(200).json({ reply: replyText, booking, audio });
+      res.status(200).json({ reply: replyText, booking, audio, transcript });
     } catch (err) {
       console.error("Receptionist error:", err);
       res.status(500).json({ error: "I'm having a moment — please try again or WhatsApp us." });
