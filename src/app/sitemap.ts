@@ -10,7 +10,7 @@ const routes = [
   { path: "/clinic-mobile-app", priority: 0.8 },
   { path: "/seo-for-clinics", priority: 0.8 },
   { path: "/local-seo-for-clinics", priority: 0.8 },
-  { path: "/ai-receptionist", priority: 0.8 },
+  { path: "/ai-receptionist", priority: 0.9 },
   { path: "/whatsapp-ai-automation", priority: 0.8 },
   { path: "/ehr-platform", priority: 0.8 },
   { path: "/dental-clinic-growth", priority: 0.7 },
