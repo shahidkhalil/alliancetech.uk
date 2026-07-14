@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Loader2, CalendarCheck2, Phone, Clock, Sparkles, Mic, Square, Trash2, Volume2, VolumeX } from "lucide-react";
+import { LiveCallLauncher } from "./LiveCall";
 
 const ENDPOINT =
   process.env.NEXT_PUBLIC_RECEPTIONIST_ENDPOINT ||
@@ -314,6 +315,7 @@ export default function ReceptionistDemo() {
             <p className="text-[15px] font-bold text-white leading-tight">Maya</p>
             <p className="text-[11px] text-white/60 leading-tight">Receptionist · Bright Smile Dental Care</p>
           </div>
+          <LiveCallLauncher />
           <button
             type="button"
             onClick={toggleMute}

@@ -38,6 +38,10 @@ exports.clinicReceptionist = require("./receptionist").clinicReceptionist;
 // Voice-note transcription for the receptionist chat.
 exports.transcribeAudio = require("./transcribe").transcribeAudio;
 
+// Live voice agent (Realtime API): session tokens + booking endpoint.
+exports.realtimeToken = require("./realtime").realtimeToken;
+exports.bookAppointmentHttp = require("./realtime").bookAppointmentHttp;
+
 function normalizeUrl(input) {
   if (!input || typeof input !== "string") return null;
   let u = input.trim();

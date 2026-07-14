@@ -11,48 +11,14 @@ const { onRequest } = require("firebase-functions/v2/https");
 const { defineSecret } = require("firebase-functions/params");
 const admin = require("firebase-admin");
 
-const nodemailer = require("nodemailer");
 const { getClinic } = require("./lib/clinicKB");
+const { bookAndNotify } = require("./lib/booking");
 const { checkRateLimit } = require("./lib/cache");
 
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
 const GMAIL_USER = defineSecret("GMAIL_USER");
 const GMAIL_APP_PASSWORD = defineSecret("GMAIL_APP_PASSWORD");
 const DAILY_LIMIT_PER_IP = 60; // generous for a conversation
-
-/** Best-effort appointment confirmation email to the patient. */
-async function sendConfirmationEmail(booking, clinic, reference) {
-  const user = (GMAIL_USER.value() || "").trim();
-  const pass = (GMAIL_APP_PASSWORD.value() || "").replace(/[\s ]+/g, "");
-  if (!user || !pass || !booking.email) return;
-
-  const transporter = nodemailer.createTransport({ service: "gmail", auth: { user, pass } });
-  await transporter.sendMail({
-    from: `"${clinic.name}" <${user}>`,
-    to: booking.email,
-    subject: `✅ Appointment Confirmed — ${clinic.name} (Ref ${reference})`,
-    text: [
-      `Dear ${booking.name},`,
-      ``,
-      `Your appointment has been booked. Here are the details:`,
-      ``,
-      `  Service:   ${booking.service}`,
-      `  When:      ${booking.preferredTime}`,
-      `  Reference: ${reference}`,
-      ``,
-      `Clinic: ${clinic.name}`,
-      `Address: ${clinic.address}`,
-      `Hours: ${clinic.hours.weekdays} (Sunday: ${clinic.hours.sunday})`,
-      `Phone/WhatsApp: ${clinic.phone}`,
-      ``,
-      `${clinic.policies.firstVisit}`,
-      `${clinic.policies.cancellation}`,
-      ``,
-      `We look forward to seeing you!`,
-      `— ${clinic.name}`,
-    ].join("\n"),
-  });
-}
 
 function systemPrompt(c) {
   return `You are the friendly front-desk receptionist for "${c.name}" — ${c.tagline} in ${c.city}. You chat with patients on the clinic's website.
@@ -147,33 +113,15 @@ exports.clinicReceptionist = onRequest(
       const toolCall = msg.tool_calls?.[0];
       if (toolCall?.function?.name === "book_appointment") {
         const args = JSON.parse(toolCall.function.arguments || "{}");
-        const doc = await admin.firestore().collection("appointments").add({
-          ...args,
+        const { id, reference } = await bookAndNotify({
+          args,
           clinicId: req.body?.clinicId || "demo",
-          clinicName: clinic.name,
+          clinic,
           source: "ai_receptionist",
-          status: "new",
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          gmailUser: GMAIL_USER.value(),
+          gmailPass: GMAIL_APP_PASSWORD.value(),
         });
-        booking = { id: doc.id, ...args, clinicName: clinic.name };
-
-        // Also create a lead so the owner gets the standard alert.
-        await admin.firestore().collection("leads").add({
-          name: args.name,
-          phone: args.phone,
-          email: args.email || "",
-          source: "ai_receptionist",
-          clinicName: clinic.name,
-          message: `Appointment: ${args.service} — ${args.preferredTime}${args.notes ? ` (${args.notes})` : ""}`,
-          status: "new",
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        }).catch(() => {});
-
-        // Confirmation email to the patient (best-effort, never blocks the reply).
-        const reference = doc.id.slice(0, 6).toUpperCase();
-        sendConfirmationEmail(args, clinic, reference).catch((e) =>
-          console.warn("Confirmation email failed:", e.message)
-        );
+        booking = { id, ...args, clinicName: clinic.name };
 
         // Feed the tool result back so the model writes a natural confirmation.
         messages.push(msg);
