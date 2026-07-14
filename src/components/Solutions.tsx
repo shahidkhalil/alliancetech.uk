@@ -94,7 +94,7 @@ export default function Solutions() {
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="max-w-2xl mb-14"
+          className="max-w-2xl mx-auto text-center mb-14"
         >
           <span className="badge-light mb-5">WHAT WE DO</span>
           <h2 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-[#00283C] mt-4 mb-4 leading-tight">

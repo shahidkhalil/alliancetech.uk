@@ -32,6 +32,93 @@ export type ServicePricing = {
 };
 
 const allServices: ServicePricing[] = [
+  // ─── AI & AUTOMATION (flagship) ───────────────────────────────────────────────
+  {
+    id: "ai-automation",
+    name: "AI Automation Suite",
+    category: "AI & Automation",
+    tagline: "The all-in-one AI front desk — answers, books, follows up, and never sleeps.",
+    packages: [
+      {
+        name: "Basic",
+        price: "$500",
+        period: "/ month",
+        description: "Put an AI assistant on your website that answers patients and captures every lead, 24/7.",
+        features: [
+          "AI website chat assistant (trained on your clinic)",
+          "Answers FAQs: prices, hours, services, directions",
+          "Captures name + contact from every visitor",
+          "Instant email alerts on new leads",
+          "Appointment request booking",
+          "Up to 500 conversations / month",
+          "Setup, training & go-live in 5 days",
+        ],
+        cta: "Start with Basic",
+        popular: false,
+        addOns: ["Voice notes (patients speak) from $99/mo", "Extra conversations from $49/mo"],
+      },
+      {
+        name: "Standard",
+        price: "$1,000",
+        period: "/ month",
+        savings: "Most popular with busy clinics",
+        description: "A full AI receptionist across web + WhatsApp that books patients and confirms automatically.",
+        features: [
+          "Everything in Basic",
+          "AI receptionist on website + WhatsApp",
+          "Books appointments straight into your calendar",
+          "Automatic booking confirmations (email + WhatsApp)",
+          "Automated appointment reminders (cut no-shows)",
+          "Voice notes — patients can speak to the AI",
+          "Up to 2,000 conversations / month",
+          "Live analytics dashboard",
+        ],
+        cta: "Get Standard",
+        popular: true,
+        addOns: ["Live voice-call agent from $199/mo", "CRM/EHR sync from $149/mo"],
+      },
+      {
+        name: "Premium",
+        price: "$2,000",
+        period: "/ month",
+        description: "A real-time voice + chat AI agent that runs your front desk end to end, at scale.",
+        features: [
+          "Everything in Standard",
+          "Live real-time voice agent (patients call your site)",
+          "Urgency triage + instant priority alerts to staff",
+          "Post-visit review requests (grow your Google rating)",
+          "Full CRM / EHR / calendar integration",
+          "Multi-location & multi-team support",
+          "Unlimited conversations",
+          "Dedicated success manager + priority support",
+        ],
+        cta: "Go Premium",
+        popular: false,
+        addOns: ["Custom workflow automations quoted per build"],
+      },
+    ],
+    comparison: [
+      { feature: "Website chat assistant", basic: true, standard: true, premium: true },
+      { feature: "WhatsApp AI receptionist", basic: false, standard: true, premium: true },
+      { feature: "Books into your calendar", basic: "Requests", standard: true, premium: true },
+      { feature: "Voice notes (patient speaks)", basic: false, standard: true, premium: true },
+      { feature: "Live real-time voice agent", basic: false, standard: false, premium: true },
+      { feature: "Automated reminders", basic: false, standard: true, premium: true },
+      { feature: "Urgency triage alerts", basic: false, standard: false, premium: true },
+      { feature: "Review collection", basic: false, standard: false, premium: true },
+      { feature: "Monthly conversations", basic: "500", standard: "2,000", premium: "Unlimited" },
+    ],
+    faqs: [
+      { q: "What is the AI Automation Suite?", a: "It's your clinic's AI front desk — a single assistant that answers patient questions, books appointments, sends reminders, and follows up, across your website and WhatsApp, 24/7. Higher tiers add real-time voice calls and staff alerts." },
+      { q: "Will it work with my current systems?", a: "Yes. Standard and Premium integrate with your calendar, CRM, and EHR so bookings and patient details flow in automatically — no double entry." },
+      { q: "How fast can we go live?", a: "Typically 5 business days. We train the AI on your services, prices, and hours, test it with you, then switch it on." },
+      { q: "Is it only for dental clinics?", a: "No — it works for dental, aesthetic, dermatology, and multi-specialty clinics. It's trained on your specific services." },
+    ],
+    timeline: "Live in 5 business days",
+    technologies: ["GPT-4o", "Realtime voice AI", "WhatsApp Business API", "Calendar & EHR integrations"],
+    support: "Included ongoing support; dedicated success manager on Premium.",
+    guarantee: "30-day money-back guarantee if it doesn't reduce your missed patients.",
+  },
   // ─── WEB & APP ──────────────────────────────────────────────────────────────
   {
     id: "healthcare-website",
@@ -1655,6 +1742,7 @@ const allServices: ServicePricing[] = [
 
 // Only services that have a live page on the website
 const ACTIVE_IDS = [
+  "ai-automation",        // flagship — AI Automation Suite
   "healthcare-website",   // /clinic-website-design
   "mobile-app",           // /clinic-mobile-app
   "ai-receptionist",      // /ai-receptionist
@@ -1666,9 +1754,10 @@ const ACTIVE_IDS = [
   "meta-ads",             // /digital-marketing-for-clinics
 ] as const;
 
-export const pricingServices = allServices.filter((s) =>
-  (ACTIVE_IDS as readonly string[]).includes(s.id)
-);
+// Order follows ACTIVE_IDS so the flagship (AI Automation) leads everywhere.
+export const pricingServices = (ACTIVE_IDS as readonly string[])
+  .map((id) => allServices.find((s) => s.id === id))
+  .filter((s): s is ServicePricing => Boolean(s));
 
 export const serviceCategories = ["All", "Web & App", "AI & Automation", "Marketing", "Integration"] as const;
 export type ServiceCategory = typeof serviceCategories[number];

@@ -15,6 +15,27 @@ import { FormProvider, useForm } from "@/context/FormContext";
 
 const services = [
   {
+    Icon: PhoneCall,
+    title: "AI Automation Suite",
+    slug: "ai-automation",
+    href: "/ai-receptionist",
+    category: "AI",
+    tagline: "Your AI front desk — answers, books & follows up 24/7.",
+    desc: "The all-in-one AI front desk for busy clinics. It answers patient questions on your website and WhatsApp, books appointments straight into your calendar, sends reminders to cut no-shows, and (on higher tiers) takes real-time voice calls — never missing a patient, day or night.",
+    stat1: { value: "24/7", label: "Never misses a call or chat" },
+    stat2: { value: "$500", label: "Starting / month" },
+    includes: [
+      "AI chat assistant on website + WhatsApp",
+      "Books appointments into your calendar",
+      "Voice notes & live real-time voice agent",
+      "Automated confirmations & reminders",
+      "Urgency triage alerts to your staff",
+      "Trained on your services, prices & hours",
+    ],
+    popular: true,
+    hot: true,
+  },
+  {
     Icon: Megaphone,
     title: "Digital Marketing for Clinics",
     slug: "digital-marketing",
@@ -32,7 +53,7 @@ const services = [
       "Weekly performance reports",
       "Monthly strategy review calls",
     ],
-    popular: true,
+    popular: false,
   },
   {
     Icon: Globe,
@@ -69,7 +90,7 @@ const services = [
       "Appointment booking & management",
       "Digital patient records access",
       "Push notification reminders",
-      "Payment integration (JazzCash/Easypaisa)",
+      "Payment integration (Stripe, Apple Pay)",
       "Staff admin dashboard",
     ],
     popular: false,
@@ -302,9 +323,11 @@ function ServiceCard({
       }`}
     >
       {s.popular && (
-        <div className="bg-[#00283C] px-6 py-2 flex items-center justify-between">
-          <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Most Popular Service</span>
-          <span className="text-[10px] text-white/40">Alliance Tech</span>
+        <div className="px-6 py-2 flex items-center justify-between" style={{ background: (s as { hot?: boolean }).hot ? "linear-gradient(90deg,#F97316,#EF4444)" : "#00283C" }}>
+          <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">
+            {(s as { hot?: boolean }).hot ? "🔥 Hot — Flagship Service" : "Most Popular Service"}
+          </span>
+          <span className="text-[10px] text-white/50">Alliance Tech</span>
         </div>
       )}
 

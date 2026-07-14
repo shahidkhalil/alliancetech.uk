@@ -5,7 +5,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { pricingServices } from "@/lib/pricingData";
 
 // Headline services shown as a homepage preview — full list lives on /pricing.
-const FEATURED_IDS = ["healthcare-website", "ai-receptionist", "local-seo", "google-ads"];
+const FEATURED_IDS = ["ai-automation", "healthcare-website", "local-seo", "google-ads"];
 
 const COLS = "grid grid-cols-[1fr_84px_104px_84px] sm:grid-cols-[1fr_120px_150px_120px] lg:grid-cols-[1fr_150px_180px_150px]";
 
@@ -97,6 +97,9 @@ export default function PricingPackages() {
               <div className="px-5 lg:px-6 py-5 flex flex-col justify-center min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-[#00283C] truncate">{service.name}</span>
+                  {service.id === "ai-automation" && (
+                    <span className="flex-shrink-0 text-[9px] font-black uppercase tracking-wider text-white bg-gradient-to-r from-[#F97316] to-[#EF4444] px-1.5 py-0.5 rounded-full">🔥 Hot</span>
+                  )}
                   <ArrowRight className="w-3.5 h-3.5 text-[#0077A8] flex-shrink-0 translate-x-[-4px] group-hover:translate-x-0 opacity-0 group-hover:opacity-100 transition-all duration-200" />
                 </div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">{service.category}</span>
