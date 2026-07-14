@@ -7,7 +7,6 @@ import Problems from "@/components/Problems";
 import Solutions from "@/components/Solutions";
 import WhatsAppDemo from "@/components/WhatsAppDemo";
 import EHRDashboard from "@/components/EHRDashboard";
-import Results from "@/components/Results";
 import Guarantee from "@/components/Guarantee";
 import ForWho from "@/components/ForWho";
 import Process from "@/components/Process";
@@ -32,7 +31,6 @@ function HomeContent() {
       <Solutions />
       <WhatsAppDemo />
       <EHRDashboard />
-      <Results />
       <Guarantee />
       <ForWho />
       <Process />
