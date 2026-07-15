@@ -7,10 +7,10 @@ import { useForm } from "@/context/FormContext";
 
 const navLinks = [
   {
-    label: "What We Do",
+    label: "Services",
     href: "/#services",
     dropdown: {
-      heading: "What We Do",
+      heading: "Services",
       links: [
         { label: "All Services", href: "/services" },
         { label: "AI Automation Suite", href: "/ai-receptionist" },
@@ -26,10 +26,10 @@ const navLinks = [
     },
   },
   {
-    label: "Who We Help",
+    label: "Who It's For",
     href: "#",
     dropdown: {
-      heading: "Who We Help",
+      heading: "Who It's For",
       links: [
         { label: "Dental Clinics", href: "/dental-clinic-growth" },
         { label: "Aesthetic Clinics", href: "/aesthetic-clinic-growth" },
@@ -38,14 +38,13 @@ const navLinks = [
     },
   },
   {
-    label: "Who We Are",
+    label: "Company",
     href: "#",
     dropdown: {
-      heading: "Who We Are",
+      heading: "Company",
       links: [
         { label: "About Us", href: "/about" },
         { label: "Our Mission", href: "/our-mission" },
-        { label: "Our Work", href: "/portfolio" },
         { label: "Contact Us", href: "/contact" },
       ],
     },
@@ -61,15 +60,14 @@ const navLinks = [
     dropdown: null,
   },
   {
-    label: "Resources",
+    label: "Try It",
     href: "#",
     dropdown: {
-      heading: "Resources",
+      heading: "Try It & Learn More",
       links: [
         { label: "Free Website Audit", href: "/free-website-audit" },
+        { label: "Try Our AI Receptionist", href: "/ai-receptionist" },
         { label: "FAQ", href: "/#faq" },
-        { label: "WhatsApp AI Demo", href: "/whatsapp-ai-automation" },
-        { label: "EHR Platform Demo", href: "/ehr-platform" },
       ],
     },
   },
@@ -150,7 +148,7 @@ export default function Navigation() {
                 WhatsApp
               </a>
               <button onClick={openForm} className="btn-dark px-5 py-2.5 text-sm">
-                Let&apos;s Talk
+                Book a Free Audit
               </button>
             </div>
 
@@ -211,7 +209,7 @@ export default function Navigation() {
               <div className="pt-3 border-t border-gray-100 mt-2">
                 <button onClick={() => { setMobileOpen(false); openForm(); }}
                   className="btn-dark w-full py-3 text-sm">
-                  Let&apos;s Talk
+                  Book a Free Audit
                 </button>
               </div>
             </div>
