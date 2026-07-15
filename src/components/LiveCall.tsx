@@ -16,6 +16,45 @@ interface Props {
   onClose: () => void;
 }
 
+type FnCall = { type?: string; name?: string; call_id?: string; arguments?: string };
+
+function digitsOnly(text: string) {
+  return (text.match(/\d/g) || []).join("");
+}
+
+/** Pick the best recent user transcript for the field Maya is confirming. */
+function pickTranscript(field: string, recent: string[]): { text: string; digits: string; spoken_digits: string } {
+  const list = [...recent].reverse().filter(Boolean);
+  let text = list[0] || "";
+
+  if (field === "phone") {
+    const withDigits = list.find((t) => digitsOnly(t).length >= 7);
+    if (withDigits) text = withDigits;
+  } else if (field === "email") {
+    const withEmail = list.find((t) => /@|\bat\b|\bdot\b/i.test(t));
+    if (withEmail) text = withEmail;
+  } else if (field === "name") {
+    // Prefer a short alphabetic utterance over a yes/no or a phone string.
+    const nameLike = list.find((t) => {
+      const d = digitsOnly(t);
+      const words = t.trim().split(/\s+/);
+      return d.length < 4 && words.length >= 1 && words.length <= 5 && /[a-zA-Z]/.test(t) && !/^(yes|yeah|yep|no|nope|correct|right)\b/i.test(t.trim());
+    });
+    if (nameLike) text = nameLike;
+  }
+
+  const digits = digitsOnly(text);
+  return {
+    text: text.trim(),
+    digits,
+    spoken_digits: digits ? digits.split("").join(" ") : "",
+  };
+}
+
+function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 export default function LiveCall({ onClose }: Props) {
   const [state, setState] = useState<CallState>("connecting");
   const [error, setError] = useState("");
@@ -30,6 +69,8 @@ export default function LiveCall({ onClose }: Props) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const captionRef = useRef("");
+  // Accurate STT of what the patient said (separate from Maya's speech model).
+  const userTranscriptsRef = useRef<string[]>([]);
 
   const hangUp = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -68,11 +109,20 @@ export default function LiveCall({ onClose }: Props) {
         streamRef.current = stream;
         stream.getTracks().forEach((t) => pc.addTrack(t, stream));
 
-        // 3. Data channel: captions, talking state, and booking tool calls.
+        // 3. Data channel: captions, user STT, recall tool, and booking.
         const dc = pc.createDataChannel("oai-events");
         dc.onmessage = async (e) => {
           try {
             const ev = JSON.parse(e.data);
+
+            // Dedicated input transcription (more accurate for digits / spellings).
+            if (ev.type === "conversation.item.input_audio_transcription.completed") {
+              const t = String(ev.transcript || "").trim();
+              if (t) {
+                userTranscriptsRef.current = [...userTranscriptsRef.current.slice(-11), t];
+              }
+            }
+
             if (ev.type === "response.audio_transcript.delta" || ev.type === "response.output_audio_transcript.delta") {
               captionRef.current += ev.delta || "";
               setCaption(captionRef.current.slice(-160));
@@ -81,29 +131,68 @@ export default function LiveCall({ onClose }: Props) {
             if (ev.type === "response.done") {
               setMayaTalking(false);
               captionRef.current = "";
-              // Handle a booking decision from the agent.
-              const call = (ev.response?.output || []).find((o: { type?: string }) => o.type === "function_call");
-              if (call?.name === "book_appointment") {
-                const args = JSON.parse(call.arguments || "{}");
-                let output = { booked: false as boolean, reference: "" };
-                try {
-                  const br = await fetch(BOOK_ENDPOINT, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ ...args, clinicId: "demo" }),
-                  });
-                  const bd = await br.json();
-                  if (br.ok && bd.booked) {
-                    output = { booked: true, reference: bd.reference };
-                    setBooked(`${args.service} · ${args.preferredTime} (Ref ${bd.reference})`);
+              const calls = (ev.response?.output || []).filter(
+                (o: FnCall) => o.type === "function_call" && o.name && o.call_id
+              ) as FnCall[];
+              if (!calls.length) return;
+
+              for (const call of calls) {
+                if (call.name === "recall_last_spoken_text") {
+                  // Transcription can lag a beat behind the tool call — wait briefly if needed.
+                  let args: { field?: string } = {};
+                  try { args = JSON.parse(call.arguments || "{}"); } catch { /* ignore */ }
+                  const field = args.field || "other";
+                  let picked = pickTranscript(field, userTranscriptsRef.current);
+                  if (!picked.text || (field === "phone" && picked.digits.length < 7)) {
+                    await sleep(1200);
+                    picked = pickTranscript(field, userTranscriptsRef.current);
                   }
-                } catch { /* agent will apologise */ }
-                dc.send(JSON.stringify({
-                  type: "conversation.item.create",
-                  item: { type: "function_call_output", call_id: call.call_id, output: JSON.stringify(output) },
-                }));
-                dc.send(JSON.stringify({ type: "response.create" }));
+                  const ready =
+                    !!picked.text &&
+                    (field !== "phone" || picked.digits.length >= 7) &&
+                    (field !== "email" || /@|\bat\b|\bdot\b/i.test(picked.text) || picked.text.length > 5);
+                  const output = {
+                    ready,
+                    field,
+                    text: picked.text,
+                    digits: picked.digits,
+                    spoken_digits: picked.spoken_digits,
+                    instruction: ready
+                      ? field === "phone"
+                        ? "Read spoken_digits back one digit at a time, then ask if that is correct. Use digits as the phone value only after they confirm."
+                        : "Confirm this exact text with the patient before continuing. Do not invent or change characters."
+                      : "Transcript not ready or unclear — ask the patient to repeat slowly. Do not guess.",
+                  };
+                  dc.send(JSON.stringify({
+                    type: "conversation.item.create",
+                    item: { type: "function_call_output", call_id: call.call_id, output: JSON.stringify(output) },
+                  }));
+                }
+
+                if (call.name === "book_appointment") {
+                  const args = JSON.parse(call.arguments || "{}");
+                  let output = { booked: false as boolean, reference: "" };
+                  try {
+                    const br = await fetch(BOOK_ENDPOINT, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ ...args, clinicId: "demo" }),
+                    });
+                    const bd = await br.json();
+                    if (br.ok && bd.booked) {
+                      output = { booked: true, reference: bd.reference };
+                      setBooked(`${args.service} · ${args.preferredTime} (Ref ${bd.reference})`);
+                    }
+                  } catch { /* agent will apologise */ }
+                  dc.send(JSON.stringify({
+                    type: "conversation.item.create",
+                    item: { type: "function_call_output", call_id: call.call_id, output: JSON.stringify(output) },
+                  }));
+                }
               }
+
+              // One response.create after all tool outputs for this turn.
+              dc.send(JSON.stringify({ type: "response.create" }));
             }
           } catch { /* non-JSON frames ignored */ }
         };
