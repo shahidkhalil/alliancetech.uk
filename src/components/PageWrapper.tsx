@@ -2,10 +2,13 @@
 import { ReactNode } from "react";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
-import ConsultationForm from "./ConsultationForm";
+import dynamic from "next/dynamic";
 import AnalyticsTracker from "./AnalyticsTracker";
-import AuditChatWidget from "./AuditChatWidget";
 import { FormProvider, useForm } from "@/context/FormContext";
+
+// Lazy: both pull in the Firebase SDK and are only needed on interaction.
+const ConsultationForm = dynamic(() => import("./ConsultationForm"), { ssr: false });
+const AuditChatWidget = dynamic(() => import("./AuditChatWidget"), { ssr: false });
 
 function PageContent({ children }: { children: ReactNode }) {
   const { isOpen, closeForm } = useForm();

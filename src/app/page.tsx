@@ -1,6 +1,10 @@
 "use client";
 import { FormProvider, useForm } from "@/context/FormContext";
-import ConsultationForm from "@/components/ConsultationForm";
+import dynamic from "next/dynamic";
+
+// Lazy: both pull in the Firebase SDK and are only needed on interaction.
+const ConsultationForm = dynamic(() => import("@/components/ConsultationForm"), { ssr: false });
+const AuditChatWidget = dynamic(() => import("@/components/AuditChatWidget"), { ssr: false });
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import Problems from "@/components/Problems";
@@ -15,7 +19,6 @@ import PricingPackages from "@/components/PricingPackages";
 import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
-import AuditChatWidget from "@/components/AuditChatWidget";
 import AuditPromo from "@/components/AuditPromo";
 
 function HomeContent() {

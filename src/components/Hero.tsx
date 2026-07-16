@@ -73,7 +73,8 @@ export default function Hero() {
 
       <div className="relative min-h-[70vh] flex items-center">
         <div className="max-w-4xl mx-auto px-6 text-center py-16">
-          <AnimatePresence mode="wait">
+          {/* initial={false}: first slide paints instantly (LCP) — later slides still animate */}
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={slide}
               initial={{ opacity: 0, y: 18 }}
@@ -104,10 +105,8 @@ export default function Hero() {
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
+          {/* Above the fold — render immediately, no fade-in delay (helps LCP / Speed Index) */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button onClick={openForm}
               className="btn-dark px-8 py-4 text-base w-full sm:w-auto">
               Get Your Free Clinic Audit
@@ -119,7 +118,7 @@ export default function Hero() {
               </svg>
               Chat on WhatsApp
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
 
