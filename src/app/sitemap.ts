@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const baseUrl = "https://alliancetech.io";
+const baseUrl = "https://alliancetechltd.com";
 
 const routes = [
   { path: "", priority: 1.0 },

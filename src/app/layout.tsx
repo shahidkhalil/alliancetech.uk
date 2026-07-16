@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://alliancetech.io"),
+  metadataBase: new URL("https://alliancetechltd.com"),
   title: "Alliance Tech | AI-Powered Growth for Dental & Aesthetic Clinics",
   description:
     "AI automation for dental & aesthetic clinics: AI receptionists, WhatsApp agents, and patient acquisition that fill your calendar. Book a free audit.",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     description:
       "Get more patients, automate operations, and increase revenue with our healthcare growth ecosystem.",
     type: "website",
-    url: "https://alliancetech.io",
+    url: "https://alliancetechltd.com",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Alliance Tech (PVT) LTD" }],
   },
   twitter: {
