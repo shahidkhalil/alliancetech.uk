@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: "Alliance Tech | AI-Powered Growth for Dental & Aesthetic Clinics",
   description:
     "AI automation for dental & aesthetic clinics: AI receptionists, WhatsApp agents, and patient acquisition that fill your calendar. Book a free audit.",
+  alternates: { canonical: "/" },
   keywords: [
     "dental clinic growth",
     "aesthetic clinic AI",

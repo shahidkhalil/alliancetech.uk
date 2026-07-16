@@ -5,7 +5,9 @@ import FinalCTA from "@/components/FinalCTA";
 
 export const metadata: Metadata = {
   title: "About Alliance Tech | AI & Growth Agency for Clinics in the US",
-  description: "Alliance Tech is America's leading healthcare growth agency.",
+  description:
+    "Meet Alliance Tech — the AI and growth agency helping US dental and aesthetic clinics win more patients with automation, websites, and SEO.",
+  alternates: { canonical: "/about" },
 };
 
 const featuredValue = {
