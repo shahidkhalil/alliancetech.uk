@@ -89,7 +89,9 @@ export default function AuditChatWidget() {
         transition={{ delay: 1, type: "spring", stiffness: 260, damping: 20 }}
         onClick={() => { setOpen((o) => !o); setEverOpened(true); setShowNudge(false); }}
         className="fixed bottom-5 right-4 sm:right-6 z-[60] group"
-        aria-label={open ? "Close audit chat" : "Open free website audit chat"}
+        // When closed the button's own visible text is its accessible name —
+        // adding an aria-label would override and mismatch it (WCAG 2.5.3).
+        aria-label={open ? "Close chat" : undefined}
       >
         {open ? (
           <span className="flex items-center justify-center w-16 h-16 rounded-full bg-[#00283C] shadow-xl text-white hover:scale-105 transition-transform">

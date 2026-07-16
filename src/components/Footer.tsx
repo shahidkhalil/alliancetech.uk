@@ -53,7 +53,7 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Services</h4>
+            <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Services</p>
             <ul className="space-y-2.5">
               {services.map((s) => (
                 <li key={s.label}>
@@ -65,7 +65,7 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Company</h4>
+            <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Company</p>
             <ul className="space-y-2.5">
               {[
                 { label: "About Us", href: "/about" },
@@ -83,7 +83,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Contact</h4>
+            <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4">Contact</p>
             <div className="space-y-3">
               <a href="https://wa.me/923207800010" target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors">

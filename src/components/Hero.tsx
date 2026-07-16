@@ -97,11 +97,18 @@ export default function Hero() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Slide dots */}
-          <div className="flex items-center justify-center gap-2 mb-9">
+          {/* Slide dots — 24px+ tap target (a11y), small visual bar inside */}
+          <div className="flex items-center justify-center mb-7">
             {heroSlides.map((_, di) => (
-              <button key={di} onClick={() => setSlide(di)} aria-label={`Slide ${di + 1}`}
-                className={`h-1.5 rounded-full transition-all ${di === slide ? "w-6 bg-[#0077A8]" : "w-1.5 bg-gray-300 hover:bg-gray-400"}`} />
+              <button
+                key={di}
+                onClick={() => setSlide(di)}
+                aria-label={`Go to slide ${di + 1}`}
+                aria-current={di === slide ? "true" : undefined}
+                className="p-2.5 flex items-center justify-center group"
+              >
+                <span className={`block h-1.5 rounded-full transition-all ${di === slide ? "w-6 bg-[#0077A8]" : "w-1.5 bg-gray-300 group-hover:bg-gray-400"}`} />
+              </button>
             ))}
           </div>
 
