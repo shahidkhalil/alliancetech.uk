@@ -7,7 +7,8 @@ import { pricingServices } from "@/lib/pricingData";
 // Headline services shown as a homepage preview — full list lives on /pricing.
 const FEATURED_IDS = ["ai-automation", "healthcare-website", "local-seo", "google-ads"];
 
-const COLS = "grid grid-cols-[1fr_84px_104px_84px] sm:grid-cols-[1fr_120px_150px_120px] lg:grid-cols-[1fr_150px_180px_150px]";
+// Table layout is sm+ only — phones get the stacked card list instead.
+const COLS = "grid grid-cols-[1fr_110px_140px_110px] lg:grid-cols-[1fr_150px_180px_150px]";
 
 export default function PricingPackages() {
   const ref = useRef(null);
@@ -59,12 +60,58 @@ export default function PricingPackages() {
           </div>
         </motion.div>
 
-        {/* ── Pricing matrix ── */}
+        {/* ── Mobile: stacked cards (the 4-col table can't fit a phone) ── */}
+        <div className="sm:hidden space-y-4">
+          {featured.map((service) => (
+            <a
+              key={service.id}
+              href={`/pricing#${service.id}`}
+              className="block rounded-2xl bg-white border border-gray-200/80 shadow-md overflow-hidden"
+            >
+              <div className="px-4 pt-4 pb-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="text-[15px] font-bold text-[#00283C] leading-snug">{service.name}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">{service.category}</p>
+                  </div>
+                  {service.id === "ai-automation" && (
+                    <span className="flex-shrink-0 text-[9px] font-black uppercase tracking-wider text-white bg-gradient-to-r from-[#F97316] to-[#EF4444] px-1.5 py-0.5 rounded-full">🔥 Hot</span>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-3 border-t border-gray-100">
+                {service.packages.map((pkg, pi) => (
+                  <div
+                    key={pkg.name}
+                    className={`py-3 px-1 flex flex-col items-center justify-center text-center ${pi === 1 ? "bg-[#0077A8]/[0.06]" : ""} ${pi > 0 ? "border-l border-gray-100" : ""}`}
+                  >
+                    <span className={`text-[9px] font-black uppercase tracking-wider mb-1 ${pi === 1 ? "text-[#0077A8]" : "text-gray-400"}`}>
+                      {pkg.name}
+                    </span>
+                    <span className={`text-sm font-extrabold leading-none ${pi === 1 ? "text-[#0077A8]" : "text-[#00283C]"}`}>
+                      {pkg.price}
+                    </span>
+                    <span className={`text-[9px] mt-1 leading-none ${pi === 1 ? "text-[#0077A8]/60" : "text-gray-400"}`}>
+                      {pkg.period === "one-time" ? "one-time" : pkg.period.replace("/ month + ad spend", "+spend")}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </a>
+          ))}
+
+          <a href="/pricing" className="flex items-center justify-between gap-2 rounded-2xl bg-[#F8FAFC] border border-gray-200 px-4 py-4">
+            <span className="text-sm font-bold text-[#0077A8]">View all {pricingServices.length} services &amp; pricing</span>
+            <ArrowRight className="w-4 h-4 text-[#0077A8] flex-shrink-0" />
+          </a>
+        </div>
+
+        {/* ── Pricing matrix (sm and up) ── */}
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.12 }}
-          className="rounded-2xl overflow-hidden bg-white border border-gray-200/80 shadow-xl shadow-gray-200/50"
+          className="hidden sm:block rounded-2xl overflow-hidden bg-white border border-gray-200/80 shadow-xl shadow-gray-200/50"
         >
           {/* Column labels */}
           <div className={`${COLS} bg-[#00283C]`}>
