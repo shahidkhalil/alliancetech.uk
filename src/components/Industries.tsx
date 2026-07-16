@@ -68,7 +68,7 @@ export default function Industries() {
               Built For{" "}
               <span className="gradient-text">Healthcare</span>
             </h2>
-            <p className="text-lg text-white/40 max-w-2xl mx-auto">
+            <p className="text-lg text-white/60 max-w-2xl mx-auto">
               We specialise exclusively in healthcare — so every solution is tailored to how clinics actually work.
             </p>
           </motion.div>
@@ -124,7 +124,7 @@ export default function Industries() {
                 </div>
               </div>
 
-              <p className="text-sm text-white/50 leading-relaxed mb-5">{ind.description}</p>
+              <p className="text-sm text-white/60 leading-relaxed mb-5">{ind.description}</p>
 
               {/* Services */}
               <div className="flex flex-wrap gap-2 mb-5">
@@ -145,7 +145,7 @@ export default function Industries() {
 
               {/* Result metric */}
               <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
-                <span className="text-xs text-white/40">Typical Results</span>
+                <span className="text-xs text-white/60">Typical Results</span>
                 <span className="text-sm font-bold" style={{ color: ind.color }}>{ind.results}</span>
               </div>
             </motion.div>
@@ -159,7 +159,7 @@ export default function Industries() {
           transition={{ delay: 0.6 }}
           className="mt-12 text-center"
         >
-          <p className="text-white/40 mb-6">Not sure if we work with your clinic type?</p>
+          <p className="text-white/60 mb-6">Not sure if we work with your clinic type?</p>
           <button
             onClick={openForm}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass text-sm font-semibold text-white hover:border-brand-blue/40 hover:bg-brand-blue/10 transition-all duration-300"

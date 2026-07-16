@@ -352,7 +352,7 @@ export default function ReceptionistDemo() {
             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-white/80 bg-white/10 px-2.5 py-1 rounded-full">
               <Sparkles className="w-3 h-3" /> LIVE DEMO
             </span>
-            <p className="text-[10px] text-white/40 mt-1 flex items-center justify-end gap-1"><Clock className="w-3 h-3" /> replies in seconds</p>
+            <p className="text-[10px] text-white/60 mt-1 flex items-center justify-end gap-1"><Clock className="w-3 h-3" /> replies in seconds</p>
           </div>
         </div>
 

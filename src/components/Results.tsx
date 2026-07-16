@@ -62,7 +62,7 @@ export default function Results() {
               transition={{ delay: i * 0.1 }}
               className="card-white rounded-xl overflow-hidden">
               <div className="bg-[#00283C] px-6 py-4">
-                <div className="text-xs text-white/50 font-semibold uppercase tracking-wider mb-1">{c.type} Clinic</div>
+                <div className="text-xs text-white/60 font-semibold uppercase tracking-wider mb-1">{c.type} Clinic</div>
                 <div className="text-sm font-bold text-white">{c.clinic}</div>
               </div>
               <div className="p-6">

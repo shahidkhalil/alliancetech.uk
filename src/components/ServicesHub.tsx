@@ -74,7 +74,7 @@ export default function ServicesHub() {
             <h2 className="text-3xl lg:text-4xl font-extrabold text-white mb-4 tracking-tight">
               Explore Our <span className="gradient-text">Services</span>
             </h2>
-            <p className="text-white/40 max-w-xl mx-auto">
+            <p className="text-white/60 max-w-xl mx-auto">
               Six specialist services — each with its own dedicated page, strategy, and results.
             </p>
           </motion.div>
@@ -117,7 +117,7 @@ export default function ServicesHub() {
               </div>
 
               <h3 className="text-base font-bold text-white mb-2">{s.title}</h3>
-              <p className="text-sm text-white/50 leading-relaxed mb-4">{s.desc}</p>
+              <p className="text-sm text-white/60 leading-relaxed mb-4">{s.desc}</p>
 
               <div className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: s.color }}>
                 Learn more
@@ -139,7 +139,7 @@ export default function ServicesHub() {
             <span className="text-3xl">📍</span>
             <div>
               <p className="font-bold text-white text-sm">Based in Houston?</p>
-              <p className="text-white/50 text-xs">We have a dedicated growth strategy for Houston dental clinics.</p>
+              <p className="text-white/60 text-xs">We have a dedicated growth strategy for Houston dental clinics.</p>
             </div>
           </div>
           <a href="/dental-clinic-houston"

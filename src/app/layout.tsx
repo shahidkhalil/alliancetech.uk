@@ -13,7 +13,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://alliancetechltd.com"),
-  title: "Alliance Tech | AI-Powered Growth for Dental & Aesthetic Clinics",
+  title: "Alliance Tech | AI-Powered Growth for Clinics",
   description:
     "AI automation for dental & aesthetic clinics: AI receptionists, WhatsApp agents, and patient acquisition that fill your calendar. Book a free audit.",
   alternates: { canonical: "/" },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Alliance Tech" }],
   openGraph: {
-    title: "Alliance Tech | AI-Powered Growth for Dental & Aesthetic Clinics",
+    title: "Alliance Tech | AI-Powered Growth for Clinics",
     description:
       "Get more patients, automate operations, and increase revenue with our healthcare growth ecosystem.",
     type: "website",

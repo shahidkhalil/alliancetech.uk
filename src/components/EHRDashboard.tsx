@@ -38,7 +38,7 @@ export default function EHRDashboard() {
                   <div className="w-2 h-2 rounded-full bg-green-400" />
                 </div>
                 <span className="text-white/60 text-xs font-mono">Alliance EHR — Today&apos;s Schedule</span>
-                <span className="text-white/30 text-xs">Live</span>
+                <span className="text-white/60 text-xs">Live</span>
               </div>
 
               {/* Dashboard stats */}

@@ -146,7 +146,7 @@ export default function Solutions() {
 
               {/* Text */}
               <div className="flex-1">
-                <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${s.popular ? "text-white/50" : "text-[#00B4D8]"}`}>
+                <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${s.popular ? "text-white/60" : "text-[#00B4D8]"}`}>
                   {s.subtitle}
                 </p>
                 <h3 className={`text-base font-bold mb-2 leading-snug ${s.popular ? "text-white" : "text-[#00283C]"}`}>

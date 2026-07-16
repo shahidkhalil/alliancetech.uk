@@ -7,7 +7,7 @@ export default function FinalCTA() {
   return (
     <section className="py-16 lg:py-20 bg-[#00283C]">
       <div className="max-w-3xl mx-auto px-6 text-center">
-        <p className="text-sm font-bold text-white/40 uppercase tracking-widest mb-4">ONLY ACCEPTING 10 NEW CLINICS THIS MONTH</p>
+        <p className="text-sm font-bold text-white/60 uppercase tracking-widest mb-4">ONLY ACCEPTING 10 NEW CLINICS THIS MONTH</p>
         <h2 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight mb-4">
           Ready to Grow Your Clinic?
         </h2>
@@ -27,7 +27,7 @@ export default function FinalCTA() {
             Chat on WhatsApp
           </a>
         </div>
-        <p className="text-white/30 text-xs mt-6">★★★★★ Rated 4.9/5 by 100+ clinics across the United States · 3–6 month minimum · Results guaranteed</p>
+        <p className="text-white/60 text-xs mt-6">★★★★★ Rated 4.9/5 by 100+ clinics across the United States · 3–6 month minimum · Results guaranteed</p>
       </div>
     </section>
   );

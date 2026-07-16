@@ -43,7 +43,7 @@ function ChatMessage({ msg, visible }: { msg: typeof demoMessages[0]; visible: b
         style={{ whiteSpace: "pre-line" }}
       >
         {msg.text}
-        <div className="text-[10px] text-white/30 mt-1 text-right">
+        <div className="text-[10px] text-white/60 mt-1 text-right">
           {msg.from === "ai" ? "AI Receptionist • Just now" : "Just now"}
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function AIReceptionist() {
                 Receptionist
               </h2>
 
-              <p className="text-lg text-white/50 mb-8 leading-relaxed">
+              <p className="text-lg text-white/60 mb-8 leading-relaxed">
                 Never lose another patient to a missed call or unanswered message.
                 Our AI Receptionist handles everything — automatically, intelligently, around the clock.
               </p>
@@ -146,7 +146,7 @@ export default function AIReceptionist() {
                 </div>
                 <div>
                   <div className="text-white font-bold text-lg">24 / 7 / 365</div>
-                  <div className="text-white/50 text-sm">Always online, never tired</div>
+                  <div className="text-white/60 text-sm">Always online, never tired</div>
                 </div>
               </motion.div>
             </motion.div>
@@ -216,7 +216,7 @@ export default function AIReceptionist() {
 
               {/* Input bar */}
               <div className="flex items-center gap-3 px-5 py-4 border-t border-white/[0.06]">
-                <div className="flex-1 glass rounded-full px-4 py-2.5 text-sm text-white/30">
+                <div className="flex-1 glass rounded-full px-4 py-2.5 text-sm text-white/60">
                   Type a message...
                 </div>
                 <button
@@ -231,11 +231,11 @@ export default function AIReceptionist() {
 
             {/* Floating stats */}
             <div className="absolute -right-4 top-8 glass rounded-2xl px-4 py-3 border-green-500/20 shadow-xl">
-              <div className="text-xs text-white/50 mb-0.5">Response Time</div>
+              <div className="text-xs text-white/60 mb-0.5">Response Time</div>
               <div className="text-xl font-bold text-green-400">28 sec</div>
             </div>
             <div className="absolute -left-4 bottom-12 glass rounded-2xl px-4 py-3 border-brand-blue/20 shadow-xl">
-              <div className="text-xs text-white/50 mb-0.5">Appointments Booked</div>
+              <div className="text-xs text-white/60 mb-0.5">Appointments Booked</div>
               <div className="text-xl font-bold gradient-text-blue">1,247</div>
             </div>
           </motion.div>

@@ -68,12 +68,12 @@ export default function PricingPackages() {
         >
           {/* Column labels */}
           <div className={`${COLS} bg-[#00283C]`}>
-            <div className="px-5 lg:px-6 py-4 text-[10px] font-black uppercase tracking-[0.18em] text-white/40">
+            <div className="px-5 lg:px-6 py-4 text-[10px] font-black uppercase tracking-[0.18em] text-white/60">
               Service
             </div>
             {(["Basic", "Standard", "Premium"] as const).map((tier, i) => (
               <div key={tier} className={`py-4 text-center relative ${i === 1 ? "bg-[#0077A8]" : ""}`}>
-                <p className={`text-[10px] font-black uppercase tracking-[0.16em] ${i === 1 ? "text-white" : "text-white/40"}`}>
+                <p className={`text-[10px] font-black uppercase tracking-[0.16em] ${i === 1 ? "text-white" : "text-white/60"}`}>
                   {tier}
                 </p>
                 {i === 1 && (
@@ -146,7 +146,7 @@ export default function PricingPackages() {
         >
           <div className="text-center sm:text-left">
             <p className="text-white font-extrabold text-base">Not sure which plan is right?</p>
-            <p className="text-white/50 text-sm mt-0.5">Book a free 30-min call — we&apos;ll recommend the exact fit.</p>
+            <p className="text-white/60 text-sm mt-0.5">Book a free 30-min call — we&apos;ll recommend the exact fit.</p>
           </div>
           <a
             href="/pricing"

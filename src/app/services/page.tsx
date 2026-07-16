@@ -330,7 +330,7 @@ function ServiceCard({
           <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">
             {(s as { hot?: boolean }).hot ? "🔥 Hot — Flagship Service" : "Most Popular Service"}
           </span>
-          <span className="text-[10px] text-white/50">Alliance Tech</span>
+          <span className="text-[10px] text-white/60">Alliance Tech</span>
         </div>
       )}
 

@@ -79,7 +79,7 @@ export default function OurMission() {
                 transition={{ delay: i * 0.1, duration: 0.5 }}
                 className={`text-center py-2 ${i > 0 ? "sm:border-l border-white/10" : ""}`}>
                 <div className="text-4xl lg:text-5xl font-extrabold mb-2" style={{ color: "#00B4D8" }}>{v.stat}</div>
-                <div className="text-white/50 text-sm">{v.label}</div>
+                <div className="text-white/60 text-sm">{v.label}</div>
               </motion.div>
             ))}
           </div>

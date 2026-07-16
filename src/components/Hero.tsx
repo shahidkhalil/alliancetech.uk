@@ -147,7 +147,7 @@ export default function Hero() {
           ].map((s) => (
             <div key={s.label}>
               <div className="text-3xl font-extrabold text-white mb-0.5">{s.stat}</div>
-              <div className="text-xs text-white/50 font-medium">{s.label}</div>
+              <div className="text-xs text-white/60 font-medium">{s.label}</div>
             </div>
           ))}
         </div>

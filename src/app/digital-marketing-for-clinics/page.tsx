@@ -95,7 +95,7 @@ export default function DigitalMarketingForClinics() {
               Campaigns built for clinics, <span style={{ color: "#00B4D8" }}>not retail.</span>
             </h2>
             <p className="text-white/65 leading-relaxed mb-5">{featured.desc}</p>
-            <p className="text-white/40 text-sm leading-relaxed">Every campaign is tailored to your clinic type, location, and target patient. Never a copy-paste template.</p>
+            <p className="text-white/60 text-sm leading-relaxed">Every campaign is tailored to your clinic type, location, and target patient. Never a copy-paste template.</p>
           </motion.div>
 
           <div className="lg:pt-2">

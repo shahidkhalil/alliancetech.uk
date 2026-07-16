@@ -69,7 +69,7 @@ export default function FreeWebsiteAudit() {
               </div>
               <div>
                 <p className="text-sm font-bold text-white">Alliance Audit Bot</p>
-                <p className="text-[11px] text-white/50">AI website auditor · online</p>
+                <p className="text-[11px] text-white/60">AI website auditor · online</p>
               </div>
             </div>
             <AuditChat heightClass="h-[520px]" />

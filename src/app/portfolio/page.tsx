@@ -146,7 +146,7 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
       <div className="bg-[#00283C] px-7 lg:px-10 py-8">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-2">
+            <div className="text-xs font-semibold uppercase tracking-widest text-white/60 mb-2">
               Case Study {String(index + 1).padStart(2, "0")}
             </div>
             <h2 className="text-2xl lg:text-3xl font-extrabold text-white tracking-tight">{c.client}</h2>

@@ -26,7 +26,7 @@ export default function AuditPromo() {
             <p className="text-white/60 text-sm max-w-xl mb-6">
               Our AI audits your clinic&apos;s website with real data — speed, SEO, patient experience, and the exact competitors outranking you on Google. Free, no signup.
             </p>
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-6 text-xs text-white/50">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-6 text-xs text-white/60">
               <span className="flex items-center gap-1.5"><Gauge className="w-4 h-4 text-[#9FD3E8]" /> Speed test</span>
               <span className="flex items-center gap-1.5"><Search className="w-4 h-4 text-[#9FD3E8]" /> SEO check</span>
               <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-[#9FD3E8]" /> Competitor benchmark</span>

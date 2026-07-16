@@ -53,7 +53,7 @@ function PricingCard({
           <div className={`text-4xl font-black tracking-tight leading-none ${dark ? "text-white" : "text-[#00283C]"}`}>
             {pkg.price}
           </div>
-          <div className={`text-xs font-semibold mt-1.5 uppercase tracking-wider ${dark ? "text-white/40" : "text-gray-400"}`}>
+          <div className={`text-xs font-semibold mt-1.5 uppercase tracking-wider ${dark ? "text-white/60" : "text-gray-400"}`}>
             {pkg.period}
           </div>
           {pkg.savings && (
@@ -112,11 +112,11 @@ function PricingCard({
                   {/* Add-ons shown inside expanded area */}
                   {pkg.addOns && pkg.addOns.length > 0 && (
                     <div className={`mt-4 pt-4 border-t ${dark ? "border-white/10" : "border-gray-100"}`}>
-                      <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${dark ? "text-white/30" : "text-gray-300"}`}>
+                      <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${dark ? "text-white/60" : "text-gray-300"}`}>
                         Optional Add-ons
                       </p>
                       {pkg.addOns.map((a) => (
-                        <p key={a} className={`text-xs leading-relaxed ${dark ? "text-white/40" : "text-gray-400"}`}>
+                        <p key={a} className={`text-xs leading-relaxed ${dark ? "text-white/60" : "text-gray-400"}`}>
                           + {a}
                         </p>
                       ))}
@@ -142,11 +142,11 @@ function PricingCard({
         {/* Add-ons when NOT expanded and no extra features hidden */}
         {!hasMore && pkg.addOns && pkg.addOns.length > 0 && (
           <div className={`mt-5 pt-4 border-t ${dark ? "border-white/10" : "border-gray-100"}`}>
-            <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${dark ? "text-white/30" : "text-gray-300"}`}>
+            <p className={`text-[10px] font-black uppercase tracking-widest mb-2 ${dark ? "text-white/60" : "text-gray-300"}`}>
               Optional Add-ons
             </p>
             {pkg.addOns.map((a) => (
-              <p key={a} className={`text-xs leading-relaxed ${dark ? "text-white/40" : "text-gray-400"}`}>
+              <p key={a} className={`text-xs leading-relaxed ${dark ? "text-white/60" : "text-gray-400"}`}>
                 + {a}
               </p>
             ))}
@@ -196,9 +196,9 @@ function ComparisonTable({ service }: { service: ServicePricing }) {
           >
             {/* Header */}
             <div className="grid grid-cols-4 bg-[#00283C]">
-              <div className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white/40">Feature</div>
+              <div className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white/60">Feature</div>
               {["Basic", "Standard", "Premium"].map((n, i) => (
-                <div key={n} className={`px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest ${i === 1 ? "text-[#00B4D8]" : "text-white/50"}`}>
+                <div key={n} className={`px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest ${i === 1 ? "text-[#00B4D8]" : "text-white/60"}`}>
                   {n}
                 </div>
               ))}

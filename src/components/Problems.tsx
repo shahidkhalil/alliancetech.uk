@@ -46,7 +46,7 @@ export default function Problems() {
           className="mt-10 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#00283C]">
           <div>
             <p className="text-white font-bold text-base">Sound familiar? You&apos;re not alone.</p>
-            <p className="text-white/50 text-sm mt-0.5">We&apos;ve fixed all 6 for clinics across the United States — we can fix them for you too.</p>
+            <p className="text-white/60 text-sm mt-0.5">We&apos;ve fixed all 6 for clinics across the United States — we can fix them for you too.</p>
           </div>
           <a href="/#services" className="flex-shrink-0 bg-white text-[#00283C] font-bold px-5 py-2.5 rounded-md text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">
             See Our Solutions →

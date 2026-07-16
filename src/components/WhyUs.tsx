@@ -69,7 +69,7 @@ export default function WhyUs() {
             <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-4 tracking-tight">
               Not Just Another <span className="gradient-text">Marketing Agency</span>
             </h2>
-            <p className="text-white/40 max-w-xl mx-auto text-lg">
+            <p className="text-white/60 max-w-xl mx-auto text-lg">
               Here&apos;s exactly how we&apos;re different from every other agency you&apos;ve spoken to.
             </p>
           </motion.div>
@@ -79,7 +79,7 @@ export default function WhyUs() {
         <div className="space-y-3 mb-14">
           {/* Header row */}
           <div className="grid grid-cols-3 gap-3 text-xs font-bold uppercase tracking-wider px-5">
-            <div className="text-white/30">What you&apos;re comparing</div>
+            <div className="text-white/60">What you&apos;re comparing</div>
             <div className="text-red-400/70 text-center">Other agencies</div>
             <div className="text-brand-cyan text-center">Alliance Tech</div>
           </div>
@@ -94,8 +94,8 @@ export default function WhyUs() {
             >
               <div className="grid grid-cols-3 gap-3 items-center p-5">
                 <div>
-                  <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-1">{c.aspect}</p>
-                  <p className="text-xs text-white/30 leading-relaxed hidden sm:block">{c.detail}</p>
+                  <p className="text-xs font-bold text-white/60 uppercase tracking-wider mb-1">{c.aspect}</p>
+                  <p className="text-xs text-white/60 leading-relaxed hidden sm:block">{c.detail}</p>
                 </div>
                 <div className="flex items-center justify-center">
                   <span className="text-center text-sm text-red-400/70 leading-snug">{c.them}</span>
@@ -122,7 +122,7 @@ export default function WhyUs() {
             <div key={w.label} className="glass rounded-2xl p-5 text-center"
               style={{ borderColor: "rgba(0,212,255,0.1)" }}>
               <div className="text-4xl font-extrabold text-brand-cyan mb-2">{w.stat}</div>
-              <div className="text-xs text-white/50 leading-relaxed">{w.label}</div>
+              <div className="text-xs text-white/60 leading-relaxed">{w.label}</div>
             </div>
           ))}
         </motion.div>

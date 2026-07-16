@@ -259,7 +259,7 @@ export default function LiveCall({ onClose }: Props) {
           </div>
 
           <p className="text-xl font-bold text-white">Maya</p>
-          <p className="text-xs text-white/50 mb-4">Bright Smile Dental Care · Live Call</p>
+          <p className="text-xs text-white/60 mb-4">Bright Smile Dental Care · Live Call</p>
 
           {state === "connecting" && (
             <p className="flex items-center justify-center gap-2 text-sm text-white/70">
@@ -270,7 +270,7 @@ export default function LiveCall({ onClose }: Props) {
           {state === "live" && (
             <>
               <p className="text-2xl font-mono text-white mb-1">{mm}:{ss}</p>
-              <p className="text-[11px] text-white/40 mb-4">demo call · max {Math.round(maxSeconds / 60)} min</p>
+              <p className="text-[11px] text-white/60 mb-4">demo call · max {Math.round(maxSeconds / 60)} min</p>
               <p className="flex items-center justify-center gap-2 text-xs text-white/60 mb-3">
                 <Mic className="w-3.5 h-3.5 text-green-400" /> {mayaTalking ? "Maya is speaking — you can interrupt" : "Listening… just talk"}
               </p>

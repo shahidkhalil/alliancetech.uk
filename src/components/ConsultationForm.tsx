@@ -149,13 +149,13 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
               <div className="flex items-start justify-between px-6 pt-6 pb-4">
                 <div>
                   <h2 className="text-xl font-bold text-white">Get Your Free Clinic Audit</h2>
-                  <p className="text-sm text-white/50 mt-1">
+                  <p className="text-sm text-white/60 mt-1">
                     Takes 60 seconds — we&apos;ll message you on WhatsApp
                   </p>
                 </div>
                 <button
                   onClick={handleClose}
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -277,7 +277,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                         className="space-y-3"
                       >
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" />
                           <input
                             name="name"
                             value={form.name}
@@ -289,7 +289,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                           />
                         </div>
                         <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" />
                           <input
                             name="phone"
                             value={form.phone}
@@ -301,7 +301,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                           />
                         </div>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" />
                           <input
                             name="email"
                             type="email"
@@ -313,7 +313,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                           />
                         </div>
                         <div className="relative">
-                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" />
                           <input
                             name="clinicName"
                             value={form.clinicName}
@@ -324,7 +324,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                           />
                         </div>
                         <div className="relative">
-                          <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-white/30" />
+                          <MessageSquare className="absolute left-3 top-3 w-4 h-4 text-white/60" />
                           <textarea
                             name="message"
                             value={form.message}
@@ -360,11 +360,11 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                             className="flex items-center justify-between py-2.5 px-3 rounded-lg"
                             style={{ background: "rgba(255,255,255,0.04)" }}
                           >
-                            <span className="text-xs text-white/40">{label}</span>
+                            <span className="text-xs text-white/60">{label}</span>
                             <span className="text-sm text-white font-medium text-right">{value}</span>
                           </div>
                         ))}
-                        <p className="text-xs text-white/40 pt-1">
+                        <p className="text-xs text-white/60 pt-1">
                           On confirm, we&apos;ll save your details and open WhatsApp with a pre-filled message to our team.
                         </p>
                       </motion.div>
@@ -420,7 +420,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                     )}
                   </div>
 
-                  <p className="text-center text-xs text-white/30 mt-4">
+                  <p className="text-center text-xs text-white/60 mt-4">
                     🔒 Your info is private. No spam, ever.
                   </p>
                 </div>

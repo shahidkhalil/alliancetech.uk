@@ -48,7 +48,7 @@ export default function AuditChatWidget() {
               </div>
               <div>
                 <p className="text-sm font-bold text-white leading-tight">Alliance Audit Bot</p>
-                <p className="text-[11px] text-white/50 leading-tight">Free AI website audit · online</p>
+                <p className="text-[11px] text-white/60 leading-tight">Free AI website audit · online</p>
               </div>
             </div>
             <button
