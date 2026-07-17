@@ -21,6 +21,7 @@ const navLinks = [
         { label: "Local SEO for Clinics", href: "/local-seo-for-clinics" },
         { label: "Patient Mobile App", href: "/clinic-mobile-app" },
         { label: "EHR Platform", href: "/ehr-platform" },
+        { label: "Free Website Audit", href: "/free-website-audit" },
       ],
     },
   },
@@ -36,11 +37,6 @@ const navLinks = [
     },
   },
   {
-    label: "Houston, TX",
-    href: "/dental-clinic-houston",
-    dropdown: null,
-  },
-  {
     label: "Company",
     href: "#",
     dropdown: {
@@ -49,6 +45,7 @@ const navLinks = [
         { label: "About Us", href: "/about" },
         { label: "Our Mission", href: "/our-mission" },
         { label: "Contact Us", href: "/contact" },
+        { label: "FAQ", href: "/#faq" },
       ],
     },
   },
@@ -61,18 +58,6 @@ const navLinks = [
     label: "Pricing",
     href: "/pricing",
     dropdown: null,
-  },
-  {
-    label: "Try It",
-    href: "#",
-    dropdown: {
-      heading: "Try It & Learn More",
-      links: [
-        { label: "Free Website Audit", href: "/free-website-audit" },
-        { label: "Try Our AI Receptionist", href: "/ai-receptionist" },
-        { label: "FAQ", href: "/#faq" },
-      ],
-    },
   },
 ];
 
@@ -97,16 +82,22 @@ export default function Navigation() {
           <div className="flex items-center justify-between h-20">
 
             {/* Logo — horizontal lockup fits a header bar properly */}
-            <a href="/" className="flex items-center flex-shrink-0">
-              <Image
-                src="/logo-horizontal.png"
-                alt="Alliance Tech"
-                width={1043}
-                height={200}
-                className="h-9 lg:h-11 w-auto object-contain"
-                priority
-              />
-            </a>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <a href="/" className="flex items-center">
+                <Image
+                  src="/logo-horizontal.png"
+                  alt="Alliance Tech"
+                  width={1043}
+                  height={200}
+                  className="h-9 lg:h-11 w-auto object-contain"
+                  priority
+                />
+              </a>
+              <a href="/dental-clinic-houston"
+                className="hidden xl:inline-flex items-center gap-1 text-xs font-semibold text-gray-400 hover:text-[#00283C] border-l border-gray-200 pl-3 transition-colors">
+                📍 Houston, TX
+              </a>
+            </div>
 
             {/* Desktop nav */}
             <div className="hidden lg:flex items-center gap-1">
