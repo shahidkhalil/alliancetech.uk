@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -15,19 +15,13 @@ import {
   Stethoscope,
   Sparkles,
 } from "lucide-react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-
-interface FormData {
-  name: string;
-  phone: string;
-  email: string;
-  clinicName: string;
-  clinicType: string;
-  message: string;
-}
-
-const WHATSAPP_NUMBER = "923207800010";
+import {
+  FormFields,
+  getFormSessionId,
+  hasMeaningfulData,
+  saveFormDraft,
+  submitCompleteLead,
+} from "@/lib/formTracking";
 
 const clinicTypes = [
   { label: "Dental Clinic", icon: Stethoscope },
@@ -45,7 +39,7 @@ interface Props {
   onClose: () => void;
 }
 
-const emptyForm: FormData = {
+const emptyForm: FormFields = {
   name: "",
   phone: "",
   email: "",
@@ -56,14 +50,54 @@ const emptyForm: FormData = {
 
 export default function ConsultationForm({ isOpen, onClose }: Props) {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormData>(emptyForm);
+  const [form, setForm] = useState<FormFields>(emptyForm);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const sessionIdRef = useRef("");
+  const formRef = useRef(form);
+  const stepRef = useRef(step);
+  const submittedRef = useRef(false);
+  const draftTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  formRef.current = form;
+  stepRef.current = step;
+
+  useEffect(() => {
+    if (isOpen) {
+      sessionIdRef.current = getFormSessionId();
+      submittedRef.current = false;
+    }
+  }, [isOpen]);
+
+  const persistDraft = useCallback(async () => {
+    if (submittedRef.current) return;
+    const sid = sessionIdRef.current;
+    const current = formRef.current;
+    if (!sid || !hasMeaningfulData(current)) return;
+    try {
+      await saveFormDraft(sid, current, stepRef.current);
+    } catch (err) {
+      console.error("Draft save failed:", err);
+    }
+  }, []);
+
+  const scheduleDraftSave = useCallback(() => {
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    draftTimerRef.current = setTimeout(() => {
+      void persistDraft();
+    }, 800);
+  }, [persistDraft]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    scheduleDraftSave();
+  };
+
+  const selectClinicType = (label: string) => {
+    setForm((p) => ({ ...p, clinicType: label }));
+    scheduleDraftSave();
   };
 
   const reset = () => {
@@ -74,51 +108,35 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
   };
 
   const handleClose = () => {
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    void persistDraft();
     onClose();
     setTimeout(reset, 300);
   };
 
   const canContinue = step === 0 ? !!form.clinicType : !!form.name && !!form.phone;
 
-  const whatsappLink = () => {
-    const text =
-      `New Free Clinic Audit Request%0A` +
-      `Name: ${form.name}%0A` +
-      `Phone: ${form.phone}%0A` +
-      (form.email ? `Email: ${form.email}%0A` : "") +
-      (form.clinicName ? `Clinic: ${form.clinicName}%0A` : "") +
-      `Type: ${form.clinicType}%0A` +
-      (form.message ? `Message: ${form.message}` : "");
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
-  };
-
   const handleSubmit = async () => {
     setStatus("loading");
     setErrorMsg("");
+    submittedRef.current = true;
+    if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
 
-    // WhatsApp delivery is the primary path — open it regardless of Firestore.
-    window.open(whatsappLink(), "_blank");
-
-    // Best-effort: also store the lead in Firestore. Never block the user on it.
     try {
-      await addDoc(collection(db, "leads"), {
-        ...form,
-        source: "consultation_form",
-        createdAt: serverTimestamp(),
-        status: "new",
-      });
+      await submitCompleteLead(form, sessionIdRef.current);
+      setStatus("success");
     } catch (err) {
-      console.error("Firestore save failed (lead still sent to WhatsApp):", err);
+      console.error("Lead save failed:", err);
+      submittedRef.current = false;
+      setErrorMsg("Something went wrong. Please try again or email Sales@alliancetechltd.com");
+      setStatus("error");
     }
-
-    setStatus("success");
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -127,7 +145,6 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
             className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50"
           />
 
-          {/* Modal */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -139,18 +156,16 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
               className="relative w-full max-w-lg pointer-events-auto rounded-3xl overflow-hidden shadow-2xl"
               style={{ background: "#0A1628", border: "1px solid rgba(255,255,255,0.1)" }}
             >
-              {/* Top gradient bar */}
               <div
                 className="h-1"
                 style={{ background: "linear-gradient(90deg, #0066FF, #00D4FF, #7B61FF)" }}
               />
 
-              {/* Header */}
               <div className="flex items-start justify-between px-6 pt-6 pb-4">
                 <div>
                   <h2 className="text-xl font-bold text-white">Get Your Free Clinic Audit</h2>
                   <p className="text-sm text-white/60 mt-1">
-                    Takes 60 seconds — we&apos;ll message you on WhatsApp
+                    Takes 60 seconds — we&apos;ll get back to you within 2 hours
                   </p>
                 </div>
                 <button
@@ -161,7 +176,6 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                 </button>
               </div>
 
-              {/* Step indicator */}
               {status !== "success" && (
                 <div className="flex items-center gap-2 px-6 pb-5">
                   {steps.map((label, i) => (
@@ -194,7 +208,6 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                 </div>
               )}
 
-              {/* Success state */}
               {status === "success" ? (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -204,33 +217,21 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                   <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
                     <CheckCircle2 className="w-8 h-8 text-green-400" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">Request Received! 🎉</h3>
+                  <h3 className="text-lg font-bold text-white mb-2">Request Received!</h3>
                   <p className="text-white/60 text-sm mb-6">
-                    We&apos;ve opened WhatsApp with your details pre-filled — just hit send and our team will reply within 2 hours.
+                    Thanks — our team has your details and will reply within 2 hours. Check your phone or email.
                   </p>
-                  <div className="flex flex-col gap-3">
-                    <a
-                      href={whatsappLink()}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-6 py-3 rounded-full text-sm font-semibold text-white w-full flex items-center justify-center gap-2"
-                      style={{ background: "#25D366" }}
-                    >
-                      Open WhatsApp Again
-                    </a>
-                    <button
-                      onClick={handleClose}
-                      className="px-6 py-3 rounded-full text-sm font-semibold text-white/60 w-full hover:text-white transition-colors"
-                      style={{ background: "rgba(255,255,255,0.05)" }}
-                    >
-                      Close
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleClose}
+                    className="px-6 py-3 rounded-full text-sm font-semibold text-white w-full"
+                    style={{ background: "linear-gradient(135deg, #0066FF, #00D4FF)" }}
+                  >
+                    Close
+                  </button>
                 </motion.div>
               ) : (
                 <div className="px-6 pb-6">
                   <AnimatePresence mode="wait">
-                    {/* Step 0: Choose service */}
                     {step === 0 && (
                       <motion.div
                         key="step0"
@@ -244,7 +245,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                           <button
                             key={label}
                             type="button"
-                            onClick={() => setForm((p) => ({ ...p, clinicType: label }))}
+                            onClick={() => selectClinicType(label)}
                             className="flex flex-col items-start gap-2 p-4 rounded-xl text-left transition-all"
                             style={{
                               background: form.clinicType === label ? "rgba(0,102,255,0.15)" : "rgba(255,255,255,0.05)",
@@ -266,7 +267,6 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                       </motion.div>
                     )}
 
-                    {/* Step 1: Your details */}
                     {step === 1 && (
                       <motion.div
                         key="step1"
@@ -295,7 +295,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                             value={form.phone}
                             onChange={handleChange}
                             required
-                            placeholder="Phone / WhatsApp number"
+                            placeholder="Phone number"
                             className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
                             style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
                           />
@@ -338,7 +338,6 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                       </motion.div>
                     )}
 
-                    {/* Step 2: Review & confirm */}
                     {step === 2 && (
                       <motion.div
                         key="step2"
@@ -365,18 +364,16 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                           </div>
                         ))}
                         <p className="text-xs text-white/60 pt-1">
-                          On confirm, we&apos;ll save your details and open WhatsApp with a pre-filled message to our team.
+                          On confirm, we&apos;ll save your details and our team will reach out within 2 hours.
                         </p>
                       </motion.div>
                     )}
                   </AnimatePresence>
 
-                  {/* Error */}
                   {status === "error" && (
                     <p className="text-red-400 text-xs text-center mt-3">{errorMsg}</p>
                   )}
 
-                  {/* Nav buttons */}
                   <div className="flex items-center gap-3 mt-5">
                     {step > 0 && (
                       <button
@@ -393,7 +390,10 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                       <button
                         type="button"
                         disabled={!canContinue}
-                        onClick={() => setStep((s) => s + 1)}
+                        onClick={() => {
+                          setStep((s) => s + 1);
+                          scheduleDraftSave();
+                        }}
                         className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white transition-all duration-300 hover:scale-[1.02] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100"
                         style={{ background: "linear-gradient(135deg, #0066FF, #00D4FF)" }}
                       >
@@ -414,7 +414,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                             Submitting...
                           </>
                         ) : (
-                          "Confirm & Send to WhatsApp →"
+                          "Confirm & Submit →"
                         )}
                       </button>
                     )}

@@ -1,12 +1,24 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Public lead form: anyone may submit (create) a lead, but no one can
-    // read, edit, or delete leads from the client. Manage them in the console.
+    // Completed form submissions — public create, admin read/manage
     match /leads/{doc} {
       allow create: if true;
-      allow read, update, delete: if false;
+      allow read, update, delete: if request.auth != null;
     }
+
+    // Abandoned / in-progress forms — public write, admin read
+    match /form_drafts/{doc} {
+      allow create, update, delete: if true;
+      allow read: if request.auth != null;
+    }
+
+    // Blog like counts — anyone can read and increment
+    match /blog_likes/{doc} {
+      allow read: if true;
+      allow create, update: if true;
+    }
+
     // Lock everything else down.
     match /{document=**} {
       allow read, write: if false;

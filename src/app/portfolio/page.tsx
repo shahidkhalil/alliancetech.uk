@@ -137,6 +137,78 @@ const caseStudies: CaseStudy[] = [
     ],
     accent: "#12B3C7",
   },
+  {
+    client: "AI Receptionist",
+    category: "Product Case Study — 24/7 Voice & Chat Booking Agent",
+    tagline:
+      "A live AI front desk that answers every call and chat in English, qualifies the patient, and books appointments automatically — so clinics never miss another lead after hours.",
+    liveUrl: "/ai-receptionist",
+    liveLabel: "Try Live Demo",
+    afterImage: "/portfolio/ai-receptionist-demo.png",
+    services: [
+      "24/7 Call Answering",
+      "Live Chat Booking",
+      "Voice Agent",
+      "Appointment Confirmations",
+      "Clinic Knowledge Training",
+    ],
+    challenge:
+      "Busy dental and aesthetic clinics miss 25–40% of inbound calls during peak hours, lunch, and after closing. Every unanswered ring is a patient who books with the competitor who picked up. Hiring more front-desk staff is expensive, and humans still can't cover nights and weekends without burnout.",
+    built:
+      "We built an AI receptionist trained on clinic services, prices, hours, and FAQs. It answers phone and website chat simultaneously, speaks natural English, qualifies the patient, checks availability, and books the appointment — then sends confirmations automatically. Clinics can try the live demo on our site: ask about treatments, hours, or book a sample appointment in real time.",
+    result:
+      "Clinics using the AI receptionist stop losing after-hours and peak-time leads. Patients get instant answers and a booked slot without waiting on hold. The front desk is freed for in-clinic care while the AI handles volume that would otherwise require multiple staff — with zero missed calls as the target outcome.",
+    features: [
+      "Answers every call and chat at once — no hold music",
+      "Books appointments into the clinic calendar automatically",
+      "Trained on your services, pricing, and FAQs",
+      "Voice notes and live voice agent support",
+      "WhatsApp / email confirmations and reminders",
+      "Works for dental, aesthetic, and multi-specialty clinics",
+    ],
+    metrics: [
+      { value: "0", label: "Missed calls target" },
+      { value: "24/7", label: "Availability" },
+      { value: "5s", label: "Typical answer time" },
+    ],
+    accent: "#7B61FF",
+  },
+  {
+    client: "Free Website Audit",
+    category: "Product Case Study — AI Clinic Website Analyzer",
+    tagline:
+      "A free AI tool that scores a clinic's website in under 30 seconds — speed, SEO, patient experience, and competitor gaps — then unlocks a full growth report.",
+    liveUrl: "/free-website-audit",
+    liveLabel: "Run Free Audit",
+    afterImage: "/portfolio/free-website-audit-demo.png",
+    services: [
+      "PageSpeed Analysis",
+      "On-Page SEO Check",
+      "Patient Experience Score",
+      "Competitor Benchmark",
+      "Google Business Comparison",
+    ],
+    challenge:
+      "Most clinic owners know their website feels slow or outdated, but they don't know what's actually costing them patients — ranking gaps, missing booking CTAs, weak mobile experience, or competitors outranking them on Google Maps. Hiring an agency for a paid audit creates friction before they've even seen the problem.",
+    built:
+      "We built a free AI website audit bot that anyone can use: paste a clinic URL and get a real score backed by PageSpeed data, SEO checks, patient-booking friction analysis, and local competitor context. A teaser score appears immediately; the full report unlocks with a quick lead gate so clinics can share results with their team — and so we can follow up with a clear fix plan.",
+    result:
+      "Clinic owners get an honest, data-backed picture of where their site is leaking patients — without a sales call first. The audit becomes the starting point for website redesigns, local SEO, and booking automation. It's free to run on our site today, and every completed audit surfaces the exact issues that turn searchers into booked appointments.",
+    features: [
+      "Real Google PageSpeed / performance scoring",
+      "On-page SEO and treatment keyword gaps",
+      "Patient experience check (booking, call, WhatsApp)",
+      "Local competitor and ranking context",
+      "Instant score + full report unlock flow",
+      "Free to use — no credit card required",
+    ],
+    metrics: [
+      { value: "30s", label: "To first score" },
+      { value: "Free", label: "No signup required" },
+      { value: "6", label: "Audit dimensions" },
+    ],
+    accent: "#00B4D8",
+  },
 ];
 
 function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
@@ -155,8 +227,8 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
           {c.liveUrl && (
             <a
               href={c.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              target={c.liveUrl.startsWith("http") ? "_blank" : undefined}
+              rel={c.liveUrl.startsWith("http") ? "noopener noreferrer" : undefined}
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-semibold text-[#00283C] bg-white hover:bg-[#9FD3E8] transition-colors whitespace-nowrap self-start"
             >
               {c.liveLabel ?? "View Live"}
@@ -330,7 +402,7 @@ export default function Portfolio() {
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 text-center">
               Select a project to view the case study
             </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 gap-4">
               {caseStudies.map((c, i) => {
                 const isActive = i === selected;
                 const thumb = c.afterImage || c.beforeImage;
@@ -343,10 +415,17 @@ export default function Portfolio() {
                     }`}
                     style={{ borderColor: isActive ? c.accent : undefined, background: "white" }}
                   >
-                    {thumb && (
+                    {thumb ? (
                       <div className="aspect-[16/9] overflow-hidden bg-gray-100">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={thumb} alt={c.client} className="w-full h-full object-cover object-top" />
+                      </div>
+                    ) : (
+                      <div
+                        className="aspect-[16/9] flex items-center justify-center px-6"
+                        style={{ background: `linear-gradient(135deg, #00283C 0%, ${c.accent} 100%)` }}
+                      >
+                        <p className="text-white font-extrabold text-lg text-center leading-snug">{c.client}</p>
                       </div>
                     )}
                     <div className="p-4">

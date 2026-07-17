@@ -83,12 +83,10 @@ function BottomCTA() {
             Book Free Strategy Call <ArrowRight className="w-4 h-4" />
           </button>
           <a
-            href="https://wa.me/923207800010"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[#25D366] font-semibold text-sm hover:text-white transition-colors"
+            href="/free-website-audit"
+            className="text-white/80 font-semibold text-sm hover:text-white transition-colors"
           >
-            WhatsApp us instead →
+            Or run a free website audit →
           </a>
         </div>
       </div>

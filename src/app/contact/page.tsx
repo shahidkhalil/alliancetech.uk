@@ -39,15 +39,6 @@ export default function Contact() {
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#E6F4F8] flex items-center justify-center flex-shrink-0 text-lg">💬</div>
-                <div>
-                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">WhatsApp</p>
-                  <a href="https://wa.me/923207800010" target="_blank" rel="noopener noreferrer" className="text-[#0077A8] font-semibold hover:underline">
-                    Message us on WhatsApp
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg bg-[#E6F4F8] flex items-center justify-center flex-shrink-0 text-lg">📍</div>
                 <div>
                   <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Location</p>
@@ -122,11 +113,10 @@ export default function Contact() {
       <section className="py-10 bg-[#F8FAFC] border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <p className="text-sm text-gray-400">
-            Prefer WhatsApp?{" "}
-            <a href="https://wa.me/923207800010?text=Hi%2C%20I%27d%20like%20a%20free%20clinic%20audit"
-              target="_blank" rel="noopener noreferrer"
+            Prefer email?{" "}
+            <a href="mailto:Sales@alliancetechltd.com"
               className="text-[#0077A8] font-semibold hover:underline">
-              Message us directly →
+              Sales@alliancetechltd.com
             </a>
           </p>
         </div>
