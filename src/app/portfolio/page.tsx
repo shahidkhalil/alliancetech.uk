@@ -70,15 +70,15 @@ const caseStudies: CaseStudy[] = [
     client: "Dr. Syeda Nida Batool",
     category: "Clinical Psychologist — Website Redesign & Booking Platform",
     tagline: "A complete rebuild of a clinical psychologist's website — transforming a basic profile page into a credibility-first platform that turns visitors into booked appointments.",
-    afterImage: "/portfolio/dr-nida-after.png",
-    beforeImage: "/portfolio/dr-nida-before.png",
+    afterImage: "/case-studies/dr-nida-after.png",
+    beforeImage: "/case-studies/dr-nida-before.png",
     gallery: [
-      "/portfolio/dr-nida-1.jpg",
-      "/portfolio/dr-nida-2.jpg",
-      "/portfolio/dr-nida-3.jpg",
-      "/portfolio/dr-nida-4.jpg",
-      "/portfolio/dr-nida-5.jpg",
-      "/portfolio/dr-nida-6.jpg",
+      "/case-studies/dr-nida-1.jpg",
+      "/case-studies/dr-nida-2.jpg",
+      "/case-studies/dr-nida-3.jpg",
+      "/case-studies/dr-nida-4.jpg",
+      "/case-studies/dr-nida-5.jpg",
+      "/case-studies/dr-nida-6.jpg",
     ],
     services: ["Website Redesign", "Online Booking System", "WhatsApp Integration", "Blog CMS", "SEO Setup"],
     challenge:
@@ -106,14 +106,14 @@ const caseStudies: CaseStudy[] = [
     client: "Dental Tribe",
     category: "Dental Clinic (Dr. Shahab & Associates, Houston) — Website & Booking",
     tagline: "A bold, modern website for a premium Houston dental clinic — built to fill evening appointment slots and turn browsers into booked patients.",
-    afterImage: "/portfolio/dental-tribe.png",
+    afterImage: "/case-studies/dental-tribe.png",
     gallery: [
-      "/portfolio/dental-tribe-1.jpg",
-      "/portfolio/dental-tribe-2.jpg",
-      "/portfolio/dental-tribe-3.jpg",
-      "/portfolio/dental-tribe-4.jpg",
-      "/portfolio/dental-tribe-5.jpg",
-      "/portfolio/dental-tribe-6.jpg",
+      "/case-studies/dental-tribe-1.jpg",
+      "/case-studies/dental-tribe-2.jpg",
+      "/case-studies/dental-tribe-3.jpg",
+      "/case-studies/dental-tribe-4.jpg",
+      "/case-studies/dental-tribe-5.jpg",
+      "/case-studies/dental-tribe-6.jpg",
     ],
     services: ["Custom Website Design", "Online Booking", "WhatsApp Confirmation", "Services & Blog Pages", "Local SEO"],
     challenge:
@@ -144,7 +144,7 @@ const caseStudies: CaseStudy[] = [
       "A live AI front desk that answers every call and chat in English, qualifies the patient, and books appointments automatically — so clinics never miss another lead after hours.",
     liveUrl: "/ai-receptionist",
     liveLabel: "Try Live Demo",
-    afterImage: "/portfolio/ai-receptionist-demo.png",
+    afterImage: "/case-studies/ai-receptionist-demo.png",
     services: [
       "24/7 Call Answering",
       "Live Chat Booking",
@@ -180,7 +180,7 @@ const caseStudies: CaseStudy[] = [
       "A free AI tool that scores a clinic's website in under 30 seconds — speed, SEO, patient experience, and competitor gaps — then unlocks a full growth report.",
     liveUrl: "/free-website-audit",
     liveLabel: "Run Free Audit",
-    afterImage: "/portfolio/free-website-audit-demo.png",
+    afterImage: "/case-studies/free-website-audit-demo.png",
     services: [
       "PageSpeed Analysis",
       "On-Page SEO Check",
@@ -257,15 +257,25 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
             {c.afterImage && (
               <div className="block">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-[#0077A8]">After — By Alliance Tech</span>
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-[#0077A8]">
+                    {c.beforeImage ? "After — By Alliance Tech" : "Live Product Demo"}
+                  </span>
                   <span className="h-px flex-1 bg-[#9FD3E8]" />
                 </div>
-                <div className={`rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white ${c.beforeImage ? "aspect-[16/10]" : ""}`}>
+                <div
+                  className={`rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-[#F8FAFC] ${
+                    c.beforeImage ? "aspect-[16/10]" : "flex justify-center p-4 sm:p-6"
+                  }`}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={c.afterImage}
-                    alt={`${c.client} — new website by Alliance Tech`}
-                    className={c.beforeImage ? "w-full h-full object-cover object-top" : "w-full h-auto"}
+                    alt={`${c.client} — demo by Alliance Tech`}
+                    className={
+                      c.beforeImage
+                        ? "w-full h-full object-cover object-top"
+                        : "w-full max-w-md h-auto rounded-lg shadow-md"
+                    }
                   />
                 </div>
               </div>
@@ -416,9 +426,13 @@ export default function Portfolio() {
                     style={{ borderColor: isActive ? c.accent : undefined, background: "white" }}
                   >
                     {thumb ? (
-                      <div className="aspect-[16/9] overflow-hidden bg-gray-100">
+                      <div className="aspect-[16/9] overflow-hidden bg-[#F0F7FA] flex items-center justify-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={thumb} alt={c.client} className="w-full h-full object-cover object-top" />
+                        <img
+                          src={thumb}
+                          alt={c.client}
+                          className="w-full h-full object-cover object-top"
+                        />
                       </div>
                     ) : (
                       <div
