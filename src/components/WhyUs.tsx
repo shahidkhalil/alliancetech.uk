@@ -43,7 +43,7 @@ const comparisons = [
 
 const whyNumbers = [
   { stat: "100%", label: "Healthcare focus — zero generalist clients" },
-  { stat: "6+", label: "Years building in the the United States market" },
+  { stat: "6+", label: "Years building in the US market" },
   { stat: "3", label: "Cities with local market knowledge" },
   { stat: "0", label: "Clients who left due to poor results" },
 ];

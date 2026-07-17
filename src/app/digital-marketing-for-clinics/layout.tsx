@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "Digital Marketing for Dental & Aesthetic Clinics | Alliance Tech",
   description:
     "Google and Meta ad campaigns built exclusively for dental and aesthetic clinics across the United States. Targeted by city and treatment — 4x average return on ad spend.",
-  keywords: ["digital marketing for clinics", "dental clinic ads", "aesthetic clinic marketing the United States", "Google Ads for dentists", "Facebook ads for clinics"],
+  keywords: ["digital marketing for clinics", "clinic marketing agency Houston", "dental clinic ads", "med spa marketing agency", "Google Ads for dentists Texas", "Facebook ads for clinics"],
   alternates: { canonical: "/digital-marketing-for-clinics" },
   openGraph: {
     title: "Digital Marketing for Dental & Aesthetic Clinics | Alliance Tech",

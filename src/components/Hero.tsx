@@ -5,7 +5,7 @@ import { useForm } from "@/context/FormContext";
 
 const heroSlides = [
   {
-    badge: "Top Reviewed Clinic Growth Agency in the US",
+    badge: "Houston's Top Reviewed Clinic Growth Agency",
     headline: <>Most Dental Clinics Lose Patients<br />to Competitors Every Day. <span className="gradient-heading">We Fix That.</span></>,
     sub: "We fix the three things costing you patients: invisible Google ranking, missed WhatsApp inquiries, and wasted ad spend. One agency, every channel.",
   },

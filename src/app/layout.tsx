@@ -13,26 +13,26 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://alliancetechltd.com"),
-  title: "Alliance Tech | AI-Powered Growth for Clinics",
+  title: "AI Automation & Growth for Clinics in Houston, TX | Alliance Tech",
   description:
-    "AI automation for dental & aesthetic clinics: AI receptionists, WhatsApp agents, and patient acquisition that fill your calendar. Book a free audit.",
+    "Houston's AI automation agency for dental & med spa clinics: AI receptionists, WhatsApp agents, and patient acquisition that fill your calendar across Texas. Book a free audit.",
   alternates: { canonical: "/" },
   keywords: [
-    "dental clinic growth",
-    "aesthetic clinic AI",
-    "AI receptionist",
+    "AI automation for clinics",
+    "AI receptionist Houston",
+    "dental clinic marketing Houston",
+    "dental marketing agency Texas",
+    "med spa marketing Houston",
     "WhatsApp AI agent",
-    "healthcare automation",
+    "healthcare automation Texas",
     "patient acquisition",
-    "clinic management",
-    "EHR platform",
     "Alliance Tech",
   ],
   authors: [{ name: "Alliance Tech" }],
   openGraph: {
-    title: "Alliance Tech | AI-Powered Growth for Clinics",
+    title: "AI Automation & Growth for Clinics in Houston, TX | Alliance Tech",
     description:
-      "Get more patients, automate operations, and increase revenue with our healthcare growth ecosystem.",
+      "Get more patients, automate your front desk with AI, and grow revenue — Houston-based, serving clinics across Texas.",
     type: "website",
     url: "https://alliancetechltd.com",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Alliance Tech (PVT) LTD" }],

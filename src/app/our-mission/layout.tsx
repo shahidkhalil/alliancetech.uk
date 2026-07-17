@@ -4,7 +4,7 @@ export const metadata: Metadata = {
   title: "Our Mission | Alliance Tech",
   description:
     "Why Alliance Tech exists: closing the digital infrastructure gap holding back skilled dental and aesthetic clinics across the United States.",
-  keywords: ["Alliance Tech mission", "healthcare growth the United States", "clinic technology mission"],
+  keywords: ["Alliance Tech mission", "healthcare growth agency", "clinic technology mission"],
   alternates: { canonical: "/our-mission" },
   openGraph: {
     title: "Our Mission | Alliance Tech",

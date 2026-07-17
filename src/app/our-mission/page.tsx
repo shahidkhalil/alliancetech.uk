@@ -45,7 +45,7 @@ export default function OurMission() {
         badge="OUR MISSION"
         headline="Healthcare Growth Shouldn't"
         highlight="Depend on Luck"
-        subheadline="the United States has thousands of skilled doctors running clinics that deserve to be full. We build the systems that make sure they are."
+        subheadline="America has thousands of skilled doctors running clinics that deserve to be full. We build the systems that make sure they are."
         ctaText="Get Your Free Clinic Audit"
       />
 

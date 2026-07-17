@@ -78,7 +78,7 @@ export default function LocalSEOForClinics() {
         <div className="max-w-4xl mx-auto px-6">
           <div className="card-white rounded-2xl p-10 text-center border border-gray-100">
             <h2 className="text-2xl font-bold text-[#00283C] mb-2">Cities We Operate In</h2>
-            <p className="text-sm text-gray-400 mb-6">Local SEO for clinics across the United States&apos;s major cities.</p>
+            <p className="text-sm text-gray-400 mb-6">Local SEO for clinics in major US cities.</p>
             <div className="flex flex-wrap justify-center gap-3">
               {cities.map((c) => (
                 <span key={c} className="px-5 py-2.5 rounded-full text-sm font-semibold text-[#0077A8] bg-white border border-[#00B4D8]/30">{c}</span>

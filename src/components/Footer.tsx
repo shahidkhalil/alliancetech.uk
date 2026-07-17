@@ -22,7 +22,7 @@ export default function Footer() {
           <div className="md:col-span-1">
             <Image src="/logo.png" alt="Alliance Tech" width={140} height={50} className="h-12 w-auto brightness-0 invert mb-4" />
             <p className="text-white/60 text-sm leading-relaxed">
-              the United States&apos;s specialist digital marketing agency for dental and aesthetic clinics.
+              America&apos;s specialist digital marketing agency for dental and aesthetic clinics.
             </p>
             <p className="text-white/60 text-xs mt-3 font-semibold italic">Digitally Yours</p>
 
@@ -95,7 +95,7 @@ export default function Footer() {
               <a href="mailto:Sales@alliancetechltd.com" className="block text-sm text-white/60 hover:text-white transition-colors">
                 Sales@alliancetechltd.com
               </a>
-              <p className="text-sm text-white/60">Houston, the United States</p>
+              <p className="text-sm text-white/60">Houston, Texas</p>
             </div>
           </div>
         </div>

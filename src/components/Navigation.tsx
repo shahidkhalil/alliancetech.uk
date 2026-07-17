@@ -13,7 +13,6 @@ const navLinks = [
       heading: "Services",
       links: [
         { label: "All Services", href: "/services" },
-        { label: "AI Automation Suite", href: "/ai-receptionist" },
         { label: "AI Receptionist", href: "/ai-receptionist" },
         { label: "WhatsApp AI Automation", href: "/whatsapp-ai-automation" },
         { label: "Digital Marketing", href: "/digital-marketing-for-clinics" },
@@ -33,9 +32,13 @@ const navLinks = [
       links: [
         { label: "Dental Clinics", href: "/dental-clinic-growth" },
         { label: "Aesthetic Clinics", href: "/aesthetic-clinic-growth" },
-        { label: "Clinics in Houston", href: "/dental-clinic-houston" },
       ],
     },
+  },
+  {
+    label: "Houston, TX",
+    href: "/dental-clinic-houston",
+    dropdown: null,
   },
   {
     label: "Company",
