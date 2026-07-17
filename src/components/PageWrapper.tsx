@@ -5,10 +5,12 @@ import Footer from "./Footer";
 import dynamic from "next/dynamic";
 import AnalyticsTracker from "./AnalyticsTracker";
 import { FormProvider, useForm } from "@/context/FormContext";
+import { PackageOrderProvider } from "@/context/PackageOrderContext";
 
 // Lazy: both pull in the Firebase SDK and are only needed on interaction.
 const ConsultationForm = dynamic(() => import("./ConsultationForm"), { ssr: false });
 const AuditChatWidget = dynamic(() => import("./AuditChatWidget"), { ssr: false });
+const PackageOrderForm = dynamic(() => import("./PackageOrderForm"), { ssr: false });
 
 function PageContent({ children }: { children: ReactNode }) {
   const { isOpen, closeForm } = useForm();
@@ -20,6 +22,7 @@ function PageContent({ children }: { children: ReactNode }) {
       <Footer />
       <ConsultationForm isOpen={isOpen} onClose={closeForm} />
       <AuditChatWidget />
+      <PackageOrderForm />
     </div>
   );
 }
@@ -27,7 +30,9 @@ function PageContent({ children }: { children: ReactNode }) {
 export default function PageWrapper({ children }: { children: ReactNode }) {
   return (
     <FormProvider>
-      <PageContent>{children}</PageContent>
+      <PackageOrderProvider>
+        <PageContent>{children}</PageContent>
+      </PackageOrderProvider>
     </FormProvider>
   );
 }

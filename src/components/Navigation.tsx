@@ -91,16 +91,16 @@ export default function Navigation() {
         scrolled ? "bg-white border-b border-gray-100 shadow-sm" : "bg-white/95 backdrop-blur-sm"
       }`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-24">
+          <div className="flex items-center justify-between h-20">
 
-            {/* Logo */}
+            {/* Logo — horizontal lockup fits a header bar properly */}
             <a href="/" className="flex items-center flex-shrink-0">
               <Image
-                src="/logo.png"
-                alt="Alliance Tech (PVT) LTD"
-                width={200}
-                height={72}
-                className="h-16 lg:h-20 w-auto object-contain"
+                src="/logo-horizontal.png"
+                alt="Alliance Tech"
+                width={1043}
+                height={200}
+                className="h-9 lg:h-11 w-auto object-contain"
                 priority
               />
             </a>

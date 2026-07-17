@@ -4,6 +4,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Check, X, ChevronDown, ArrowRight, Clock, Cpu, Shield, Star } from "lucide-react";
 import { ServicePricing } from "@/lib/pricingData";
 import { useForm } from "@/context/FormContext";
+import { usePackageOrder } from "@/context/PackageOrderContext";
 
 const PREVIEW_COUNT = 4; // features shown before "expand"
 
@@ -11,11 +12,13 @@ const PREVIEW_COUNT = 4; // features shown before "expand"
 function PricingCard({
   pkg,
   index,
+  service,
 }: {
   pkg: ServicePricing["packages"][number];
   index: number;
+  service: ServicePricing;
 }) {
-  const { openForm } = useForm();
+  const { openOrder } = usePackageOrder();
   const [expanded, setExpanded] = useState(false);
 
   const preview = pkg.features.slice(0, PREVIEW_COUNT);
@@ -72,7 +75,15 @@ function PricingCard({
 
         {/* CTA */}
         <button
-          onClick={openForm}
+          onClick={() =>
+            openOrder({
+              serviceId: service.id,
+              serviceName: service.name,
+              packageName: pkg.name,
+              price: pkg.price,
+              period: pkg.period,
+            })
+          }
           className={`w-full py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 ${
             dark
               ? "bg-white text-[#00283C] hover:bg-[#E8F7FB]"
@@ -297,7 +308,7 @@ export default function ServicePricingSection({ service }: { service: ServicePri
         {/* Cards */}
         <div className="grid md:grid-cols-3 gap-5">
           {service.packages.map((pkg, i) => (
-            <PricingCard key={pkg.name} pkg={pkg} index={i} />
+            <PricingCard key={pkg.name} pkg={pkg} index={i} service={service} />
           ))}
         </div>
 

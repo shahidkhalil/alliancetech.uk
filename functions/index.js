@@ -38,6 +38,9 @@ exports.clinicReceptionist = require("./receptionist").clinicReceptionist;
 // Voice-note transcription for the receptionist chat.
 exports.transcribeAudio = require("./transcribe").transcribeAudio;
 
+// Package order requests from the pricing page.
+exports.packageOrder = require("./packageOrder").packageOrder;
+
 // Live voice agent (Realtime API): session tokens + booking endpoint.
 exports.realtimeToken = require("./realtime").realtimeToken;
 exports.bookAppointmentHttp = require("./realtime").bookAppointmentHttp;
