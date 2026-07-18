@@ -23,7 +23,7 @@ const services = [
   {
     icon: "🤖",
     title: "AI Receptionist",
-    desc: "24/7 automated patient handling across calls, WhatsApp, and chat — zero staff required.",
+    desc: "24/7 automated patient handling for Houston & Texas clinics across calls, WhatsApp, and chat — zero staff required.",
     href: "/ai-receptionist",
     color: "#00D4FF",
     badge: null,

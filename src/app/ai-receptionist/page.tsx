@@ -6,12 +6,18 @@ import ReceptionistDemo from "@/components/ReceptionistDemo";
 import FinalCTA from "@/components/FinalCTA";
 
 const features = [
-  { icon: "📞", title: "Answers Every Call", desc: "No more missed calls. The AI picks up 24/7 — nights, weekends, public holidays — in English." },
-  { icon: "📅", title: "Books Appointments", desc: "It checks your calendar and books the next available slot automatically. No human needed." },
-  { icon: "🔁", title: "Handles Follow-Ups", desc: "Calls back missed numbers, sends WhatsApp reminders, and confirms appointments — all automated." },
-  { icon: "🧠", title: "Learns Your Clinic", desc: "Trained on your services, prices, and FAQs — gives accurate answers without ever putting patients on hold." },
-  { icon: "📊", title: "Call Analytics Dashboard", desc: "See every call, duration, outcome, and booking — in a live dashboard updated in real time." },
-  { icon: "🔗", title: "Connects to Your System", desc: "Integrates with your existing clinic software or our EHR platform — no manual data entry." },
+  { icon: "📞", title: "24/7 Call Answering", desc: "No more missed calls for your Houston clinic. The AI picks up every time — nights, weekends, public holidays — in natural English." },
+  { icon: "💬", title: "Live Website Chat", desc: "The same AI receptionist answers chat on your website in real time, so patients get instant replies without ever picking up the phone." },
+  { icon: "🟢", title: "WhatsApp Integration", desc: "Booking confirmations, reminders, and follow-ups land straight in the patient's WhatsApp — the channel Houston patients already check first." },
+  { icon: "🎙️", title: "Live Voice Agent", desc: "Patients can talk to the AI receptionist directly, in real time, and get a natural spoken conversation — not a robotic phone tree." },
+  { icon: "📅", title: "Automated Appointment Booking", desc: "It checks your calendar and books the next available slot automatically, straight into your system. No human needed." },
+  { icon: "✅", title: "Instant Confirmations & Reminders", desc: "Every booking is confirmed by WhatsApp and email immediately, with automatic reminders that cut no-shows before they happen." },
+  { icon: "🔁", title: "Missed-Call Follow-Ups", desc: "Calls back missed numbers automatically so no Houston patient who tried to reach you is ever left hanging." },
+  { icon: "🧠", title: "Trained on Your Clinic", desc: "Trained on your services, prices, hours, and FAQs — gives accurate answers without ever putting patients on hold." },
+  { icon: "🎯", title: "Patient Qualification", desc: "Asks the right questions to qualify each caller before booking, so your calendar fills with patients who actually show up." },
+  { icon: "🗣️", title: "Voice Notes Support", desc: "Patients who'd rather speak than type can send a voice note and still get booked — no app download required." },
+  { icon: "📊", title: "Call & Chat Analytics Dashboard", desc: "See every call, chat, duration, outcome, and booking — in a live dashboard updated in real time." },
+  { icon: "🔗", title: "Connects to Your System", desc: "Integrates with your existing clinic software or our EHR platform — no manual data entry, no double-booking." },
 ];
 
 const stats = [
@@ -28,7 +34,7 @@ const faqs = [
   { q: "Does it work with my existing number?", a: "Yes. We port your existing clinic number or set up a new dedicated line." },
   { q: "How many calls can it handle at once?", a: "Unlimited — it answers every call and website chat simultaneously. Unlike a human front desk, it never puts patients on hold or misses a call during peak hours, lunch, or after closing." },
   { q: "Will it reduce no-shows at my clinic?", a: "Yes. It sends automatic WhatsApp confirmations and reminders before each appointment, which typically cuts no-shows significantly for busy clinics." },
-  { q: "How much does an AI receptionist cost in the US?", a: "Pricing depends on your call volume and features. For most busy clinics it costs a fraction of a full-time receptionist's salary while handling far more calls. Book a free demo and we'll quote based on your clinic." },
+  { q: "How much does an AI receptionist cost for a Houston clinic?", a: "Pricing depends on your call volume and features. For most busy Houston and Texas clinics it costs a fraction of a full-time receptionist's salary while handling far more calls. Book a free demo and we'll quote based on your clinic." },
   { q: "Can it book appointments into my calendar?", a: "Yes. It qualifies the patient, checks the service and preferred time, and books the appointment directly — then confirms by email and WhatsApp, with the booking landing in your system instantly." },
   { q: "Is it only for dental clinics?", a: "No. It works for dental, aesthetic, dermatology, hair transplant, and multi-specialty clinics — any high-volume practice losing patients to missed calls. It's trained on your specific services and prices." },
 ];
@@ -37,10 +43,10 @@ export default function AIReceptionist() {
   return (
     <PageWrapper>
       <ServicePageHero
-        badge="AI RECEPTIONIST FOR BUSY CLINICS"
+        badge="AI RECEPTIONIST FOR HOUSTON & TEXAS CLINICS"
         headline="Too Many Calls, Too Few Staff?"
         highlight="Never Miss a Patient Again"
-        subheadline="Busy clinics miss 25–40% of calls at peak hours — every one a lost patient. Our AI receptionist answers every call and chat at once, 24/7 in English, and books them automatically. Try the live demo below."
+        subheadline="Busy Houston clinics miss 25–40% of calls at peak hours — every one a lost patient. Our AI receptionist answers every call and chat at once, 24/7 in English, and books them automatically. Try the live demo below."
         ctaText="Get Your Free Clinic Audit"
       />
 
@@ -115,6 +121,9 @@ export default function AIReceptionist() {
             </p>
             <p>
               It also cuts your <strong>no-show rate</strong> with automatic confirmations and reminders, and gives you a record of every conversation — so you finally see how many patients are calling after hours. It works alongside your existing staff and phone number, not instead of them: your team stops firefighting the phone and starts closing high-value treatments.
+            </p>
+            <p>
+              We built this for clinics right here in <strong>Houston, TX</strong> — from practices in Memorial and The Woodlands to Sugar Land, Katy, and Pearland — where patients are searching &ldquo;dentist near me&rdquo; or &ldquo;AI answering service Houston&rdquo; and expect an instant reply. If you&apos;re a dental, aesthetic, or medical practice anywhere in the Houston metro or elsewhere in Texas, our <strong>AI receptionist</strong> is trained on your services and hours from day one, so every Houston-area caller gets a fast, accurate answer — not a busy signal.
             </p>
           </div>
         </div>

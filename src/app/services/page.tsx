@@ -202,6 +202,15 @@ const services = [
 
 const categories = ["All", "Growth", "Web", "App", "SEO", "AI", "Platform"];
 
+const categoryColors: Record<string, { from: string; to: string; text: string }> = {
+  AI: { from: "#7B61FF", to: "#00D4FF", text: "#7B61FF" },
+  Growth: { from: "#F97316", to: "#EF4444", text: "#EA580C" },
+  Web: { from: "#00B4D8", to: "#0077A8", text: "#0077A8" },
+  App: { from: "#EC4899", to: "#F472B6", text: "#DB2777" },
+  SEO: { from: "#16A34A", to: "#00B4D8", text: "#16A34A" },
+  Platform: { from: "#6366F1", to: "#7B61FF", text: "#4F46E5" },
+};
+
 function ServicesContent() {
   const { isOpen, openForm, closeForm } = useForm();
   const [activeCategory, setActiveCategory] = useState("All");
@@ -273,12 +282,17 @@ function ServicesContent() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`flex-shrink-0 px-4 py-2 rounded-md text-sm font-semibold transition-all ${
-                  activeCategory === cat
-                    ? "bg-[#00283C] text-white"
-                    : "text-gray-500 hover:text-[#00283C] hover:bg-gray-50"
+                className={`relative flex-shrink-0 px-4 py-2 rounded-md text-sm font-semibold transition-colors ${
+                  activeCategory === cat ? "text-white" : "text-gray-500 hover:text-[#00283C] hover:bg-gray-50"
                 }`}>
-                {cat}
+                {activeCategory === cat && (
+                  <motion.span
+                    layoutId="activeCategoryPill"
+                    className="absolute inset-0 rounded-md bg-[#00283C]"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                  />
+                )}
+                <span className="relative">{cat}</span>
               </button>
             ))}
           </div>
@@ -287,7 +301,7 @@ function ServicesContent() {
 
       {/* Services list */}
       <section className="py-14 bg-white" ref={gridRef}>
-        <div className="max-w-5xl mx-auto px-6 space-y-6">
+        <div className="max-w-6xl mx-auto px-6 grid sm:grid-cols-2 gap-6 items-start">
           <AnimatePresence mode="wait">
             {filtered.map((s, i) => (
               <ServiceCard key={s.slug} service={s} index={i} inView={gridInView} onAudit={openForm} />
@@ -314,23 +328,30 @@ function ServiceCard({
   onAudit: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const c = categoryColors[s.category] ?? categoryColors.Platform;
+  const isHot = (s as { hot?: boolean }).hot;
 
-  return (
+  const card = (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
+      initial={{ opacity: 0, y: 32, scale: 0.98 }}
+      animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
       exit={{ opacity: 0, y: -12 }}
-      transition={{ delay: index * 0.07, duration: 0.4 }}
-      className={`rounded-2xl border overflow-hidden transition-all ${
-        s.popular ? "border-[#00283C] shadow-lg" : "border-gray-100 shadow-sm hover:border-[#00B4D8]/40 hover:shadow-md"
+      transition={{ delay: index * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -5 }}
+      className={`group relative rounded-2xl overflow-hidden bg-white transition-shadow duration-300 ${
+        s.popular ? "shadow-xl" : "border border-gray-100 shadow-sm hover:shadow-xl"
       }`}
+      style={!s.popular ? { borderTop: `3px solid ${c.from}` } : undefined}
     >
       {s.popular && (
-        <div className="px-6 py-2 flex items-center justify-between" style={{ background: (s as { hot?: boolean }).hot ? "linear-gradient(90deg,#F97316,#EF4444)" : "#00283C" }}>
-          <span className="text-[10px] font-bold text-white/80 uppercase tracking-widest">
-            {(s as { hot?: boolean }).hot ? "🔥 Hot — Flagship Service" : "Most Popular Service"}
+        <div className="px-6 py-2.5 flex items-center justify-between" style={{ background: isHot ? "linear-gradient(90deg,#F97316,#EF4444)" : `linear-gradient(90deg, ${c.from}, ${c.to})` }}>
+          <span className="text-[10px] font-bold text-white uppercase tracking-widest flex items-center gap-1.5">
+            <motion.span animate={{ scale: [1, 1.25, 1] }} transition={{ repeat: Infinity, duration: 1.8 }}>
+              {isHot ? "🔥" : "⭐"}
+            </motion.span>
+            {isHot ? "Hot — Flagship Service" : "Most Popular Service"}
           </span>
-          <span className="text-[10px] text-white/60">Alliance Tech</span>
+          <span className="text-[10px] text-white/70">Alliance Tech</span>
         </div>
       )}
 
@@ -338,30 +359,28 @@ function ServiceCard({
       <div className="p-6 lg:p-8 bg-white">
         <div className="flex items-start gap-5">
           {/* Icon */}
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
-            s.popular ? "bg-[#00283C]" : "bg-[#E6F4F8]"
-          }`}>
-            <s.Icon className={`w-6 h-6 ${s.popular ? "text-white" : "text-[#0077A8]"}`} strokeWidth={1.8} />
-          </div>
+          <motion.div
+            whileHover={{ rotate: [0, -8, 8, -4, 0], scale: 1.08 }}
+            transition={{ duration: 0.5 }}
+            className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md"
+            style={{ background: `linear-gradient(135deg, ${c.from}, ${c.to})` }}
+          >
+            <s.Icon className="w-7 h-7 text-white" strokeWidth={1.8} />
+          </motion.div>
 
           {/* Main content */}
           <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-start justify-between gap-3 mb-1">
-              <div>
-                <span className="text-[10px] font-bold text-[#00B4D8] uppercase tracking-wider">{s.category}</span>
-                <h2 className="text-lg lg:text-xl font-extrabold text-[#00283C] leading-tight mt-0.5">{s.title}</h2>
-              </div>
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <div className="text-center hidden sm:block">
-                  <div className="text-lg font-extrabold text-[#00283C]">{s.stat1.value}</div>
-                  <div className="text-[10px] text-gray-400">{s.stat1.label}</div>
-                </div>
-                <div className="w-px h-8 bg-gray-100 hidden sm:block" />
-                <div className="text-center hidden sm:block">
-                  <div className="text-lg font-extrabold text-[#00283C]">{s.stat2.value}</div>
-                  <div className="text-[10px] text-gray-400">{s.stat2.label}</div>
-                </div>
-              </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: c.text }}>{s.category}</span>
+            <h2 className="text-lg lg:text-xl font-extrabold text-[#00283C] leading-tight mt-0.5 mb-2">{s.title}</h2>
+
+            {/* Stat pills */}
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold" style={{ background: `${c.from}14`, color: c.text }}>
+                {s.stat1.value} <span className="font-medium opacity-70">· {s.stat1.label}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold" style={{ background: `${c.to}14`, color: c.text }}>
+                {s.stat2.value} <span className="font-medium opacity-70">· {s.stat2.label}</span>
+              </span>
             </div>
 
             <p className="text-[#0077A8] text-sm font-semibold mb-2 italic">{s.tagline}</p>
@@ -370,18 +389,21 @@ function ServiceCard({
             {/* Actions */}
             <div className="flex flex-wrap items-center gap-3 mt-5">
               <a href={s.href}
-                className="inline-flex items-center gap-1.5 btn-dark px-5 py-2.5 text-sm">
-                Learn More <ArrowRight className="w-4 h-4" />
+                className="inline-flex items-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.03]"
+                style={{ background: `linear-gradient(135deg, ${c.from}, ${c.to})` }}>
+                Learn More <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </a>
               <button onClick={onAudit}
-                className="text-sm font-semibold text-[#0077A8] hover:text-[#00283C] transition-colors">
+                className="text-sm font-semibold text-gray-500 hover:text-[#00283C] transition-colors">
                 Get a Free Audit →
               </button>
               <button
                 onClick={() => setExpanded(!expanded)}
-                className="ml-auto flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors">
-                {expanded ? "Hide details" : "What&apos;s included"}
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-180" : ""}`} />
+                className="ml-auto flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-gray-500 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 transition-colors">
+                {expanded ? "Hide details" : "What's included"}
+                <motion.span animate={{ rotate: expanded ? 180 : 0 }} transition={{ duration: 0.25 }}>
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </motion.span>
               </button>
             </div>
           </div>
@@ -394,17 +416,23 @@ function ServiceCard({
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.22 }}
+              transition={{ duration: 0.25 }}
               className="overflow-hidden"
             >
               <div className="mt-6 pt-6 border-t border-gray-100">
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">What&apos;s Included</p>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                  {s.includes.map((item) => (
-                    <div key={item} className="flex items-center gap-2.5 text-sm text-gray-600">
-                      <CheckCircle2 className="w-4 h-4 text-[#00B4D8] flex-shrink-0" strokeWidth={2} />
+                  {s.includes.map((item, ii) => (
+                    <motion.div
+                      key={item}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: ii * 0.04 }}
+                      className="flex items-center gap-2.5 text-sm text-gray-600"
+                    >
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: c.text }} strokeWidth={2} />
                       {item}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
@@ -413,6 +441,17 @@ function ServiceCard({
         </AnimatePresence>
       </div>
     </motion.div>
+  );
+
+  if (!s.popular) return card;
+
+  return (
+    <div
+      className="sm:col-span-2 rounded-[20px] p-[2px]"
+      style={{ background: isHot ? "linear-gradient(135deg,#F97316,#EF4444)" : `linear-gradient(135deg, ${c.from}, ${c.to})` }}
+    >
+      {card}
+    </div>
   );
 }
 

@@ -47,15 +47,68 @@ function ScreenshotGallery({ images, client, accent }: { images: string[]; clien
   );
 }
 
+interface ChatShot {
+  src: string;
+  caption: string;
+}
+
+function ChatWidgetFrame({ src, caption, alt, accent, onClick }: { src: string; caption: string; alt: string; accent: string; onClick?: () => void }) {
+  return (
+    <button onClick={onClick} className="group flex flex-col text-left">
+      <div className="rounded-2xl overflow-hidden border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-shadow ring-1 ring-black/[0.02]">
+        <div className="overflow-hidden bg-white aspect-[1082/1174]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt={alt} loading="lazy" className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500" />
+        </div>
+      </div>
+      <div className="flex items-center gap-1.5 mt-2.5 px-0.5">
+        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: accent }} />
+        <p className="text-xs text-gray-500 leading-snug">{caption}</p>
+      </div>
+    </button>
+  );
+}
+
+function ChatWidgetGallery({ shots, client, accent }: { shots: ChatShot[]; client: string; accent: string }) {
+  const openLightbox = useContext(LightboxContext);
+  const images = shots.map((s) => s.src);
+  return (
+    <div className="px-7 lg:px-10 py-8 bg-[#F8FAFC] border-b border-gray-100">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: accent }}>The AI Agent In Action</span>
+        <span className="h-px flex-1" style={{ background: "#E2E8F0" }} />
+        <span className="text-[11px] text-gray-400">{shots.length} screens · tap to enlarge</span>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+        {shots.map((s, i) => (
+          <ChatWidgetFrame
+            key={s.src}
+            src={s.src}
+            caption={s.caption}
+            alt={`${client} — ${s.caption}`}
+            accent={accent}
+            onClick={() => openLightbox(images, i)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+type ProjectType = "Website" | "AI Automation";
+
 interface CaseStudy {
   client: string;
+  type: ProjectType;
   category: string;
   tagline: string;
   liveUrl?: string;
   liveLabel?: string;
   afterImage?: string;
+  heroWide?: boolean;
   beforeImage?: string;
   gallery?: string[];
+  chatGallery?: ChatShot[];
   services: string[];
   challenge: string;
   built: string;
@@ -68,6 +121,7 @@ interface CaseStudy {
 const caseStudies: CaseStudy[] = [
   {
     client: "Dr. Syeda Nida Batool",
+    type: "Website",
     category: "Clinical Psychologist — Website Redesign & Booking Platform",
     tagline: "A complete rebuild of a clinical psychologist's website — transforming a basic profile page into a credibility-first platform that turns visitors into booked appointments.",
     afterImage: "/case-studies/dr-nida-after.png",
@@ -104,6 +158,7 @@ const caseStudies: CaseStudy[] = [
   },
   {
     client: "Dental Tribe",
+    type: "Website",
     category: "Dental Clinic (Dr. Shahab & Associates, Houston) — Website & Booking",
     tagline: "A bold, modern website for a premium Houston dental clinic — built to fill evening appointment slots and turn browsers into booked patients.",
     afterImage: "/case-studies/dental-tribe.png",
@@ -139,12 +194,21 @@ const caseStudies: CaseStudy[] = [
   },
   {
     client: "AI Receptionist",
+    type: "AI Automation",
     category: "Product Case Study — 24/7 Voice & Chat Booking Agent",
     tagline:
       "A live AI front desk that answers every call and chat in English, qualifies the patient, and books appointments automatically — so clinics never miss another lead after hours.",
     liveUrl: "/ai-receptionist",
     liveLabel: "Try Live Demo",
-    afterImage: "/case-studies/ai-receptionist-demo.png",
+    afterImage: "/case-studies/ai-receptionist-main.png",
+    heroWide: true,
+    chatGallery: [
+      { src: "/case-studies/ai-receptionist-1.png", caption: "Answers treatment & pricing questions instantly, in natural English" },
+      { src: "/case-studies/ai-receptionist-2.png", caption: "Guides the patient through a quick in-chat booking form" },
+      { src: "/case-studies/ai-receptionist-3.png", caption: "Confirms the appointment automatically — no staff involved" },
+      { src: "/case-studies/ai-receptionist-4.png", caption: "Live voice agent picks up and talks the patient through booking" },
+      { src: "/case-studies/ai-receptionist-5.png", caption: "Supports voice notes for patients who'd rather speak than type" },
+    ],
     services: [
       "24/7 Call Answering",
       "Live Chat Booking",
@@ -175,12 +239,21 @@ const caseStudies: CaseStudy[] = [
   },
   {
     client: "Free Website Audit",
+    type: "AI Automation",
     category: "Product Case Study — AI Clinic Website Analyzer",
     tagline:
       "A free AI tool that scores a clinic's website in under 30 seconds — speed, SEO, patient experience, and competitor gaps — then unlocks a full growth report.",
     liveUrl: "/free-website-audit",
     liveLabel: "Run Free Audit",
-    afterImage: "/case-studies/free-website-audit-demo.png",
+    afterImage: "/case-studies/free-website-audit-main.png",
+    heroWide: true,
+    chatGallery: [
+      { src: "/case-studies/free-website-audit-1.png", caption: "Walks through the site live — speed, SEO, and patient experience checks" },
+      { src: "/case-studies/free-website-audit-2.png", caption: "Delivers an instant score and estimates the monthly revenue it's costing" },
+      { src: "/case-studies/free-website-audit-3.png", caption: "Surfaces the exact competitors outranking you on Google" },
+      { src: "/case-studies/free-website-audit-4.png", caption: "Benchmarks your Google Business Profile against the local map pack" },
+      { src: "/case-studies/free-website-audit-5.png", caption: "Lists critical issues with a clear, actionable fix for each one" },
+    ],
     services: [
       "PageSpeed Analysis",
       "On-Page SEO Check",
@@ -264,7 +337,7 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
                 </div>
                 <div
                   className={`rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-[#F8FAFC] ${
-                    c.beforeImage ? "aspect-[16/10]" : "flex justify-center p-4 sm:p-6"
+                    c.beforeImage ? "aspect-[16/10]" : c.heroWide ? "" : "flex justify-center p-4 sm:p-6"
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -274,6 +347,8 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
                     className={
                       c.beforeImage
                         ? "w-full h-full object-cover object-top"
+                        : c.heroWide
+                        ? "w-full h-auto block"
                         : "w-full max-w-md h-auto rounded-lg shadow-md"
                     }
                   />
@@ -286,6 +361,9 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
 
       {/* Full screenshot gallery */}
       {c.gallery?.length ? <ScreenshotGallery images={c.gallery} client={c.client} accent={c.accent} /> : null}
+
+      {/* AI chat / voice widget gallery */}
+      {c.chatGallery?.length ? <ChatWidgetGallery shots={c.chatGallery} client={c.client} accent={c.accent} /> : null}
 
       <div className="px-7 lg:px-10 py-8 lg:py-10">
         <p className="text-lg lg:text-xl font-bold text-[#00283C] leading-snug tracking-tight mb-7">
@@ -385,13 +463,22 @@ function Lightbox({ images, index, onClose, onNav }: { images: string[]; index: 
   );
 }
 
+const filters: ("All" | ProjectType)[] = ["All", "Website", "AI Automation"];
+
 export default function Portfolio() {
+  const [filter, setFilter] = useState<"All" | ProjectType>("All");
+  const filtered = filter === "All" ? caseStudies : caseStudies.filter((c) => c.type === filter);
   const [selected, setSelected] = useState(0);
-  const active = caseStudies[selected];
+  const active = filtered[selected] ?? filtered[0];
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
   const openLightbox = (images: string[], index: number) => setLightbox({ images, index });
   const navLightbox = (dir: number) =>
     setLightbox((lb) => (lb ? { ...lb, index: (lb.index + dir + lb.images.length) % lb.images.length } : lb));
+
+  const handleFilter = (f: "All" | ProjectType) => {
+    setFilter(f);
+    setSelected(0);
+  };
 
   return (
     <LightboxContext.Provider value={openLightbox}>
@@ -407,13 +494,30 @@ export default function Portfolio() {
       <section className="py-16 lg:py-20 bg-[#F8FAFC]">
         <div className="max-w-5xl mx-auto px-6">
 
+          {/* Category filter */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+            {filters.map((f) => (
+              <button
+                key={f}
+                onClick={() => handleFilter(f)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold border-2 transition-colors ${
+                  filter === f
+                    ? "bg-[#00283C] border-[#00283C] text-white"
+                    : "bg-white border-gray-200 text-gray-500 hover:border-[#00283C] hover:text-[#00283C]"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+
           {/* Project selector */}
           <div className="mb-10">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 text-center">
               Select a project to view the case study
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
-              {caseStudies.map((c, i) => {
+              {filtered.map((c, i) => {
                 const isActive = i === selected;
                 const thumb = c.afterImage || c.beforeImage;
                 return (
@@ -431,7 +535,7 @@ export default function Portfolio() {
                         <img
                           src={thumb}
                           alt={c.client}
-                          className="w-full h-full object-cover object-top"
+                          className={`w-full h-full ${c.heroWide ? "object-contain" : "object-cover object-top"}`}
                         />
                       </div>
                     ) : (
@@ -443,10 +547,16 @@ export default function Portfolio() {
                       </div>
                     )}
                     <div className="p-4">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1.5">
                         <span className="w-2 h-2 rounded-full" style={{ background: c.accent }} />
                         <p className="text-sm font-bold text-[#00283C]">{c.client}</p>
                       </div>
+                      <span
+                        className="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1.5"
+                        style={{ background: `${c.accent}1A`, color: c.accent }}
+                      >
+                        {c.type}
+                      </span>
                       <p className="text-xs text-gray-400 leading-snug">{c.category}</p>
                     </div>
                   </button>

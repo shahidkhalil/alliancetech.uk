@@ -3,27 +3,18 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import {
   Megaphone, Globe, Smartphone, MapPin, Search,
-  PhoneCall, MessageCircle, ClipboardList, ArrowRight, Bot
+  MessageCircle, ClipboardList, ArrowRight, Bot
 } from "lucide-react";
 
 const services = [
   {
     Icon: Bot,
     title: "AI Automation Suite",
-    subtitle: "Your AI front desk · from $500/mo",
-    desc: "The all-in-one AI front desk — answers patients on web & WhatsApp, books appointments, sends reminders, and even takes live voice calls. Never miss a patient again.",
-    stat: "24/7 · never sleeps",
+    subtitle: "Your Houston clinic's AI front desk · from $500/mo",
+    desc: "The all-in-one AI front desk for Houston clinics — answers every call, web chat & WhatsApp, books appointments, sends reminders, and even takes live voice calls. Never miss a patient again.",
+    stat: "0 missed calls, 24/7",
     href: "/ai-receptionist",
     popular: true,
-  },
-  {
-    Icon: PhoneCall,
-    title: "AI Receptionist",
-    subtitle: "24/7. Never misses a call.",
-    desc: "Answers every call, books appointments, handles queries — in English, round the clock.",
-    stat: "0 missed calls",
-    href: "/ai-receptionist",
-    popular: false,
   },
   {
     Icon: MessageCircle,

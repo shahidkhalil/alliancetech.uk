@@ -5,33 +5,38 @@ import { useForm } from "@/context/FormContext";
 
 const heroSlides = [
   {
-    badge: "Houston's Top Reviewed Clinic Growth Agency",
-    headline: <>Most Dental Clinics Lose Patients<br />to Competitors Every Day. <span className="gradient-heading">We Fix That.</span></>,
-    sub: "We fix the three things costing you patients: invisible Google ranking, missed WhatsApp inquiries, and wasted ad spend. One agency, every channel.",
+    badge: "AI Automation for Houston Clinics",
+    headline: <>Your Front Desk Can&apos;t Answer<br />Every Call. <span className="gradient-heading">Our AI Can.</span></>,
+    sub: "A 24/7 AI receptionist that answers calls, chats, and WhatsApp, books appointments, and sends reminders — so your Houston clinic never misses another patient.",
+    cta: { label: "Talk to Our AI Now", href: "/ai-receptionist" },
+    showChatProof: true,
   },
   {
-    badge: "AI Automation for Busy Clinics",
-    headline: <>Your Front Desk Can&apos;t Answer<br />Every Call. <span className="gradient-heading">Our AI Can.</span></>,
-    sub: "A 24/7 AI receptionist that answers calls, chats, and WhatsApp, books appointments, and sends reminders — so you never miss another patient.",
+    badge: "Houston's Top Reviewed Clinic Growth Agency",
+    headline: <>Most Houston Clinics Lose Patients<br />to Competitors Every Day. <span className="gradient-heading">We Fix That.</span></>,
+    sub: "We fix the three things costing you patients: invisible Google ranking, missed WhatsApp inquiries, and wasted ad spend. One agency, every channel.",
+    cta: { label: "Free Website Audit", href: "/free-website-audit" },
   },
   {
     badge: "Websites & Local SEO That Convert",
     headline: <>Patients Search Google First.<br /><span className="gradient-heading">Make Sure They Find You.</span></>,
-    sub: "Fast, mobile-first clinic websites and local SEO that put you at the top of 'dentist near me' — and turn searchers into booked appointments.",
+    sub: "Fast, mobile-first clinic websites and local SEO that put you at the top of 'dentist near me in Houston' — and turn searchers into booked appointments.",
+    cta: { label: "Free Website Audit", href: "/free-website-audit" },
   },
   {
     badge: "Google & Meta Ads for Clinics",
     headline: <>Stop Wasting Ad Spend.<br /><span className="gradient-heading">Fill Your Calendar Instead.</span></>,
-    sub: "Targeted campaigns built only for dental and aesthetic clinics — every dollar tracked, every lead measured, an average 4x return on ad spend.",
+    sub: "Targeted campaigns built only for dental and aesthetic clinics in Houston — every dollar tracked, every lead measured, an average 4x return on ad spend.",
+    cta: { label: "Free Website Audit", href: "/free-website-audit" },
   },
 ];
 
 const marqueeItems = [
-  "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Houston", "🏙️ Los Angeles",
-  "🌆 Chicago", "🤖 AI Receptionist", "💬 WhatsApp AI", "🌐 Clinic Websites",
+  "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Houston", "🏘️ Sugar Land",
+  "🌳 The Woodlands", "🤖 AI Receptionist", "💬 WhatsApp AI", "🌐 Clinic Websites",
   "📱 Patient Apps", "🔍 Local SEO", "📣 Google Ads", "🏥 EHR Platform",
-  "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Houston", "🏙️ Los Angeles",
-  "🌆 Chicago", "🤖 AI Receptionist", "💬 WhatsApp AI", "🌐 Clinic Websites",
+  "🦷 Dental Clinics", "✨ Aesthetic Clinics", "📍 Houston", "🏘️ Sugar Land",
+  "🌳 The Woodlands", "🤖 AI Receptionist", "💬 WhatsApp AI", "🌐 Clinic Websites",
   "📱 Patient Apps", "🔍 Local SEO", "📣 Google Ads", "🏥 EHR Platform",
 ];
 
@@ -94,6 +99,21 @@ export default function Hero() {
               <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8 leading-relaxed">
                 {s.sub}
               </p>
+
+              {s.showChatProof && (
+                <div className="max-w-sm mx-auto mb-8 rounded-2xl border border-gray-100 bg-white shadow-lg p-4 text-left space-y-2.5">
+                  <div className="flex justify-end">
+                    <div className="max-w-[80%] rounded-2xl rounded-br-sm bg-[#00283C] text-white text-xs px-3.5 py-2.5">
+                      Do you have an opening today?
+                    </div>
+                  </div>
+                  <div className="flex justify-start">
+                    <div className="max-w-[80%] rounded-2xl rounded-bl-sm bg-[#F8FAFC] border border-gray-100 text-gray-700 text-xs px-3.5 py-2.5">
+                      Yes! 3 PM works — booked ✅
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
 
@@ -118,9 +138,9 @@ export default function Hero() {
               className="btn-dark px-8 py-4 text-base w-full sm:w-auto">
               Get Your Free Clinic Audit
             </button>
-            <a href="/free-website-audit"
+            <a href={s.cta.href}
               className="flex items-center gap-2 text-sm font-semibold text-[#0077A8] border border-[#0077A8]/30 px-6 py-4 rounded-md hover:bg-[#0077A8]/5 transition-colors w-full sm:w-auto justify-center">
-              Free Website Audit
+              {s.cta.label}
             </a>
           </div>
         </div>
@@ -147,7 +167,7 @@ export default function Hero() {
             { stat: "100+", label: "Clinics Served" },
             { stat: "4x", label: "Avg. Return on Ad Spend" },
             { stat: "60 days", label: "To Measurable Results" },
-            { stat: "0", label: "Missed Leads After AI Setup" },
+            { stat: "0", label: "Missed-Call Target With AI" },
           ].map((s) => (
             <div key={s.label}>
               <div className="text-3xl font-extrabold text-white mb-0.5">{s.stat}</div>

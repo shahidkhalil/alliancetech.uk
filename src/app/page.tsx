@@ -9,12 +9,11 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import Problems from "@/components/Problems";
 import Solutions from "@/components/Solutions";
-import WhatsAppDemo from "@/components/WhatsAppDemo";
-import EHRDashboard from "@/components/EHRDashboard";
+import AIReceptionist from "@/components/AIReceptionist";
 import Guarantee from "@/components/Guarantee";
 import ForWho from "@/components/ForWho";
 import Process from "@/components/Process";
-import Testimonials from "@/components/Testimonials";
+import TestimonialVideo from "@/components/TestimonialVideo";
 import PricingPackages from "@/components/PricingPackages";
 import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
@@ -31,13 +30,12 @@ function HomeContent() {
       <Hero />
       <Problems />
       <AuditPromo />
-      <Solutions />
-      <WhatsAppDemo />
-      <EHRDashboard />
-      <Guarantee />
       <ForWho />
+      <Solutions />
+      <AIReceptionist />
       <Process />
-      <Testimonials />
+      <TestimonialVideo />
+      <Guarantee />
       <PricingPackages />
       <FAQ />
       <FinalCTA />

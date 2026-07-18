@@ -5,23 +5,48 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useForm } from "@/context/FormContext";
 
-const navLinks = [
+interface DropdownLink { label: string; href: string; }
+interface DropdownGroup { title: string; links: DropdownLink[]; }
+interface Dropdown {
+  heading: string;
+  links?: DropdownLink[];
+  top?: DropdownLink[];
+  groups?: DropdownGroup[];
+}
+interface NavLink { label: string; href: string; dropdown: Dropdown | null; }
+
+const navLinks: NavLink[] = [
   {
     label: "Services",
     href: "/#services",
     dropdown: {
       heading: "Services",
-      links: [
-        { label: "All Services", href: "/services" },
-        { label: "AI Receptionist", href: "/ai-receptionist" },
-        { label: "WhatsApp AI Automation", href: "/whatsapp-ai-automation" },
-        { label: "Digital Marketing", href: "/digital-marketing-for-clinics" },
-        { label: "Clinic Websites", href: "/clinic-website-design" },
-        { label: "SEO for Clinics", href: "/seo-for-clinics" },
-        { label: "Local SEO for Clinics", href: "/local-seo-for-clinics" },
-        { label: "Patient Mobile App", href: "/clinic-mobile-app" },
-        { label: "EHR Platform", href: "/ehr-platform" },
-        { label: "Free Website Audit", href: "/free-website-audit" },
+      top: [{ label: "All Services", href: "/services" }],
+      groups: [
+        {
+          title: "AI Automation",
+          links: [
+            { label: "AI Receptionist", href: "/ai-receptionist" },
+            { label: "WhatsApp AI Automation", href: "/whatsapp-ai-automation" },
+            { label: "Free Website Audit", href: "/free-website-audit" },
+          ],
+        },
+        {
+          title: "Growth & Marketing",
+          links: [
+            { label: "Digital Marketing", href: "/digital-marketing-for-clinics" },
+            { label: "SEO for Clinics", href: "/seo-for-clinics" },
+            { label: "Local SEO for Clinics", href: "/local-seo-for-clinics" },
+            { label: "Clinic Websites", href: "/clinic-website-design" },
+          ],
+        },
+        {
+          title: "Platform",
+          links: [
+            { label: "Patient Mobile App", href: "/clinic-mobile-app" },
+            { label: "EHR Platform", href: "/ehr-platform" },
+          ],
+        },
       ],
     },
   },
@@ -126,15 +151,39 @@ export default function Navigation() {
                     </button>
 
                     {/* Transparent bridge + dropdown panel — pt-2 closes the hover gap */}
-                    <div className="absolute top-full left-0 pt-2 w-56 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50">
+                    <div className={`absolute top-full left-0 pt-2 ${link.dropdown.groups ? "w-64" : "w-56"} opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 z-50`}>
                       <div className="rounded-xl py-3 bg-white shadow-xl border border-gray-100">
-                        <p className="px-4 pb-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">{link.dropdown.heading}</p>
-                        {link.dropdown.links.map((d) => (
-                          <a key={d.label} href={d.href}
-                            className="block px-4 py-2 text-sm text-gray-600 hover:text-[#00283C] hover:bg-[#F0F7FA] transition-colors">
-                            {d.label}
-                          </a>
-                        ))}
+                        {link.dropdown.groups ? (
+                          <>
+                            {link.dropdown.top?.map((d) => (
+                              <a key={d.label} href={d.href}
+                                className="block px-4 py-2 text-sm font-semibold text-[#00283C] hover:bg-[#F0F7FA] transition-colors">
+                                {d.label}
+                              </a>
+                            ))}
+                            {link.dropdown.groups.map((g, gi) => (
+                              <div key={g.title} className={gi > 0 ? "mt-1 pt-2 border-t border-gray-100" : "mt-1"}>
+                                <p className="px-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">{g.title}</p>
+                                {g.links.map((d) => (
+                                  <a key={d.label} href={d.href}
+                                    className="block px-4 py-2 text-sm text-gray-600 hover:text-[#00283C] hover:bg-[#F0F7FA] transition-colors">
+                                    {d.label}
+                                  </a>
+                                ))}
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          <>
+                            <p className="px-4 pb-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">{link.dropdown.heading}</p>
+                            {link.dropdown.links!.map((d) => (
+                              <a key={d.label} href={d.href}
+                                className="block px-4 py-2 text-sm text-gray-600 hover:text-[#00283C] hover:bg-[#F0F7FA] transition-colors">
+                                {d.label}
+                              </a>
+                            ))}
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -193,12 +242,34 @@ export default function Navigation() {
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden pl-4">
-                            {link.dropdown.links.map((d) => (
-                              <a key={d.label} href={d.href} onClick={() => setMobileOpen(false)}
-                                className="block px-3 py-2 text-sm text-gray-500 hover:text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
-                                {d.label}
-                              </a>
-                            ))}
+                            {link.dropdown.groups ? (
+                              <>
+                                {link.dropdown.top?.map((d) => (
+                                  <a key={d.label} href={d.href} onClick={() => setMobileOpen(false)}
+                                    className="block px-3 py-2 text-sm font-semibold text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
+                                    {d.label}
+                                  </a>
+                                ))}
+                                {link.dropdown.groups.map((g) => (
+                                  <div key={g.title} className="mt-1">
+                                    <p className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">{g.title}</p>
+                                    {g.links.map((d) => (
+                                      <a key={d.label} href={d.href} onClick={() => setMobileOpen(false)}
+                                        className="block px-3 py-2 text-sm text-gray-500 hover:text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
+                                        {d.label}
+                                      </a>
+                                    ))}
+                                  </div>
+                                ))}
+                              </>
+                            ) : (
+                              link.dropdown.links!.map((d) => (
+                                <a key={d.label} href={d.href} onClick={() => setMobileOpen(false)}
+                                  className="block px-3 py-2 text-sm text-gray-500 hover:text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
+                                  {d.label}
+                                </a>
+                              ))
+                            )}
                           </motion.div>
                         )}
                       </AnimatePresence>

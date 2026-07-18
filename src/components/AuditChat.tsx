@@ -434,7 +434,14 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
       1400
     );
     const t3 = setTimeout(() => push({ from: "bot", kind: "options" }), 1800);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      // Undo the guard so React 18 Strict Mode's dev-only mount→cleanup→remount
+      // cycle reschedules these on the real mount instead of leaving the chat empty.
+      started.current = false;
+    };
   }, [push]);
 
   const chooseOption = (opt: "audit" | "competitor" | "call") => {
