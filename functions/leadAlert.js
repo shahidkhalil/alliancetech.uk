@@ -292,6 +292,7 @@ exports.draftAlert = onDocumentWritten(
 
     const lead = after.data();
     if (!lead || lead.alertSent) return;
+    if (lead.completionStatus === "submitted") return;
     if (!hasContact(lead)) return;
 
     const before = event.data?.before?.exists ? event.data.before.data() : null;

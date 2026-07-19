@@ -568,14 +568,15 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
     // Save the lead with full audit intelligence attached.
     try {
       await addDoc(collection(getDb(), "leads"), {
-        name,
-        phone,
-        email: email || "",
+        name: String(name || "").trim().slice(0, 120),
+        phone: String(phone || "").trim().slice(0, 40),
+        email: String(email || "").trim().slice(0, 160),
         source: "audit_bot",
-        website: pending?.url || "",
-        auditScore: pending?.report?.overallScore ?? null,
-        auditVerdict: pending?.report?.verdict || "",
-        topIssue: pending?.report?.criticalIssues?.[0]?.title || "",
+        website: String(pending?.url || "").trim().slice(0, 300),
+        auditScore: typeof pending?.report?.overallScore === "number" ? pending.report.overallScore : null,
+        auditVerdict: String(pending?.report?.verdict || "").slice(0, 200),
+        topIssue: String(pending?.report?.criticalIssues?.[0]?.title || "").slice(0, 200),
+        completionStatus: "complete",
         createdAt: serverTimestamp(),
         status: "new",
       });

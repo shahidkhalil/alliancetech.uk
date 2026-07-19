@@ -15,6 +15,7 @@ const { buildGmbCheck } = require("./lib/gmb");
 const { generateReport } = require("./lib/ai");
 const { initCache, getCache, setCache, checkRateLimit } = require("./lib/cache");
 const { sanitizeReport } = require("./lib/validate");
+const { applyCors, clientIp, normalizePublicUrl } = require("./lib/security");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -46,38 +47,23 @@ exports.packageOrder = require("./packageOrder").packageOrder;
 exports.realtimeToken = require("./realtime").realtimeToken;
 exports.bookAppointmentHttp = require("./realtime").bookAppointmentHttp;
 
-function normalizeUrl(input) {
-  if (!input || typeof input !== "string") return null;
-  let u = input.trim();
-  if (!/^https?:\/\//i.test(u)) u = "https://" + u;
-  try {
-    const parsed = new URL(u);
-    if (!/^https?:$/.test(parsed.protocol)) return null;
-    // Block localhost / internal addresses (basic SSRF guard).
-    const host = parsed.hostname;
-    if (/^(localhost|127\.|10\.|192\.168\.|0\.0\.0\.0|169\.254\.)/.test(host)) return null;
-    if (!host.includes(".")) return null;
-    return parsed.toString();
-  } catch {
-    return null;
-  }
-}
-
 exports.auditWebsite = onRequest(
   {
     region: "asia-south1",
-    cors: true,
+    cors: false,
     timeoutSeconds: 120,
     memory: "512MiB",
     secrets: [OPENAI_API_KEY, PAGESPEED_API_KEY, SERPER_API_KEY],
   },
   async (req, res) => {
+    if (applyCors(req, res)) return;
+
     if (req.method !== "POST") {
       res.status(405).json({ error: "Use POST" });
       return;
     }
 
-    const url = normalizeUrl(req.body?.url);
+    const url = normalizePublicUrl(req.body?.url);
     if (!url) {
       res.status(400).json({ error: "Please provide a valid website URL." });
       return;
@@ -85,16 +71,16 @@ exports.auditWebsite = onRequest(
 
     try {
       // Full-audit cache: same URL within a week returns the stored result —
-      // zero PageSpeed, Serper, or OpenAI spend.
+      // zero PageSpeed, Serper, or OpenAI spend. Public clients cannot force bypass.
       const auditCacheKey = `audit:${url}`;
-      const cached = req.body?.force === true ? null : await getCache(auditCacheKey);
+      const cached = await getCache(auditCacheKey);
       if (cached) {
         res.status(200).json({ ...cached, meta: { ...cached.meta, cached: true } });
         return;
       }
 
       // Per-IP daily limit protects the API budget from abuse.
-      const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
+      const ip = clientIp(req);
       if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP, "audit"))) {
         res.status(429).json({ error: "Daily audit limit reached. Try again tomorrow, or book a free call with our team." });
         return;
@@ -186,7 +172,7 @@ exports.auditWebsite = onRequest(
       res.status(200).json(payload);
     } catch (err) {
       console.error("Audit failed:", err);
-      res.status(500).json({ error: "Audit failed. Please try again.", detail: err.message });
+      res.status(500).json({ error: "Audit failed. Please try again." });
     }
   }
 );

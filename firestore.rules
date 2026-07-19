@@ -1,25 +1,116 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Completed form submissions — public create, admin read/manage
+
+    // Only verified @alliancetechltd.com accounts (disable public signup in Console).
+    function isAdmin() {
+      return request.auth != null
+        && (
+          request.auth.token.admin == true
+          || (
+            request.auth.token.email_verified == true
+            && request.auth.token.email is string
+            && request.auth.token.email.matches('(?i).*@alliancetechltd[.]com$')
+          )
+        );
+    }
+
+    function strMax(field, max) {
+      return !(field in request.resource.data)
+        || (request.resource.data[field] is string
+            && request.resource.data[field].size() <= max);
+    }
+
+    function optNumber(field) {
+      return !(field in request.resource.data)
+        || request.resource.data[field] is number
+        || request.resource.data[field] == null;
+    }
+
+    function hasTimestamp(field) {
+      return field in request.resource.data
+        && request.resource.data[field] is timestamp;
+    }
+
+    // Completed form submissions — public create with schema limits; admin-only manage
     match /leads/{doc} {
-      allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow create: if request.resource.data.keys().hasAll(['source', 'createdAt'])
+        && request.resource.data.keys().hasOnly([
+          'name', 'phone', 'email', 'clinicName', 'clinicType', 'message',
+          'source', 'website', 'auditScore', 'auditVerdict', 'topIssue',
+          'completionStatus', 'status',
+          'createdAt', 'updatedAt', 'step'
+        ])
+        && request.resource.data.source is string
+        && request.resource.data.source.size() > 0
+        && request.resource.data.source.size() <= 64
+        && strMax('name', 120)
+        && strMax('phone', 40)
+        && strMax('email', 160)
+        && strMax('clinicName', 160)
+        && strMax('clinicType', 80)
+        && strMax('message', 2000)
+        && strMax('website', 300)
+        && strMax('auditVerdict', 200)
+        && strMax('topIssue', 200)
+        && strMax('completionStatus', 32)
+        && strMax('status', 32)
+        && optNumber('auditScore')
+        && optNumber('step')
+        && hasTimestamp('createdAt')
+        // Require at least one contact channel to cut empty spam.
+        && (
+          (request.resource.data.keys().hasAny(['email'])
+            && request.resource.data.email is string
+            && request.resource.data.email.size() > 3)
+          || (request.resource.data.keys().hasAny(['phone'])
+            && request.resource.data.phone is string
+            && request.resource.data.phone.size() >= 7)
+        );
+      allow read, update, delete: if isAdmin();
     }
 
-    // Abandoned / in-progress forms — public write, admin read
+    // Abandoned forms — create/update only; no client delete (stops wipe attacks)
     match /form_drafts/{doc} {
-      allow create, update, delete: if true;
-      allow read: if request.auth != null;
+      allow create, update: if request.resource.data.keys().hasAll(['source', 'updatedAt'])
+        && request.resource.data.keys().hasOnly([
+          'name', 'phone', 'email', 'clinicName', 'clinicType', 'message',
+          'source', 'completionStatus', 'step', 'createdAt', 'updatedAt',
+          'alertSent', 'submittedAt'
+        ])
+        && request.resource.data.source is string
+        && request.resource.data.source.size() <= 64
+        && strMax('name', 120)
+        && strMax('phone', 40)
+        && strMax('email', 160)
+        && strMax('clinicName', 160)
+        && strMax('clinicType', 80)
+        && strMax('message', 2000)
+        && strMax('completionStatus', 32)
+        && optNumber('step')
+        && hasTimestamp('updatedAt');
+      allow read: if isAdmin();
+      allow delete: if false;
     }
 
-    // Blog like counts — anyone can read and increment
+    // Blog likes — read public; writes may only change count by ±1 via increment()
     match /blog_likes/{doc} {
       allow read: if true;
-      allow create, update: if true;
+      allow create: if request.resource.data.keys().hasOnly(['count', 'updatedAt'])
+        && request.resource.data.count is int
+        && request.resource.data.count >= 0
+        && request.resource.data.count <= 1;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count', 'updatedAt'])
+        && request.resource.data.count is int
+        && request.resource.data.count >= 0
+        && (
+          request.resource.data.count == resource.data.count + 1
+          || request.resource.data.count == resource.data.count - 1
+        );
+      allow delete: if false;
     }
 
-    // Lock everything else down.
+    // Lock everything else (audits, orders, appointments, cache = Admin SDK only).
     match /{document=**} {
       allow read, write: if false;
     }

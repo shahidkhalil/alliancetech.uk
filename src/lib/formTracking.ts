@@ -1,7 +1,6 @@
 import {
   doc,
   setDoc,
-  deleteDoc,
   serverTimestamp,
   collection,
   addDoc,
@@ -62,7 +61,12 @@ export async function saveFormDraft(
   await setDoc(
     ref,
     {
-      ...form,
+      name: form.name.trim().slice(0, 120),
+      phone: form.phone.trim().slice(0, 40),
+      email: form.email.trim().slice(0, 160),
+      clinicName: form.clinicName.trim().slice(0, 160),
+      clinicType: form.clinicType.trim().slice(0, 80),
+      message: form.message.trim().slice(0, 2000),
       step,
       source: "consultation_form",
       completionStatus: "partial",
@@ -74,10 +78,15 @@ export async function saveFormDraft(
   if (isNew) localStorage.setItem(DRAFT_INIT_KEY, sessionId);
 }
 
-/** Finalize a complete submission and remove the draft. */
+/** Finalize a complete submission and close the draft (no client delete). */
 export async function submitCompleteLead(form: FormFields, sessionId: string) {
   await addDoc(collection(getDb(), "leads"), {
-    ...form,
+    name: form.name.trim().slice(0, 120),
+    phone: form.phone.trim().slice(0, 40),
+    email: form.email.trim().slice(0, 160),
+    clinicName: form.clinicName.trim().slice(0, 160),
+    clinicType: form.clinicType.trim().slice(0, 80),
+    message: form.message.trim().slice(0, 2000),
     source: "consultation_form",
     completionStatus: "complete",
     status: "new",
@@ -86,7 +95,15 @@ export async function submitCompleteLead(form: FormFields, sessionId: string) {
 
   if (sessionId) {
     try {
-      await deleteDoc(doc(getDb(), "form_drafts", sessionId));
+      await setDoc(
+        doc(getDb(), "form_drafts", sessionId),
+        {
+          completionStatus: "submitted",
+          updatedAt: serverTimestamp(),
+          submittedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
     } catch {
       // Draft may not exist yet
     }

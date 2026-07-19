@@ -7,6 +7,7 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const { defineSecret } = require("firebase-functions/params");
 const { checkRateLimit } = require("./lib/cache");
+const { applyCors, clientIp } = require("./lib/security");
 
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
 const DAILY_LIMIT_PER_IP = 40;
@@ -15,15 +16,16 @@ const MAX_BYTES = 6 * 1024 * 1024; // ~6MB ≈ well over a 30s voice note
 exports.transcribeAudio = onRequest(
   {
     region: "asia-south1",
-    cors: true,
+    cors: false,
     timeoutSeconds: 60,
     memory: "256MiB",
     secrets: [OPENAI_API_KEY],
   },
   async (req, res) => {
+    if (applyCors(req, res)) return;
     if (req.method !== "POST") { res.status(405).json({ error: "Use POST" }); return; }
 
-    const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
+    const ip = clientIp(req);
     if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP, "voice"))) {
       res.status(429).json({ error: "Voice limit reached for today." });
       return;

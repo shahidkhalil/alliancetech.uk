@@ -29,6 +29,7 @@ type LeadRow = {
   website?: string;
   auditScore?: number;
   step?: number;
+  completionStatus?: string;
   createdAt?: Timestamp | null;
   updatedAt?: Timestamp | null;
 };
@@ -119,7 +120,23 @@ export default function AdminPage() {
   const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
-    return onAuthStateChanged(getFirebaseAuth(), (u) => {
+    return onAuthStateChanged(getFirebaseAuth(), async (u) => {
+      if (!u) {
+        setUser(null);
+        setAuthReady(true);
+        return;
+      }
+      const email = (u.email || "").toLowerCase();
+      const token = await u.getIdTokenResult().catch(() => null);
+      const isAdminClaim = token?.claims?.admin === true;
+      const isDomainAdmin = u.emailVerified && email.endsWith("@alliancetechltd.com");
+      if (!isAdminClaim && !isDomainAdmin) {
+        await signOut(getFirebaseAuth());
+        setLoginError("This account is not authorized for admin access.");
+        setUser(null);
+        setAuthReady(true);
+        return;
+      }
       setUser(u);
       setAuthReady(true);
     });
@@ -153,9 +170,14 @@ export default function AdminPage() {
     };
   }, [user]);
 
+  const incompleteDrafts = useMemo(
+    () => drafts.filter((d) => d.completionStatus !== "submitted"),
+    [drafts]
+  );
+
   const counts = useMemo(
-    () => ({ completed: leads.length, incomplete: drafts.length }),
-    [leads, drafts]
+    () => ({ completed: leads.length, incomplete: incompleteDrafts.length }),
+    [leads, incompleteDrafts]
   );
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -217,7 +239,7 @@ export default function AdminPage() {
     );
   }
 
-  const list = tab === "completed" ? leads : drafts;
+  const list = tab === "completed" ? leads : incompleteDrafts;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">

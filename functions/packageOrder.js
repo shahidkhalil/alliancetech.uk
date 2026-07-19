@@ -14,6 +14,7 @@ const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 
 const { checkRateLimit } = require("./lib/cache");
+const { applyCors, clientIp, stripHeaderInjection } = require("./lib/security");
 
 const GMAIL_USER = defineSecret("GMAIL_USER");
 const GMAIL_APP_PASSWORD = defineSecret("GMAIL_APP_PASSWORD");
@@ -21,7 +22,7 @@ const GMAIL_APP_PASSWORD = defineSecret("GMAIL_APP_PASSWORD");
 const DAILY_LIMIT_PER_IP = 10;
 
 function str(v, max = 120) {
-  return typeof v === "string" ? v.trim().slice(0, max) : "";
+  return stripHeaderInjection(typeof v === "string" ? v : "", max);
 }
 
 async function emailCustomer(o, reference, user, pass) {
@@ -30,7 +31,7 @@ async function emailCustomer(o, reference, user, pass) {
   await transporter.sendMail({
     from: `"Alliance Tech" <${user}>`,
     to: o.email,
-    subject: `We've got your request — ${o.serviceName} (${o.packageName}) · Ref ${reference}`,
+    subject: stripHeaderInjection(`We've got your request — ${o.serviceName} (${o.packageName}) · Ref ${reference}`, 180),
     text: [
       `Hi ${o.name},`,
       ``,
@@ -60,15 +61,16 @@ async function emailCustomer(o, reference, user, pass) {
 exports.packageOrder = onRequest(
   {
     region: "asia-south1",
-    cors: true,
+    cors: false,
     timeoutSeconds: 30,
     memory: "256MiB",
     secrets: [GMAIL_USER, GMAIL_APP_PASSWORD],
   },
   async (req, res) => {
+    if (applyCors(req, res)) return;
     if (req.method !== "POST") { res.status(405).json({ error: "Use POST" }); return; }
 
-    const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
+    const ip = clientIp(req);
     if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP, "order"))) {
       res.status(429).json({ error: "Too many requests today. Please email Sales@alliancetechltd.com." });
       return;

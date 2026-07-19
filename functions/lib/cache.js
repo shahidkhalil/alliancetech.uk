@@ -46,7 +46,8 @@ async function setCache(key, value, ttlDays) {
  * consume the voice/audit quota. Returns true if within `limit`.
  */
 async function checkRateLimit(ip, limit, scope = "global") {
-  if (!db || !ip) return true;
+  if (!db) return false; // fail closed — no cache backend
+  if (!ip || typeof ip !== "string" || ip.length < 3 || ip.length > 64) return false;
   const day = new Date().toISOString().slice(0, 10);
   const ref = db.collection("cache").doc(keyToId(`rate:${scope}:${ip}:${day}`));
   try {
@@ -57,8 +58,9 @@ async function checkRateLimit(ip, limit, scope = "global") {
       return count;
     });
     return n <= limit;
-  } catch {
-    return true; // fail open
+  } catch (e) {
+    console.warn("rate limit check failed:", e.message);
+    return false; // fail closed
   }
 }
 

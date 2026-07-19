@@ -14,6 +14,7 @@ const admin = require("firebase-admin");
 const { getClinic } = require("./lib/clinicKB");
 const { bookAndNotify } = require("./lib/booking");
 const { checkRateLimit } = require("./lib/cache");
+const { applyCors, clientIp } = require("./lib/security");
 
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
 const GMAIL_USER = defineSecret("GMAIL_USER");
@@ -71,16 +72,17 @@ const TOOLS = [
 exports.clinicReceptionist = onRequest(
   {
     region: "asia-south1",
-    cors: true,
+    cors: false,
     timeoutSeconds: 60,
     memory: "512MiB",
     minInstances: 1, // stay warm — no cold-start lag on the first message
     secrets: [OPENAI_API_KEY, GMAIL_USER, GMAIL_APP_PASSWORD],
   },
   async (req, res) => {
+    if (applyCors(req, res)) return;
     if (req.method !== "POST") { res.status(405).json({ error: "Use POST" }); return; }
 
-    const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
+    const ip = clientIp(req);
     if (!(await checkRateLimit(ip, DAILY_LIMIT_PER_IP, "chat"))) {
       res.status(429).json({ error: "Too many messages today. Please WhatsApp us to continue." });
       return;

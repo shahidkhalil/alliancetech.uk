@@ -5,14 +5,45 @@
  */
 
 const cheerio = require("cheerio");
+const { isBlockedHost } = require("./security");
+
+async function safeFetch(url, opts = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), opts.timeoutMs || 20000);
+  try {
+    const res = await fetch(url, {
+      redirect: "manual",
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; AllianceAuditBot/1.0)" },
+      signal: controller.signal,
+    });
+    // Follow a small number of redirects, re-checking host each hop (SSRF).
+    let current = url;
+    let response = res;
+    for (let i = 0; i < 3 && [301, 302, 303, 307, 308].includes(response.status); i++) {
+      const loc = response.headers.get("location");
+      if (!loc) break;
+      const next = new URL(loc, current);
+      if (!/^https?:$/.test(next.protocol) || isBlockedHost(next.hostname)) {
+        throw new Error("Blocked redirect target");
+      }
+      current = next.toString();
+      response = await fetch(current, {
+        redirect: "manual",
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; AllianceAuditBot/1.0)" },
+        signal: controller.signal,
+      });
+    }
+    if (!response.ok && response.status >= 400) {
+      // still return body for soft failures where caller checks .ok
+    }
+    return { response, finalUrl: current };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 async function analyzeSeo(url) {
-  const res = await fetch(url, {
-    redirect: "follow",
-    headers: { "User-Agent": "Mozilla/5.0 (compatible; AllianceAuditBot/1.0)" },
-    signal: AbortSignal.timeout(20000),
-  });
-  const finalUrl = res.url || url;
+  const { response: res, finalUrl } = await safeFetch(url, { timeoutMs: 20000 });
   const html = await res.text();
   const $ = cheerio.load(html);
 
@@ -57,8 +88,8 @@ async function analyzeSeo(url) {
     if (scriptSrcs.length) {
       const bundles = await Promise.all(
         scriptSrcs.map((u) =>
-          fetch(u, { signal: AbortSignal.timeout(15000) })
-            .then((r) => (r.ok ? r.text() : ""))
+          safeFetch(u, { timeoutMs: 15000 })
+            .then(({ response: r }) => (r.ok ? r.text() : ""))
             .catch(() => "")
         )
       );
@@ -77,11 +108,8 @@ async function analyzeSeo(url) {
     if (uniquePages.length) {
       const pages = await Promise.all(
         uniquePages.map((u) =>
-          fetch(u, {
-            headers: { "User-Agent": "Mozilla/5.0 (compatible; AllianceAuditBot/1.0)" },
-            signal: AbortSignal.timeout(15000),
-          })
-            .then((r) => (r.ok ? r.text() : ""))
+          safeFetch(u, { timeoutMs: 15000 })
+            .then(({ response: r }) => (r.ok ? r.text() : ""))
             .catch(() => "")
         )
       );

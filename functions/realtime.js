@@ -16,6 +16,7 @@ const { defineSecret } = require("firebase-functions/params");
 const { getClinic } = require("./lib/clinicKB");
 const { checkRateLimit } = require("./lib/cache");
 const { bookAndNotify } = require("./lib/booking");
+const { applyCors, clientIp } = require("./lib/security");
 
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
 const GMAIL_USER = defineSecret("GMAIL_USER");
@@ -100,11 +101,12 @@ const BOOK_TOOL = {
 };
 
 exports.realtimeToken = onRequest(
-  { region: "asia-south1", cors: true, timeoutSeconds: 30, memory: "256MiB", secrets: [OPENAI_API_KEY] },
+  { region: "asia-south1", cors: false, timeoutSeconds: 30, memory: "256MiB", secrets: [OPENAI_API_KEY] },
   async (req, res) => {
+    if (applyCors(req, res)) return;
     if (req.method !== "POST") { res.status(405).json({ error: "Use POST" }); return; }
 
-    const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
+    const ip = clientIp(req);
     if (!(await checkRateLimit(ip, CALLS_PER_IP_PER_DAY, "call"))) {
       res.status(429).json({ error: "Daily live-call limit reached — please use the chat instead." });
       return;
@@ -162,15 +164,16 @@ exports.realtimeToken = onRequest(
 exports.bookAppointmentHttp = onRequest(
   {
     region: "asia-south1",
-    cors: true,
+    cors: false,
     timeoutSeconds: 30,
     memory: "256MiB",
     secrets: [GMAIL_USER, GMAIL_APP_PASSWORD],
   },
   async (req, res) => {
+    if (applyCors(req, res)) return;
     if (req.method !== "POST") { res.status(405).json({ error: "Use POST" }); return; }
 
-    const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim() || req.ip;
+    const ip = clientIp(req);
     if (!(await checkRateLimit(ip, 15, "book"))) {
       res.status(429).json({ error: "Too many bookings today." });
       return;
