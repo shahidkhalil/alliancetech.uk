@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { doc, getDoc, increment, setDoc } from "firebase/firestore";
 import { Heart, Share2, Facebook, Linkedin, Link2, Check } from "lucide-react";
-import { db } from "@/lib/firebase";
+import { getDb } from "@/lib/firebase";
 import type { BlogPost } from "@/lib/blogData";
 
 function likedKey(slug: string) {
@@ -23,7 +23,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
 
   useEffect(() => {
     setLiked(localStorage.getItem(likedKey(post.slug)) === "1");
-    getDoc(doc(db, "blog_likes", post.slug))
+    getDoc(doc(getDb(), "blog_likes", post.slug))
       .then((snap) => {
         if (snap.exists()) setLikes(snap.data().count ?? 0);
       })
@@ -37,7 +37,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
     localStorage.setItem(likedKey(post.slug), next ? "1" : "0");
     try {
       await setDoc(
-        doc(db, "blog_likes", post.slug),
+        doc(getDb(), "blog_likes", post.slug),
         { count: increment(next ? 1 : -1), updatedAt: new Date().toISOString() },
         { merge: true }
       );

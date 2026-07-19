@@ -7,28 +7,6 @@ import ServicePricingSection from "@/components/ServicePricingSection";
 import { pricingServices, serviceCategories, ServiceCategory } from "@/lib/pricingData";
 import { useForm } from "@/context/FormContext";
 
-/* ─── Category groups displayed in the sidebar/tab bar ──────────────────────── */
-/**
- * Clean price range for the index cards.
- * Package prices can carry prefixes ("From $19,999"), which produced
- * broken ranges like "$4,999 – From $19,999". Strip them, and collapse
- * to a single value when both ends match.
- */
-function priceRange(s: (typeof pricingServices)[number]) {
-  const clean = (p: string) => p.replace(/^\s*from\s+/i, "").trim();
-  const lo = clean(s.packages[0].price);
-  const hi = clean(s.packages[2].price);
-  return lo === hi ? lo : `${lo} – ${hi}`;
-}
-
-const categoryColors: Record<string, string> = {
-  "Web & App":       "bg-blue-50   text-blue-700   border-blue-200",
-  "AI & Automation": "bg-violet-50 text-violet-700 border-violet-200",
-  "Marketing":       "bg-emerald-50 text-emerald-700 border-emerald-200",
-  "Integration":     "bg-amber-50  text-amber-700  border-amber-200",
-  "Support":         "bg-rose-50   text-rose-700   border-rose-200",
-};
-
 /* ─── Why Alliance Tech ─────────────────────────────────────────────────────── */
 function WhySection() {
   const points = [
@@ -255,72 +233,6 @@ function PricingContent() {
           </div>
         </div>
       </div>
-
-      {/* ── Quick index grid ── */}
-      <section className="border-t border-gray-100 py-14 bg-[#F8FAFC]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl lg:text-3xl font-extrabold text-[#00283C] tracking-tight mb-2">
-              All <span className="gradient-heading">Services</span>
-            </h2>
-            <p className="text-gray-500 text-sm">
-              {pricingServices.length} services · tap any to see its full packages, features &amp; FAQs
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {pricingServices.map((s) => {
-              const isActive = activeId === s.id;
-              const isHot = s.id === "ai-automation";
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => {
-                    setActiveCategory("All");
-                    setActiveId(s.id);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className={`group relative text-left p-5 rounded-2xl border bg-white flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gray-200/60 ${
-                    isActive ? "border-[#0077A8] ring-2 ring-[#0077A8]/15 shadow-md" : "border-gray-200/80 hover:border-[#0077A8]/40"
-                  }`}
-                >
-                  {/* Category + hot flag */}
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${
-                      categoryColors[s.category] ?? "bg-gray-50 text-gray-500 border-gray-200"
-                    }`}>
-                      {s.category}
-                    </span>
-                    {isHot && (
-                      <span className="text-[9px] font-black uppercase tracking-wider text-white bg-gradient-to-r from-[#F97316] to-[#EF4444] px-1.5 py-0.5 rounded-full">
-                        🔥 Hot
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Name */}
-                  <p className="text-[15px] font-bold text-[#00283C] leading-snug mb-3 flex-1">
-                    {s.name}
-                  </p>
-
-                  {/* Price range */}
-                  <div className="flex items-end justify-between gap-2 pt-3 border-t border-gray-100">
-                    <div>
-                      <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">From</p>
-                      <p className="text-base font-extrabold text-[#0077A8] leading-none">
-                        {priceRange(s)}
-                      </p>
-                    </div>
-                    <ArrowRight className={`w-4 h-4 flex-shrink-0 transition-all ${
-                      isActive ? "text-[#0077A8]" : "text-gray-300 group-hover:text-[#0077A8] group-hover:translate-x-0.5"
-                    }`} />
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       <WhySection />
       <BottomCTA />

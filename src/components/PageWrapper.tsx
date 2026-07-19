@@ -3,7 +3,6 @@ import { ReactNode } from "react";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 import dynamic from "next/dynamic";
-import AnalyticsTracker from "./AnalyticsTracker";
 import { FormProvider, useForm } from "@/context/FormContext";
 import { PackageOrderProvider } from "@/context/PackageOrderContext";
 
@@ -16,11 +15,10 @@ function PageContent({ children }: { children: ReactNode }) {
   const { isOpen, closeForm } = useForm();
   return (
     <div className="relative min-h-screen bg-white">
-      <AnalyticsTracker />
       <Navigation />
       <main className="relative">{children}</main>
       <Footer />
-      <ConsultationForm isOpen={isOpen} onClose={closeForm} />
+      {isOpen && <ConsultationForm isOpen={isOpen} onClose={closeForm} />}
       <AuditChatWidget />
       <PackageOrderForm />
     </div>

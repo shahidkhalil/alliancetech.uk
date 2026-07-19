@@ -6,7 +6,7 @@ import {
   collection,
   addDoc,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { getDb } from "@/lib/firebase";
 
 export interface FormFields {
   name: string;
@@ -57,7 +57,7 @@ export async function saveFormDraft(
   step: number
 ) {
   if (!sessionId || !hasMeaningfulData(form)) return;
-  const ref = doc(db, "form_drafts", sessionId);
+  const ref = doc(getDb(), "form_drafts", sessionId);
   const isNew = localStorage.getItem(DRAFT_INIT_KEY) !== sessionId;
   await setDoc(
     ref,
@@ -76,7 +76,7 @@ export async function saveFormDraft(
 
 /** Finalize a complete submission and remove the draft. */
 export async function submitCompleteLead(form: FormFields, sessionId: string) {
-  await addDoc(collection(db, "leads"), {
+  await addDoc(collection(getDb(), "leads"), {
     ...form,
     source: "consultation_form",
     completionStatus: "complete",
@@ -86,7 +86,7 @@ export async function submitCompleteLead(form: FormFields, sessionId: string) {
 
   if (sessionId) {
     try {
-      await deleteDoc(doc(db, "form_drafts", sessionId));
+      await deleteDoc(doc(getDb(), "form_drafts", sessionId));
     } catch {
       // Draft may not exist yet
     }

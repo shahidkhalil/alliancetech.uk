@@ -14,7 +14,7 @@ import {
   query,
   Timestamp,
 } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
+import { getFirebaseAuth, getDb } from "@/lib/firebase";
 import { Loader2, LogOut, Inbox, FileWarning } from "lucide-react";
 
 type LeadRow = {
@@ -119,7 +119,7 @@ export default function AdminPage() {
   const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (u) => {
+    return onAuthStateChanged(getFirebaseAuth(), (u) => {
       setUser(u);
       setAuthReady(true);
     });
@@ -132,8 +132,8 @@ export default function AdminPage() {
       return;
     }
     setLoadingData(true);
-    const leadsQ = query(collection(db, "leads"), orderBy("createdAt", "desc"));
-    const draftsQ = query(collection(db, "form_drafts"), orderBy("updatedAt", "desc"));
+    const leadsQ = query(collection(getDb(), "leads"), orderBy("createdAt", "desc"));
+    const draftsQ = query(collection(getDb(), "form_drafts"), orderBy("updatedAt", "desc"));
 
     const unsubLeads = onSnapshot(
       leadsQ,
@@ -163,7 +163,7 @@ export default function AdminPage() {
     setLoggingIn(true);
     setLoginError("");
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
+      await signInWithEmailAndPassword(getFirebaseAuth(), email.trim(), password);
     } catch {
       setLoginError("Invalid email or password.");
     } finally {
@@ -228,7 +228,7 @@ export default function AdminPage() {
             <p className="text-xs text-gray-400">{user.email}</p>
           </div>
           <button
-            onClick={() => signOut(auth)}
+            onClick={() => signOut(getFirebaseAuth())}
             className="flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-[#00283C] transition-colors"
           >
             <LogOut className="w-4 h-4" />

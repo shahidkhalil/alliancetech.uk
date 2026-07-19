@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useForm } from "@/context/FormContext";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { getDb } from "@/lib/firebase";
 
 const AUDIT_ENDPOINT =
   process.env.NEXT_PUBLIC_AUDIT_ENDPOINT ||
@@ -567,7 +567,7 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
 
     // Save the lead with full audit intelligence attached.
     try {
-      await addDoc(collection(db, "leads"), {
+      await addDoc(collection(getDb(), "leads"), {
         name,
         phone,
         email: email || "",

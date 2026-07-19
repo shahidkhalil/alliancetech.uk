@@ -9,9 +9,9 @@ import {
 const services = [
   {
     Icon: Bot,
-    title: "AI Automation Suite",
+    title: "AI Receptionist",
     subtitle: "Your Houston clinic's AI front desk · from $500/mo",
-    desc: "The all-in-one AI front desk for Houston clinics — answers every call, web chat & WhatsApp, books appointments, sends reminders, and even takes live voice calls. Never miss a patient again.",
+    desc: "One AI front desk for Houston clinics — voice, WhatsApp, and web chat. Answers, books, sends reminders, and never misses a patient.",
     stat: "0 missed calls, 24/7",
     href: "/ai-receptionist",
     popular: true,

@@ -1,7 +1,6 @@
-import { initializeApp, getApps } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { getAnalytics, isSupported, type Analytics } from "firebase/analytics";
+import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
+import { getFirestore, type Firestore } from "firebase/firestore";
+import { getAuth, type Auth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDRQGCPHq99dVFXIQVH0C4FlIz3GQhUR1Y",
@@ -13,20 +12,20 @@ const firebaseConfig = {
   measurementId: "G-R9WQSXQFLE",
 };
 
-// Prevent duplicate initialization in Next.js dev mode
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-
-export const db = getFirestore(app);
-export const auth = getAuth(app);
-
-let analytics: Analytics | undefined;
-export async function getFirebaseAnalytics() {
-  if (typeof window === "undefined") return undefined;
-  if (analytics) return analytics;
-  if (await isSupported()) {
-    analytics = getAnalytics(app);
-  }
-  return analytics;
+function getApp(): FirebaseApp {
+  return getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 }
 
-export default app;
+let _db: Firestore | undefined;
+/** Firestore only — safe for forms/chat. Does not load Firebase Auth. */
+export function getDb(): Firestore {
+  if (!_db) _db = getFirestore(getApp());
+  return _db;
+}
+
+let _auth: Auth | undefined;
+/** Lazy Auth — only call from admin (or other authenticated surfaces). */
+export function getFirebaseAuth(): Auth {
+  if (!_auth) _auth = getAuth(getApp());
+  return _auth;
+}

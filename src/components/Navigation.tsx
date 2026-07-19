@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useForm } from "@/context/FormContext";
@@ -27,7 +26,7 @@ const navLinks: NavLink[] = [
           title: "AI Automation",
           links: [
             { label: "AI Receptionist", href: "/ai-receptionist" },
-            { label: "WhatsApp AI Automation", href: "/whatsapp-ai-automation" },
+            { label: "WhatsApp channel", href: "/whatsapp-ai-automation" },
             { label: "Free Website Audit", href: "/free-website-audit" },
           ],
         },
@@ -126,12 +125,13 @@ export default function Navigation() {
             <div className="flex items-center gap-3 flex-shrink-0">
               <a href="/" className="flex items-center">
                 <Image
-                  src="/logo-horizontal.png"
+                  src="/logo-horizontal.jpg"
                   alt="Alliance Tech"
                   width={1043}
                   height={200}
                   className="h-9 lg:h-11 w-auto object-contain"
                   priority
+                  sizes="180px"
                 />
               </a>
               <a href="/dental-clinic-houston"
@@ -145,7 +145,12 @@ export default function Navigation() {
               {navLinks.map((link) =>
                 link.dropdown ? (
                   <div key={link.label} className="relative group">
-                    <button className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-[#00283C] transition-colors px-3 py-2 rounded-md hover:bg-gray-50">
+                    <button
+                      type="button"
+                      aria-label={`${link.label} menu`}
+                      aria-haspopup="true"
+                      className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-[#00283C] transition-colors px-3 py-2 rounded-md hover:bg-gray-50"
+                    >
                       {link.label}
                       <ChevronDown className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-200" />
                     </button>
@@ -216,32 +221,23 @@ export default function Navigation() {
       </nav>
 
       {/* Mobile menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="fixed top-20 left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-lg max-h-[80vh] overflow-y-auto"
-          >
+      {mobileOpen && (
+          <div className="fixed top-20 left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-lg max-h-[80vh] overflow-y-auto">
             <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
               {navLinks.map((link) => (
                 <div key={link.label}>
                   {link.dropdown ? (
                     <>
                       <button
+                        type="button"
+                        aria-expanded={mobileExpanded === link.label}
                         onClick={() => setMobileExpanded(mobileExpanded === link.label ? null : link.label)}
                         className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
                         {link.label}
                         <ChevronDown className={`w-4 h-4 transition-transform ${mobileExpanded === link.label ? "rotate-180" : ""}`} />
                       </button>
-                      <AnimatePresence>
-                        {mobileExpanded === link.label && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden pl-4">
+                      {mobileExpanded === link.label && (
+                          <div className="overflow-hidden pl-4">
                             {link.dropdown.groups ? (
                               <>
                                 {link.dropdown.top?.map((d) => (
@@ -255,7 +251,7 @@ export default function Navigation() {
                                     <p className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-widest text-gray-400">{g.title}</p>
                                     {g.links.map((d) => (
                                       <a key={d.label} href={d.href} onClick={() => setMobileOpen(false)}
-                                        className="block px-3 py-2 text-sm text-gray-500 hover:text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
+                                        className="block px-3 py-2 text-sm text-gray-600 hover:text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
                                         {d.label}
                                       </a>
                                     ))}
@@ -265,14 +261,13 @@ export default function Navigation() {
                             ) : (
                               link.dropdown.links!.map((d) => (
                                 <a key={d.label} href={d.href} onClick={() => setMobileOpen(false)}
-                                  className="block px-3 py-2 text-sm text-gray-500 hover:text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
+                                  className="block px-3 py-2 text-sm text-gray-600 hover:text-[#00283C] hover:bg-[#F0F7FA] rounded-lg transition-colors">
                                   {d.label}
                                 </a>
                               ))
                             )}
-                          </motion.div>
+                          </div>
                         )}
-                      </AnimatePresence>
                     </>
                   ) : (
                     <a href={link.href} onClick={() => setMobileOpen(false)}
@@ -283,15 +278,14 @@ export default function Navigation() {
                 </div>
               ))}
               <div className="pt-3 border-t border-gray-100 mt-2">
-                <button onClick={() => { setMobileOpen(false); openForm(); }}
+                <button type="button" onClick={() => { setMobileOpen(false); openForm(); }}
                   className="btn-dark w-full py-3 text-sm">
                   Book a Free Audit
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </>
   );
 }

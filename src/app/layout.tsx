@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { Inter } from "next/font/google";
+import DeferredAnalytics from "@/components/DeferredAnalytics";
 import "./globals.css";
-
-const GA_MEASUREMENT_ID = "G-TR2J78K3F0";
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
   variable: "--font-inter",
   display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -60,18 +60,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="antialiased">
         {children}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="lazyOnload"
-        />
-        <Script id="google-analytics" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `}
-        </Script>
+        <DeferredAnalytics />
       </body>
     </html>
   );
