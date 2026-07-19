@@ -72,7 +72,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       url: "https://alliancetechltd.com",
       logo: {
         "@type": "ImageObject",
-        url: "https://alliancetechltd.com/logo-horizontal.jpg",
+        url: "https://alliancetechltd.com/logo-horizontal.png",
       },
     },
     mainEntityOfPage: {

@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
-import Image from "next/image";
 import { useForm } from "@/context/FormContext";
 
 interface DropdownLink { label: string; href: string; }
@@ -123,15 +122,16 @@ export default function Navigation() {
 
             {/* Logo — horizontal lockup fits a header bar properly */}
             <div className="flex items-center gap-3 flex-shrink-0">
-              <a href="/" className="flex items-center">
-                <Image
-                  src="/logo-horizontal.jpg"
+              <a href="/" className="flex items-center bg-transparent">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logo-horizontal.png"
                   alt="Alliance Tech"
                   width={1043}
                   height={200}
-                  className="h-9 lg:h-11 w-auto object-contain"
-                  priority
-                  sizes="180px"
+                  className="h-9 lg:h-11 w-auto object-contain bg-transparent"
+                  decoding="async"
+                  fetchPriority="high"
                 />
               </a>
               <a href="/dental-clinic-houston"
