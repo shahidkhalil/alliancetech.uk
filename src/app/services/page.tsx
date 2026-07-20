@@ -369,10 +369,10 @@ function ServicesContent() {
 
                   {rest.length > 0 && (
                     <div
-                      className={`grid gap-4 ${
+                      className={`grid gap-3 ${
                         rest.length === 1
-                          ? "grid-cols-1 max-w-[280px] sm:max-w-[300px]"
-                          : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+                          ? "grid-cols-1 max-w-md"
+                          : "grid-cols-1 sm:grid-cols-2"
                       }`}
                     >
                       {rest.map((s, i) => (
@@ -381,26 +381,25 @@ function ServicesContent() {
                           href={s.href}
                           delay={staggerDelay(i)}
                           shine={false}
-                          className="group aspect-square max-h-[320px] sm:max-h-none p-6 sm:p-7"
+                          className="group p-5"
                         >
-                          <div className="flex flex-col h-full min-h-0">
-                            <div className="flex items-start justify-between gap-3 mb-5">
-                              <span className="w-12 h-12 rounded-2xl bg-[#E8F4F8] flex items-center justify-center flex-shrink-0 transition-colors duration-200 group-hover:bg-[#00283C]">
+                          <div className="flex items-start gap-3.5">
+                            <span className="w-10 h-10 rounded-xl bg-[#E8F4F8] flex items-center justify-center flex-shrink-0 transition-colors duration-200 group-hover:bg-[#00283C]">
                                 <s.Icon
                                   className="w-5 h-5 text-[#0077A8] transition-colors duration-200 group-hover:text-white"
                                   strokeWidth={1.8}
                                 />
+                            </span>
+                            <span className="flex-1 min-w-0">
+                              <span className="flex items-center justify-between gap-2">
+                                <span className="text-[15px] font-extrabold text-[#00283C] leading-snug">
+                                  {s.title}
+                                </span>
+                                <ArrowRight className="w-4 h-4 text-[#00283C]/25 transition-all duration-200 group-hover:text-[#0077A8] group-hover:translate-x-1 flex-shrink-0" />
                               </span>
-                              <ArrowRight className="w-4 h-4 mt-1 text-[#00283C]/25 transition-all duration-200 group-hover:text-[#0077A8] group-hover:translate-x-1 flex-shrink-0" />
-                            </div>
-                            <h3 className="text-lg font-extrabold text-[#00283C] leading-snug mb-2">
-                              {s.title}
-                            </h3>
-                            <p className="text-sm text-[#00283C]/55 leading-relaxed flex-1">
-                              {s.summary}
-                            </p>
-                            <span className="mt-4 text-xs font-bold text-[#0077A8] opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0">
-                              Learn more →
+                              <span className="block text-sm text-[#00283C]/55 leading-relaxed mt-1.5">
+                                {s.summary}
+                              </span>
                             </span>
                           </div>
                         </AnimatedLinkCard>

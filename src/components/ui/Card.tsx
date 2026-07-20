@@ -151,7 +151,7 @@ export function AnimatedLinkCard({
       {!dark ? (
         <span
           aria-hidden
-          className="pointer-events-none absolute left-0 top-3 bottom-3 w-[3px] rounded-full bg-gradient-to-b from-[#0077A8] to-[#00B4D8] scale-y-0 origin-center transition-transform duration-200 ease-out group-hover:scale-y-100 z-[2]"
+          className="pointer-events-none absolute left-0 top-4 bottom-4 w-[3px] rounded-full bg-gradient-to-b from-[#0077A8] to-[#00B4D8] scale-y-0 origin-center transition-transform duration-200 ease-out group-hover:scale-y-100 z-[2]"
         />
       ) : null}
       <div className="relative z-[1]">{children}</div>
