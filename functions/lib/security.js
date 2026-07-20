@@ -11,6 +11,23 @@ const ALLOWED_ORIGINS = new Set([
   "http://127.0.0.1:3000",
 ]);
 
+function isAllowedOrigin(origin) {
+  if (!origin || typeof origin !== "string") return false;
+  if (ALLOWED_ORIGINS.has(origin)) return true;
+  try {
+    const { protocol, hostname, port } = new URL(origin);
+    if (protocol !== "http:" && protocol !== "https:") return false;
+    // Local dev — any port
+    if (hostname === "localhost" || hostname === "127.0.0.1") return true;
+    // Firebase hosting previews + custom clinic domains
+    if (hostname.endsWith(".web.app") || hostname.endsWith(".firebaseapp.com")) return true;
+    if (hostname === "alliancetechltd.com" || hostname.endsWith(".alliancetechltd.com")) return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 /** Prefer Firebase / Cloud Run client IP; fall back to rightmost XFF hop. */
 function clientIp(req) {
   const ff = String(req.headers["x-forwarded-for"] || "");
@@ -24,7 +41,7 @@ function clientIp(req) {
 
 function applyCors(req, res) {
   const origin = req.headers.origin;
-  if (origin && ALLOWED_ORIGINS.has(origin)) {
+  if (origin && isAllowedOrigin(origin)) {
     res.set("Access-Control-Allow-Origin", origin);
     res.set("Vary", "Origin");
     res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -32,7 +49,7 @@ function applyCors(req, res) {
     res.set("Access-Control-Max-Age", "3600");
   }
   if (req.method === "OPTIONS") {
-    res.status(204).send("");
+    res.status(origin && isAllowedOrigin(origin) ? 204 : 403).send("");
     return true;
   }
   return false;
@@ -100,6 +117,7 @@ function stripHeaderInjection(s, max = 200) {
 
 module.exports = {
   ALLOWED_ORIGINS,
+  isAllowedOrigin,
   clientIp,
   applyCors,
   isBlockedHost,

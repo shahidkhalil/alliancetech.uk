@@ -13,6 +13,7 @@ const admin = require("firebase-admin");
 
 const { getClinic } = require("./lib/clinicKB");
 const { bookAndNotify } = require("./lib/booking");
+const { extractBookingDraft, hasBookingIntent, isServicesQuery } = require("./lib/bookingExtract");
 const { checkRateLimit } = require("./lib/cache");
 const { applyCors, clientIp } = require("./lib/security");
 
@@ -21,30 +22,51 @@ const GMAIL_USER = defineSecret("GMAIL_USER");
 const GMAIL_APP_PASSWORD = defineSecret("GMAIL_APP_PASSWORD");
 const DAILY_LIMIT_PER_IP = 60; // generous for a conversation
 
-function systemPrompt(c) {
+function bookingFormContext(draft) {
+  if (!draft || typeof draft !== "object") return "";
+  const fields = [
+    ["name", draft.name],
+    ["phone", draft.phone],
+    ["email", draft.email],
+    ["service", draft.service],
+    ["day", draft.day],
+    ["time", draft.time],
+  ];
+  const lines = fields.map(([k, v]) => `- ${k}: ${String(v || "").trim() || "(empty)"}`);
+  const anyFilled = fields.some(([, v]) => String(v || "").trim());
+  if (!anyFilled) return "";
+  return `\nPATIENT BOOKING FORM (visible on screen — NEVER re-ask or re-confirm filled fields):\n${lines.join("\n")}\nIf booking: only mention empty fields once, then tell them to complete the form. Do not loop or repeat questions.`;
+}
+
+function systemPrompt(c, draft) {
   return `You are the friendly front-desk receptionist for "${c.name}" — ${c.tagline} in ${c.city}. You chat with patients on the clinic's website.
 
-PERSONALITY: Your name is Maya. You are warm, human, and concise — like a real, caring receptionist, never a robot. Use the patient's name once you know it. Reply in the same language the patient uses (English). Keep replies short (1–3 sentences) unless listing services. A light emoji here and there is fine (😊, 🦷) — one per message at most.
+PERSONALITY: Your name is Maya. Warm, human, concise — like a real receptionist. Use the patient's name once you know it. Reply in the same language the patient uses (English). Keep replies short (1–2 sentences). One emoji max per message (😊, 🦷).
 
-WHAT YOU KNOW (only use these facts — never invent prices, doctors, or policies):
+WHAT YOU KNOW (only use these facts — never invent):
 Address: ${c.address}
 Phone/WhatsApp: ${c.phone}
 Hours: ${c.hours.weekdays}; Sunday: ${c.hours.sunday}. ${c.hours.note}
 Doctors: ${c.doctors.map((d) => `${d.name} — ${d.role} (${d.experience})`).join("; ")}
-Services & prices:
-${c.services.map((s) => `- ${s.name}: ${s.price}${s.note ? ` (${s.note})` : ""}`).join("\n")}
+Services (describe what each involves — do NOT mention prices unless the patient explicitly asks about cost; then say the team will confirm exact pricing):
+${c.services.map((s) => `- ${s.name}${s.description ? `: ${s.description}` : ""}`).join("\n")}
 Payment: ${c.policies.payment}
 First visit: ${c.policies.firstVisit}
 Cancellation: ${c.policies.cancellation}
 Emergencies: ${c.policies.emergency}
 FAQs:
 ${c.faqs.map((f) => `Q: ${f.q} A: ${f.a}`).join("\n")}
+${bookingFormContext(draft)}
 
 RULES:
-- Answer questions using only the facts above. If asked something you don't know (e.g. a price not listed, medical diagnosis), say you'll have a team member confirm and offer to note their number — never guess.
-- Never give specific medical/clinical advice or diagnoses. Encourage booking a check-up instead.
-- Guide interested patients toward booking an appointment. To book, you MUST collect: patient name, phone number, the service they want, and a preferred day/time. Also ask for their email so we can send a written confirmation (if they'd rather not share it, book without it). Once you have the required details, call the book_appointment tool. Confirm warmly after booking — and if an email was provided, mention the confirmation email is on its way.
-- If a patient is unsure which treatment they need, suggest starting with a Consultation & Check-up.`;
+- Never give medical advice or diagnoses. Suggest a check-up instead.
+- When asked about services: give a brief friendly intro (1 sentence). The UI shows a service menu — do NOT list every service in text.
+- When asked about a specific treatment: explain what it involves in 1–2 sentences. No prices unless they ask about cost.
+- If asked about price/cost: say pricing depends on the case and the team will confirm at booking — do not quote dollar amounts.
+- BOOKING: A form appears on screen ONLY when the patient is booking. They fill name, phone, service, day, time (email optional). Direct them to the form — do NOT collect details one-by-one in chat.
+- NEVER ask the same question twice. NEVER say "is that correct?" more than once. If info is in the form or chat history, do not ask again.
+- When the patient submits the completed form, call book_appointment immediately. One warm confirmation — done.
+- If unsure which treatment: suggest Consultation & Check-up.`;
 }
 
 const TOOLS = [
@@ -89,9 +111,10 @@ exports.clinicReceptionist = onRequest(
     }
 
     const clinic = getClinic(req.body?.clinicId);
+    const clientDraft = req.body?.bookingDraft || null;
     const history = Array.isArray(req.body?.messages) ? req.body.messages.slice(-12) : [];
     const messages = [
-      { role: "system", content: systemPrompt(clinic) },
+      { role: "system", content: systemPrompt(clinic, clientDraft) },
       ...history.map((m) => ({ role: m.role === "user" ? "user" : "assistant", content: String(m.content || "").slice(0, 1000) })),
     ];
 
@@ -135,7 +158,7 @@ exports.clinicReceptionist = onRequest(
           return r.json();
         });
 
-      let data = await call({ model: "gpt-4o-mini", temperature: 0.6, max_tokens: 400, messages, tools: TOOLS });
+      let data = await call({ model: "gpt-4o-mini", temperature: 0.4, max_tokens: 350, messages, tools: TOOLS });
       let msg = data.choices[0].message;
       let booking = null;
 
@@ -194,7 +217,16 @@ exports.clinicReceptionist = onRequest(
         }
       }
 
-      res.status(200).json({ reply: replyText, booking, audio, transcript });
+      const serviceNames = clinic.services.map((s) => s.name);
+      const bookingDraft = extractBookingDraft(history, serviceNames);
+      const lastUser = history.filter((m) => m.role === "user").slice(-1)[0]?.content || "";
+      const isFormSubmit = /Please book my appointment/i.test(lastUser);
+      const showBookingForm =
+        !booking &&
+        !isServicesQuery(lastUser) &&
+        (isFormSubmit || (hasBookingIntent(lastUser) && !/^(what|how|tell me about)\b/i.test(lastUser.trim())));
+
+      res.status(200).json({ reply: replyText, booking, audio, transcript, bookingDraft, showBookingForm });
     } catch (err) {
       console.error("Receptionist error:", err);
       res.status(500).json({ error: "I'm having a moment — please try again or WhatsApp us." });
