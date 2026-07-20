@@ -6,6 +6,7 @@ import PageWrapper from "@/components/PageWrapper";
 import ServicePricingSection from "@/components/ServicePricingSection";
 import { pricingServices, serviceCategories, ServiceCategory } from "@/lib/pricingData";
 import { useForm } from "@/context/FormContext";
+import { FeatureCardGrid } from "@/components/ui/Card";
 
 /* ─── Why Alliance Tech ─────────────────────────────────────────────────────── */
 function WhySection() {
@@ -24,17 +25,10 @@ function WhySection() {
             Built Different. <span className="gradient-heading">Priced Honestly.</span>
           </h2>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {points.map((p) => (
-            <div key={p.title} className="bg-white border border-gray-200 rounded-xl p-5 hover:border-[#00B4D8]/40 hover:shadow-sm transition-all">
-              <div className="w-7 h-7 rounded-lg bg-[#00B4D8]/10 flex items-center justify-center mb-4">
-                <Check className="w-3.5 h-3.5 text-[#0077A8]" strokeWidth={3} />
-              </div>
-              <h3 className="text-sm font-black text-[#00283C] mb-1.5">{p.title}</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">{p.desc}</p>
-            </div>
-          ))}
-        </div>
+        <FeatureCardGrid
+          items={points.map((p) => ({ icon: <Check className="w-4 h-4 text-[#0077A8]" strokeWidth={3} />, title: p.title, desc: p.desc }))}
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6"
+        />
       </div>
     </section>
   );

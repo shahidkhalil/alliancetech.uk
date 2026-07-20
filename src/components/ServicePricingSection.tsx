@@ -5,6 +5,7 @@ import { Check, X, ChevronDown, ArrowRight, Clock, Cpu, Shield, Star } from "luc
 import { ServicePricing } from "@/lib/pricingData";
 import { useForm } from "@/context/FormContext";
 import { usePackageOrder } from "@/context/PackageOrderContext";
+import { useCardMotion, staggerDelay } from "@/lib/motionVariants";
 
 const PREVIEW_COUNT = 4; // features shown before "expand"
 
@@ -20,6 +21,7 @@ function PricingCard({
 }) {
   const { openOrder } = usePackageOrder();
   const [expanded, setExpanded] = useState(false);
+  const { entrance, hoverProps, expandTransition } = useCardMotion();
 
   const preview = pkg.features.slice(0, PREVIEW_COUNT);
   const rest    = pkg.features.slice(PREVIEW_COUNT);
@@ -29,13 +31,12 @@ function PricingCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.08, duration: 0.45, ease: "easeOut" }}
-      className={`relative flex flex-col rounded-2xl overflow-hidden ${
+      {...entrance(staggerDelay(index))}
+      {...hoverProps(true)}
+      className={`relative flex flex-col rounded-2xl overflow-hidden card-motion h-full ${
         dark
-          ? "bg-[#00283C] shadow-xl"
-          : "bg-white border border-gray-200 hover:border-[#00B4D8]/40 hover:shadow-md transition-all duration-200"
+          ? "bg-[#00283C] shadow-xl card-shadow-hover-dark"
+          : "bg-white border border-gray-200 card-shadow-hover"
       }`}
     >
       {/* Popular banner */}
@@ -113,7 +114,7 @@ function PricingCard({
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.28, ease: "easeInOut" }}
+                  transition={expandTransition()}
                   className="overflow-hidden space-y-2.5 mt-2.5"
                 >
                   {rest.map((f) => (

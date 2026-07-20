@@ -88,19 +88,19 @@ function MayaAvatar({ size = "w-8 h-8" }: { size?: string }) {
 
 function ServicesCatalog({ onPick, onBook }: { onPick: (s: string) => void; onBook: (s: string) => void }) {
   return (
-    <div className="mt-2.5 w-full max-h-[220px] overflow-y-auto rounded-2xl border border-[#0E7C6B]/15 bg-white shadow-sm divide-y divide-gray-100">
+    <div className="mt-2.5 w-full max-h-[200px] sm:max-h-[220px] overflow-y-auto rounded-2xl border border-[#0E7C6B]/15 bg-white shadow-sm divide-y divide-gray-100">
       {SERVICES.map((s) => {
         const info = SERVICE_INFO[s];
         return (
-          <div key={s} className="flex items-start gap-3 px-3.5 py-3 hover:bg-[#F7FBFA] transition-colors">
+          <div key={s} className="flex items-start gap-2.5 px-3 py-3 sm:px-3.5 hover:bg-[#F7FBFA] transition-colors">
             <span className="text-lg flex-shrink-0 mt-0.5">{info?.icon || "🦷"}</span>
             <div className="flex-1 min-w-0 text-left">
               <p className="text-xs font-bold text-[#00332C] leading-tight">{s}</p>
-              <p className="text-[11px] text-gray-500 mt-0.5 leading-snug">{info?.desc}</p>
-            </div>
-            <div className="flex flex-col gap-1 flex-shrink-0">
-              <button type="button" onClick={() => onPick(s)} className="text-[10px] font-semibold text-[#0E7C6B] hover:underline">Learn more</button>
-              <button type="button" onClick={() => onBook(s)} className="text-[10px] font-bold text-white bg-[#0E7C6B] px-2.5 py-1 rounded-full hover:bg-[#0B5D50] transition-colors">Book</button>
+              <p className="text-[11px] text-gray-500 mt-0.5 leading-snug line-clamp-2">{info?.desc}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <button type="button" onClick={() => onPick(s)} className="text-[10px] font-semibold text-[#0E7C6B] hover:underline">Learn more</button>
+                <button type="button" onClick={() => onBook(s)} className="text-[10px] font-bold text-white bg-[#0E7C6B] px-2.5 py-1 rounded-full hover:bg-[#0B5D50] transition-colors">Book</button>
+              </div>
             </div>
           </div>
         );
@@ -148,7 +148,7 @@ function BookingForm({
   const label = "block text-[11px] font-semibold text-gray-400 uppercase tracking-wide mb-1";
 
   return (
-    <div className="w-full max-w-[90%] rounded-2xl rounded-tl-md border border-[#0E7C6B]/15 bg-gradient-to-b from-white to-[#F7FBFA] shadow-md p-5 space-y-3.5 mt-2.5">
+    <div className="w-full rounded-2xl rounded-tl-md border border-[#0E7C6B]/15 bg-gradient-to-b from-white to-[#F7FBFA] shadow-md p-3.5 sm:p-5 space-y-3 sm:space-y-3.5 mt-2.5">
       <div className="flex items-center gap-2 pb-1">
         <span className="w-8 h-8 rounded-full bg-[#0E7C6B]/10 flex items-center justify-center text-base">📅</span>
         <div>
@@ -470,36 +470,43 @@ export default function ReceptionistDemo() {
   };
 
   return (
-    <div className="max-w-xl mx-auto px-4">
-      <div className="rounded-3xl border border-gray-200/80 shadow-xl shadow-gray-200/50 overflow-hidden bg-white">
+    <div className="w-full max-w-xl mx-auto px-3 sm:px-4">
+      <div className="rounded-2xl sm:rounded-3xl border border-gray-200/80 shadow-xl shadow-gray-200/50 overflow-hidden bg-white">
 
-        <div className="px-5 py-4 flex items-center gap-3" style={{ background: "linear-gradient(120deg, #06382F, #0E7C6B)" }}>
-          <div className="relative">
-            <MayaAvatar size="w-11 h-11" />
-            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-[#0B5D50]" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-bold text-white leading-tight">Maya</p>
-            <p className="text-[11px] text-white/60 leading-tight">Receptionist · Bright Smile Dental Care</p>
-          </div>
-          <LiveCallLauncher />
-          <button
-            type="button"
-            onClick={toggleMute}
-            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${muted ? "bg-white/20 text-white" : "bg-white/10 text-white/70 hover:text-white"}`}
-            aria-label={muted ? "Unmute Maya's voice" : "Mute Maya's voice"}
-          >
-            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-          </button>
-          <div className="text-right">
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-white/80 bg-white/10 px-2.5 py-1 rounded-full">
-              <Sparkles className="w-3 h-3" /> LIVE DEMO
-            </span>
-            <p className="text-[10px] text-white/60 mt-1 flex items-center justify-end gap-1"><Clock className="w-3 h-3" /> replies in seconds</p>
+        {/* Header — stacked on mobile so controls don't crush */}
+        <div className="px-3.5 sm:px-5 py-3 sm:py-4" style={{ background: "linear-gradient(120deg, #06382F, #0E7C6B)" }}>
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="relative flex-shrink-0">
+              <MayaAvatar size="w-10 h-10 sm:w-11 sm:h-11" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-green-400 border-2 border-[#0B5D50]" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-sm sm:text-[15px] font-bold text-white leading-tight">Maya</p>
+                <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-bold text-white/80 bg-white/10 px-2 py-0.5 rounded-full">
+                  <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> LIVE DEMO
+                </span>
+              </div>
+              <p className="text-[10px] sm:text-[11px] text-white/60 leading-tight truncate">Receptionist · Bright Smile Dental Care</p>
+            </div>
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <LiveCallLauncher />
+              <button
+                type="button"
+                onClick={toggleMute}
+                className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-colors ${muted ? "bg-white/20 text-white" : "bg-white/10 text-white/70 hover:text-white"}`}
+                aria-label={muted ? "Unmute Maya's voice" : "Mute Maya's voice"}
+              >
+                {muted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="h-[380px] overflow-y-auto px-4 py-5 space-y-4" style={{ background: "linear-gradient(180deg, #F4F8F7 0%, #FAFCFB 100%)" }}>
+        <div
+          className="h-[min(52vh,420px)] sm:h-[380px] overflow-y-auto overflow-x-hidden px-3 sm:px-4 py-4 sm:py-5 space-y-3.5 sm:space-y-4"
+          style={{ background: "linear-gradient(180deg, #F4F8F7 0%, #FAFCFB 100%)" }}
+        >
           <AnimatePresence initial={false}>
             {messages.map((m, i) => {
               const isBot = m.role === "assistant";
@@ -512,7 +519,7 @@ export default function ReceptionistDemo() {
                   className={`flex gap-2.5 ${isBot ? "justify-start" : "justify-end"}`}
                 >
                   {isBot && (m.content || m.showServices || m.serviceDetail || (m.form && !m.form.done)) ? <MayaAvatar /> : null}
-                  <div className={`flex flex-col ${isBot ? "items-start" : "items-end"} max-w-[85%]`}>
+                  <div className={`flex flex-col ${isBot ? "items-start" : "items-end"} max-w-[92%] sm:max-w-[85%] min-w-0`}>
                     {m.content && (
                       <div
                         className={`rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${
@@ -584,7 +591,7 @@ export default function ReceptionistDemo() {
           )}
 
           {showSuggestions && !busy && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="pl-10 flex flex-wrap gap-2">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="pl-0 sm:pl-10 flex flex-wrap gap-2">
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s.label}
@@ -594,7 +601,7 @@ export default function ReceptionistDemo() {
                     else if (s.action === "detail" && s.service) showServiceDetail(s.label, s.service);
                     else send(s.label);
                   }}
-                  className="text-xs px-3.5 py-2 rounded-full bg-white text-gray-600 border border-gray-200 shadow-sm hover:border-[#0E7C6B]/40 hover:text-[#0E7C6B] transition-all"
+                  className="text-[11px] sm:text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white text-gray-600 border border-gray-200 shadow-sm hover:border-[#0E7C6B]/40 hover:text-[#0E7C6B] transition-all"
                 >
                   {s.icon} {s.label}
                 </button>
@@ -632,15 +639,15 @@ export default function ReceptionistDemo() {
             }
             send(v);
           }}
-          className="bg-white border-t border-gray-100 px-4 py-3.5 flex items-center gap-2.5"
+          className="bg-white border-t border-gray-100 px-3 sm:px-4 py-3 sm:py-3.5 flex items-center gap-2 sm:gap-2.5"
         >
           {recState === "recording" ? (
-            <div className="flex-1 flex items-center gap-3 px-2 py-1.5 rounded-full bg-red-50 border border-red-200">
+            <div className="flex-1 flex items-center gap-2 sm:gap-3 px-2 py-1.5 rounded-full bg-red-50 border border-red-200 min-w-0">
               <button type="button" onClick={cancelRecording} className="w-8 h-8 rounded-full flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-100 transition-colors flex-shrink-0" aria-label="Cancel recording">
                 <Trash2 className="w-4 h-4" />
               </button>
-              <motion.span className="w-2.5 h-2.5 rounded-full bg-red-500" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }} />
-              <span className="text-sm text-red-600 font-semibold flex-1">
+              <motion.span className="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0" animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 1 }} />
+              <span className="text-xs sm:text-sm text-red-600 font-semibold flex-1 truncate">
                 {String(Math.floor(recSeconds / 60))}:{String(recSeconds % 60).padStart(2, "0")} / 0:30
               </span>
             </div>
@@ -648,9 +655,9 @@ export default function ReceptionistDemo() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={recState === "transcribing" ? "🎤 Transcribing…" : hasOpenForm(messages) ? "Speak or type — fills the booking form" : "Type or tap the mic…"}
+              placeholder={recState === "transcribing" ? "Transcribing…" : hasOpenForm(messages) ? "Speak or type…" : "Type or tap mic…"}
               disabled={busy || recState === "transcribing"}
-              className="flex-1 px-4.5 py-3 pl-4 rounded-full bg-[#F4F8F7] border border-transparent text-sm text-gray-800 outline-none focus:border-[#0E7C6B]/40 focus:bg-white transition-all disabled:opacity-60"
+              className="flex-1 min-w-0 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-full bg-[#F4F8F7] border border-transparent text-sm text-gray-800 outline-none focus:border-[#0E7C6B]/40 focus:bg-white transition-all disabled:opacity-60"
             />
           )}
 
@@ -658,7 +665,7 @@ export default function ReceptionistDemo() {
             type="button"
             onClick={recState === "recording" ? stopRecording : startRecording}
             disabled={busy || recState === "transcribing"}
-            className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-40 ${
+            className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-all disabled:opacity-40 ${
               recState === "recording"
                 ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
                 : "bg-[#F4F8F7] text-[#0E7C6B] border border-[#0E7C6B]/20 hover:bg-[#0E7C6B]/10"
@@ -671,7 +678,7 @@ export default function ReceptionistDemo() {
           <button
             type="submit"
             disabled={busy || !input.trim() || recState !== "idle"}
-            className="w-11 h-11 rounded-full text-white flex items-center justify-center hover:shadow-lg hover:shadow-[#0E7C6B]/25 transition-all disabled:opacity-40 disabled:shadow-none flex-shrink-0"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full text-white flex items-center justify-center hover:shadow-lg hover:shadow-[#0E7C6B]/25 transition-all disabled:opacity-40 disabled:shadow-none flex-shrink-0"
             style={{ background: "linear-gradient(135deg, #0E7C6B, #14A08A)" }}
             aria-label="Send"
           >

@@ -5,6 +5,7 @@ import { ArrowUpRight, Check, X, ChevronLeft, ChevronRight } from "lucide-react"
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import FinalCTA from "@/components/FinalCTA";
+import { useCardMotion, staggerDelay } from "@/lib/motionVariants";
 
 // Shared lightbox: any gallery image opens a full-screen viewer.
 const LightboxContext = createContext<(images: string[], index: number) => void>(() => {});
@@ -285,8 +286,13 @@ const caseStudies: CaseStudy[] = [
 ];
 
 function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
+  const { entrance, hoverProps } = useCardMotion();
   return (
-    <article className="card-white rounded-2xl overflow-hidden">
+    <motion.article
+      {...entrance(staggerDelay(index))}
+      {...hoverProps(true)}
+      className="card-white rounded-2xl overflow-hidden card-motion card-shadow-hover"
+    >
       {/* Header band */}
       <div className="bg-[#00283C] px-7 lg:px-10 py-8">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -418,7 +424,7 @@ function CaseStudyBlock({ c, index }: { c: CaseStudy; index: number }) {
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }
 

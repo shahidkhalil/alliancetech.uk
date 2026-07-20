@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import FinalCTA from "@/components/FinalCTA";
+import { FeatureCardGrid, AnimatedSurface } from "@/components/ui/Card";
 
 export const metadata: Metadata = {
   title: "About Alliance Tech | AI & Growth Agency for Clinics in the US",
@@ -60,19 +61,13 @@ export default function About() {
               <h3 className="text-xl font-bold mb-2">{featuredValue.title}</h3>
               <p className="text-white/65 leading-relaxed max-w-xl">{featuredValue.desc}</p>
             </div>
-            {values.map((v) => (
-              <div key={v.title} className="card-white card-accent-light rounded-2xl p-6 hover:-translate-y-1 transition-all">
-                <div className="text-3xl mb-3">{v.icon}</div>
-                <h3 className="font-bold text-[#00283C] mb-2">{v.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{v.desc}</p>
-              </div>
-            ))}
+            <FeatureCardGrid items={values} className="grid lg:grid-cols-3 gap-5" />
           </div>
         </div>
       </section>
 
       <section className="py-14 bg-white">
-        <div className="max-w-4xl mx-auto px-6 card-white rounded-3xl p-10 text-center border border-gray-100">
+        <AnimatedSurface feature className="max-w-4xl mx-auto px-6 rounded-3xl p-10 lg:p-12 text-center" delay={0.15}>
           <h2 className="text-2xl font-bold text-[#00283C] mb-4">What We Do</h2>
           <p className="text-gray-500 mb-8 max-w-xl mx-auto">A complete growth stack for healthcare clinics across the United States.</p>
           <div className="flex flex-wrap justify-center gap-3">
@@ -80,7 +75,7 @@ export default function About() {
               <span key={s} className="px-4 py-2 rounded-full text-sm text-gray-600 bg-[#F8FAFC] border border-gray-200">{s}</span>
             ))}
           </div>
-        </div>
+        </AnimatedSurface>
       </section>
 
       <section className="py-14 bg-white border-t border-gray-100">

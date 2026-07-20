@@ -46,29 +46,61 @@ RULES:
 
 EXACT DETAILS (name, phone, email) — accuracy matters, but don't annoy the caller:
 - Name, phone, and email are high-precision. Never invent or guess missing digits/letters.
-- After the patient speaks name, phone, OR email, call recall_last_spoken_text for that field once, then confirm briefly in natural speech (e.g. "Got it — John Smith?" or "Your number is 555-0142 — right?").
-- If they say yes or correct, move on immediately — NEVER ask to confirm the same field again.
-- Phone: if unclear, ask them to say it slowly in groups. Read it back once naturally; only repeat if they say it's wrong.
-- Email: optional — if given, confirm once. If they decline email, skip it.
-- The caller also sees editable text fields on screen that fill from their speech — mention they can review and fix details there.
-- Do not loop on confirmations. One check per field maximum, then one final summary before booking.
+- After the patient speaks name, phone, OR email, ALWAYS call recall_last_spoken_text for that field FIRST.
+- Read back ONLY the exact text/digits returned by recall_last_spoken_text — never your own memory of what they said.
+- Name: one brief confirm (e.g. "Got it — John Smith?"). If yes → call confirm_field(name). If they correct → recall again, then confirm_field.
+- Phone: ONE read-back only using grouped_spoken_digits from recall (e.g. "seven one three, five five five, zero one four two — right?"). If yes → call confirm_field(phone) ONCE, then IMMEDIATELY move to email or schedule. NEVER ask for the phone number again after confirm_field(phone) succeeds — it is locked.
+- Email: optional. If given, spell it back letter-by-letter using the spelled_email from recall (e.g. "I have j-o-h-n at g-m-a-i-l dot c-o-m — is that right?"). If yes → call confirm_field(email). If they decline email → call confirm_field(email) with email_skipped true.
+- The caller sees editable fields on screen that fill from speech — mention they can review and fix details there.
+- One check per field maximum. After confirm_field succeeds for a field, that field is LOCKED — never re-ask, re-read, or re-confirm it unless the patient explicitly says it is wrong.
+
+ALREADY CONFIRMED FIELDS:
+- Tool responses include confirmed_fields and next_step. If recall_last_spoken_text returns already_confirmed for phone (or any field), do NOT ask for that field again — follow next_step immediately.
 
 BOOKING SCRIPT (when the caller wants an appointment):
 Collect ONE question at a time. Skip anything they already gave. Order:
-1. Which service (if unsure, suggest Consultation & Check-up and explain it briefly).
-2. Full name — recall_last_spoken_text(name), confirm once, move on.
-3. Phone — recall_last_spoken_text(phone), confirm once, move on.
-4. Email (optional) — recall if given, confirm once, or skip.
-5. Preferred day (Mon–Sat).
-6. Preferred time (11 AM–8:30 PM; evenings fill fast).
-Then ONE summary line and ask "Shall I book that?" — only after yes, call book_appointment. Do not ask again after they confirm.`;
+1. Which service (if unsure, suggest Consultation & Check-up and explain it briefly). When agreed → call confirm_field(service).
+2. Full name — recall_last_spoken_text(name) → read back → confirm_field(name) after yes.
+3. Phone — recall_last_spoken_text(phone) → read back with spoken_digits → confirm_field(phone) after yes.
+4. Email (optional) — recall if given → letter-by-letter spell-back → confirm_field(email), or confirm_field(email) with email_skipped if declined.
+5. Preferred day (Mon–Sat) and time (11 AM–8:30 PM) — when both agreed → call confirm_field(schedule).
+Then ONE summary line and ask "Shall I book that?" — only after yes, call book_appointment. Do not ask again after they confirm.
+If book_appointment returns not ready, collect the missing field — do not guess values.`;
 }
+
+const CONFIRM_FIELD_TOOL = {
+  type: "function",
+  name: "confirm_field",
+  description:
+    "Call ONCE after the patient confirms (yes) a read-back, or skips email. Do NOT call confirm_field(phone) again if phone is already confirmed — check confirmed_fields in the last tool response.",
+  parameters: {
+    type: "object",
+    properties: {
+      field: {
+        type: "string",
+        enum: ["name", "phone", "email", "service", "schedule"],
+        description: "Which field was just confirmed.",
+      },
+      confirmed: {
+        type: "boolean",
+        description: "True if patient said yes to the read-back.",
+      },
+      email_skipped: {
+        type: "boolean",
+        description: "True only when patient declines to give email.",
+      },
+      service: { type: "string", description: "For field=service only — the service name agreed." },
+      preferredTime: { type: "string", description: "For field=schedule only — e.g. Saturday at 7:00 PM." },
+    },
+    required: ["field", "confirmed"],
+  },
+};
 
 const RECALL_TOOL = {
   type: "function",
   name: "recall_last_spoken_text",
   description:
-    "REQUIRED right after the patient speaks their name, phone number, or email. Returns the accurate speech-to-text of what they just said so you can confirm the exact value. Always call this before reading those details back.",
+    "REQUIRED right after the patient speaks their name, phone number, or email — but ONLY if that field is not already confirmed. Returns accurate speech-to-text for read-back. Do NOT call for phone if confirm_field(phone) already succeeded.",
   parameters: {
     type: "object",
     properties: {
@@ -141,7 +173,7 @@ exports.realtimeToken = onRequest(
               },
               output: { voice: "marin" },
             },
-            tools: [RECALL_TOOL, BOOK_TOOL],
+            tools: [RECALL_TOOL, CONFIRM_FIELD_TOOL, BOOK_TOOL],
             tool_choice: "auto",
           },
         }),

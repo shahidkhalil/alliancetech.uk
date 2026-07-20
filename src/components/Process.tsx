@@ -2,6 +2,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { useForm } from "@/context/FormContext";
+import { Card, CardStatPill } from "@/components/ui/Card";
+import { staggerDelay } from "@/lib/motionVariants";
 
 const steps = [
   { num: "01", title: "Free Clinic Audit", desc: "We analyse your current online presence — Google ranking, website, social ads, WhatsApp — and identify exactly where patients are leaking out.", time: "Day 1" },
@@ -30,19 +32,21 @@ export default function Process() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           {steps.map((s, i) => (
-            <motion.div key={s.num}
-              initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.08 }}
-              className="card-white rounded-xl p-6 relative">
+            <Card key={s.num} accent feature delay={staggerDelay(i)} className="p-6 lg:p-7 relative">
               <div className="flex items-start justify-between mb-4">
-                <span className="text-4xl font-extrabold text-[#E2EBF0]">{s.num}</span>
-                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#E6F4F8] text-[#0077A8] border border-[#00B4D8]/20">{s.time}</span>
+                <motion.span
+                  className="text-4xl font-extrabold bg-gradient-to-br from-[#00283C] to-[#0077A8] bg-clip-text text-transparent opacity-30"
+                  whileHover={{ scale: 1.08, opacity: 0.5 }}
+                >
+                  {s.num}
+                </motion.span>
+                <CardStatPill>{s.time}</CardStatPill>
               </div>
               <h3 className="text-base font-bold text-[#00283C] mb-2">{s.title}</h3>
               <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
-            </motion.div>
+            </Card>
           ))}
         </div>
 

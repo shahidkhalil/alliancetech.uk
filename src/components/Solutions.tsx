@@ -5,6 +5,8 @@ import {
   Megaphone, Globe, Smartphone, MapPin, Search,
   MessageCircle, ClipboardList, ArrowRight, Bot
 } from "lucide-react";
+import { AnimatedLinkCard } from "@/components/ui/Card";
+import { staggerDelay } from "@/lib/motionVariants";
 
 const services = [
   {
@@ -107,19 +109,14 @@ export default function Solutions() {
         </motion.div>
 
         {/* Service grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-100 border border-gray-100 rounded-2xl overflow-hidden mb-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-8">
           {services.map((s, i) => (
-            <motion.a
+            <AnimatedLinkCard
               key={s.title}
               href={s.href}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.07, duration: 0.45 }}
-              className={`group relative flex flex-col gap-4 p-7 no-underline transition-all duration-200
-                ${s.popular
-                  ? "bg-[#00283C] hover:bg-[#003D5C]"
-                  : "bg-white hover:bg-[#F0F7FA]"
-                }`}
+              delay={staggerDelay(i)}
+              dark={s.popular}
+              className="gap-4 p-7"
             >
               {/* Popular badge */}
               {s.popular && (
@@ -129,11 +126,17 @@ export default function Solutions() {
               )}
 
               {/* Icon */}
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
-                s.popular ? "bg-white/15" : "bg-[#E6F4F8] group-hover:bg-[#00283C] group-hover:text-white"
-              }`}>
-                <s.Icon className={`w-5 h-5 ${s.popular ? "text-white" : "text-[#0077A8] group-hover:text-white"}`} strokeWidth={1.8} />
-              </div>
+              <motion.div
+                className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-300 ${
+                  s.popular
+                    ? "bg-white/15 ring-1 ring-white/20"
+                    : "bg-gradient-to-br from-[#E6F4F8] to-[#F0FAFC] border border-[#00B4D8]/15 group-hover:from-[#00283C] group-hover:to-[#003D5C] group-hover:border-transparent group-hover:shadow-lg"
+                }`}
+                whileHover={{ scale: 1.12, rotate: [0, -6, 6, 0] }}
+                transition={{ type: "spring", stiffness: 500, damping: 14 }}
+              >
+                <s.Icon className={`w-5 h-5 ${s.popular ? "text-white" : "text-[#0077A8] group-hover:text-white transition-colors duration-300"}`} strokeWidth={1.8} />
+              </motion.div>
 
               {/* Text */}
               <div className="flex-1">
@@ -151,21 +154,26 @@ export default function Solutions() {
               {/* Footer */}
               <div className="flex items-center justify-between pt-2 border-t border-dashed border-opacity-20"
                 style={{ borderColor: s.popular ? "rgba(255,255,255,0.15)" : "#E2EBF0" }}>
-                <span className={`text-xs font-bold ${s.popular ? "text-white/70" : "text-[#0077A8]"}`}>
+                <motion.span
+                  className={`text-xs font-bold ${s.popular ? "text-white/70" : "text-[#0077A8]"}`}
+                  initial={false}
+                  whileHover={{ x: 2 }}
+                >
                   {s.stat}
-                </span>
-                <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${s.popular ? "text-white/60" : "text-gray-300 group-hover:text-[#0077A8]"}`} strokeWidth={2} />
+                </motion.span>
+                <ArrowRight className={`w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5 ${s.popular ? "text-white/60" : "text-gray-300 group-hover:text-[#0077A8]"}`} strokeWidth={2} />
               </div>
-            </motion.a>
+            </AnimatedLinkCard>
           ))}
         </div>
 
         {/* Bottom strip */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.7 }}
-          className="rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-[#00283C]/10 bg-[#F0F7FA]"
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+          transition={{ delay: 0.55, type: "spring", stiffness: 300, damping: 26 }}
+          whileHover={{ scale: 1.01, y: -2 }}
+          className="rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-[#00283C]/10 bg-[#F0F7FA] card-feature"
         >
           <div className="flex items-center gap-3">
             <MapPin className="w-5 h-5 text-[#00B4D8] flex-shrink-0" strokeWidth={2} />

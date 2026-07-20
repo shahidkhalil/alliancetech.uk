@@ -2,6 +2,7 @@
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import FinalCTA from "@/components/FinalCTA";
+import { FeatureCardGrid, AnimatedSurface } from "@/components/ui/Card";
 import EHRDashboard from "@/components/EHRDashboard";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
@@ -40,16 +41,7 @@ function FeaturesSection() {
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">No more paper files, no more missed appointments, no more lost billing records.</p>
         </motion.div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {features.map((f, i) => (
-            <motion.div key={f.title} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: i * 0.07, duration: 0.4 }}
-              className="card-white card-accent-light rounded-xl p-6 hover:-translate-y-1 transition-all">
-              <div className="text-3xl mb-4">{f.icon}</div>
-              <h3 className="text-base font-bold text-[#00283C] mb-2">{f.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
-            </motion.div>
-          ))}
-        </div>
+        <FeatureCardGrid items={features} className="grid md:grid-cols-2 lg:grid-cols-3 gap-5" />
       </div>
     </section>
   );
@@ -61,8 +53,7 @@ function ModulesSection() {
   return (
     <section className="py-14 bg-[#F8FAFC]" ref={ref}>
       <div className="max-w-4xl mx-auto px-6">
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}
-          className="card-white rounded-2xl p-10 text-center border border-gray-100">
+        <AnimatedSurface className="p-10 text-center border border-gray-100">
           <h2 className="text-2xl font-bold text-[#00283C] mb-2">All Modules Included</h2>
           <p className="text-sm text-gray-400 mb-6">One subscription. Everything your clinic needs.</p>
           <div className="flex flex-wrap justify-center gap-3">
@@ -70,7 +61,7 @@ function ModulesSection() {
               <span key={m} className="px-4 py-2 rounded-full text-sm text-gray-600 bg-white border border-gray-200">{m}</span>
             ))}
           </div>
-        </motion.div>
+        </AnimatedSurface>
       </div>
     </section>
   );

@@ -2,6 +2,7 @@
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import { useForm } from "@/context/FormContext";
+import { AnimatedSurface } from "@/components/ui/Card";
 
 function BookCallButton() {
   const { openForm } = useForm();
@@ -26,7 +27,7 @@ export default function Contact() {
       <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-8">
 
-          <div className="card-white card-accent-light rounded-2xl p-8 border border-gray-100">
+          <AnimatedSurface accent className="p-8 border border-gray-100" delay={0}>
             <h2 className="text-xl font-bold text-[#00283C] mb-6">Get In Touch</h2>
             <div className="space-y-5">
               <div className="flex items-start gap-4">
@@ -83,9 +84,9 @@ export default function Contact() {
                 </div>
               </div>
             </div>
-          </div>
+          </AnimatedSurface>
 
-          <div className="card-white rounded-2xl p-8 border border-gray-100 flex flex-col justify-between">
+          <AnimatedSurface className="p-8 border border-gray-100 flex flex-col justify-between" delay={0.1}>
             <div>
               <h2 className="text-xl font-bold text-[#00283C] mb-3">Free Clinic Audit</h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-6">
@@ -106,7 +107,7 @@ export default function Contact() {
               </ul>
             </div>
             <BookCallButton />
-          </div>
+          </AnimatedSurface>
         </div>
       </section>
 

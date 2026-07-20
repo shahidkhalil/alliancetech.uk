@@ -3,6 +3,8 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { pricingServices } from "@/lib/pricingData";
+import { AnimatedLinkCard } from "@/components/ui/Card";
+import { staggerDelay } from "@/lib/motionVariants";
 
 // Headline services shown as a homepage preview — full list lives on /pricing.
 const FEATURED_IDS = ["ai-automation", "healthcare-website", "local-seo", "google-ads"];
@@ -62,11 +64,12 @@ export default function PricingPackages() {
 
         {/* ── Mobile: stacked cards (the 4-col table can't fit a phone) ── */}
         <div className="sm:hidden space-y-4">
-          {featured.map((service) => (
-            <a
+          {featured.map((service, i) => (
+            <AnimatedLinkCard
               key={service.id}
               href={`/pricing#${service.id}`}
-              className="block rounded-2xl bg-white border border-gray-200/80 shadow-md overflow-hidden"
+              delay={staggerDelay(i)}
+              className="block shadow-md overflow-hidden"
             >
               <div className="px-4 pt-4 pb-3">
                 <div className="flex items-start justify-between gap-2">
@@ -97,13 +100,15 @@ export default function PricingPackages() {
                   </div>
                 ))}
               </div>
-            </a>
+            </AnimatedLinkCard>
           ))}
 
-          <a href="/pricing" className="flex items-center justify-between gap-2 rounded-2xl bg-[#F8FAFC] border border-gray-200 px-4 py-4">
-            <span className="text-sm font-bold text-[#0077A8]">View all {pricingServices.length} services &amp; pricing</span>
-            <ArrowRight className="w-4 h-4 text-[#0077A8] flex-shrink-0" />
-          </a>
+          <AnimatedLinkCard href="/pricing" delay={staggerDelay(featured.length)} className="bg-[#F8FAFC] border border-gray-200 px-4 py-4">
+            <span className="flex items-center justify-between gap-2 text-sm font-bold text-[#0077A8]">
+              View all {pricingServices.length} services &amp; pricing
+              <ArrowRight className="w-4 h-4 text-[#0077A8] flex-shrink-0" />
+            </span>
+          </AnimatedLinkCard>
         </div>
 
         {/* ── Pricing matrix (sm and up) ── */}

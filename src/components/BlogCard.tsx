@@ -1,20 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { doc, getDoc, increment, setDoc } from "firebase/firestore";
 import { Heart, Share2, Facebook, Linkedin, Link2, Check } from "lucide-react";
 import { getDb } from "@/lib/firebase";
 import type { BlogPost } from "@/lib/blogData";
+import { useCardMotion } from "@/lib/motionVariants";
 
 function likedKey(slug: string) {
   return `alliance_liked_${slug}`;
 }
 
-export default function BlogCard({ post }: { post: BlogPost }) {
+export default function BlogCard({ post, delay = 0 }: { post: BlogPost; delay?: number }) {
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { entrance, hoverProps } = useCardMotion();
 
   const url =
     typeof window !== "undefined"
@@ -42,7 +45,6 @@ export default function BlogCard({ post }: { post: BlogPost }) {
         { merge: true }
       );
     } catch {
-      // Revert UI if write fails
       setLiked(!next);
       setLikes((n) => Math.max(0, n + (next ? -1 : 1)));
     }
@@ -65,24 +67,30 @@ export default function BlogCard({ post }: { post: BlogPost }) {
   };
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-      <a href={`/blog/${post.slug}`} className="block">
+    <motion.article
+      {...entrance(delay)}
+      {...hoverProps(true)}
+      className="group card-white card-feature card-shine card-motion card-shadow-hover flex flex-col overflow-hidden rounded-2xl h-full relative"
+    >
+      <span aria-hidden className="card-shine-sweep" />
+      <a href={`/blog/${post.slug}`} className="block relative overflow-hidden z-[1]">
         <div
-          className="h-44 px-6 flex flex-col justify-end pb-5"
+          className="h-44 px-6 flex flex-col justify-end pb-5 transition-transform duration-300 ease-out group-hover:scale-[1.03] origin-center"
           style={{ background: post.imageGradient }}
         >
-          <span className="inline-flex self-start text-[10px] font-bold uppercase tracking-widest text-white/80 bg-white/15 px-2.5 py-1 rounded-full mb-3">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-60" />
+          <span className="relative inline-flex self-start text-[10px] font-bold uppercase tracking-widest text-white/90 bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-full mb-3 border border-white/20">
             {post.location}, {post.state}
           </span>
-          <h2 className="text-lg font-bold text-white leading-snug line-clamp-2 group-hover:underline decoration-white/40 underline-offset-2">
+          <h2 className="relative text-lg font-bold text-white leading-snug line-clamp-2 group-hover:underline decoration-white/40 underline-offset-2">
             {post.title}
           </h2>
         </div>
       </a>
 
-      <div className="flex flex-col flex-1 p-5">
+      <div className="flex flex-col flex-1 p-5 lg:p-6 relative z-[1]">
         <p className="text-sm text-gray-500 leading-relaxed flex-1 line-clamp-3">{post.excerpt}</p>
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-between mt-5 pt-4 border-t border-gray-100/80">
           <p className="text-xs text-gray-400">
             {post.date} · {post.readTime}
           </p>
@@ -149,6 +157,6 @@ export default function BlogCard({ post }: { post: BlogPost }) {
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

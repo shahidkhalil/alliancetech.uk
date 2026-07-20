@@ -1,6 +1,8 @@
 "use client";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { FeatureCard } from "@/components/ui/Card";
+import { staggerDelay } from "@/lib/motionVariants";
 
 const problems = [
   { icon: "📵", title: "Missed calls = missed patients", desc: "80% of patients who can't reach a clinic on the first try call the next one. No AI receptionist = lost revenue every single day." },
@@ -29,21 +31,20 @@ export default function Problems() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {problems.map((p, i) => (
-            <motion.div key={p.title}
-              initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.08 }}
-              className="card-white card-accent-light rounded-xl p-6">
-              <div className="text-3xl mb-3">{p.icon}</div>
-              <h3 className="text-base font-bold text-[#00283C] mb-2">{p.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{p.desc}</p>
-            </motion.div>
+            <FeatureCard key={p.title} icon={p.icon} title={p.title} description={p.desc} delay={staggerDelay(i)} className="h-full" />
           ))}
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.6 }}
-          className="mt-10 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#00283C]">
+        <motion.div
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ ...{ type: "spring", stiffness: 300, damping: 24 }, delay: 0.5 }}
+          whileHover={{ scale: 1.01, y: -3 }}
+          className="mt-10 rounded-2xl p-6 lg:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 card-cta-dark card-cta-glow"
+        >
           <div>
             <p className="text-white font-bold text-base">Sound familiar? You&apos;re not alone.</p>
             <p className="text-white/60 text-sm mt-0.5">We&apos;ve fixed all 6 for clinics across the United States — we can fix them for you too.</p>

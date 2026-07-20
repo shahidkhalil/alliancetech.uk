@@ -5,6 +5,7 @@ import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import AdsCampaignMockup from "@/components/AdsCampaignMockup";
 import FinalCTA from "@/components/FinalCTA";
+import { ContentCardList } from "@/components/ui/Card";
 
 const featured = {
   icon: "📣",
@@ -107,14 +108,7 @@ export default function DigitalMarketingForClinics() {
       <section className="py-14 bg-[#F8FAFC]">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="text-2xl font-bold text-[#00283C] text-center mb-8">Common Questions</h2>
-          <div className="space-y-4">
-            {faqs.map((f) => (
-              <div key={f.q} className="card-white rounded-xl p-6 border border-gray-100">
-                <h3 className="font-bold text-[#00283C] mb-2">{f.q}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.a}</p>
-              </div>
-            ))}
-          </div>
+          <ContentCardList items={faqs} cardClassName="p-6 border border-gray-100" />
         </div>
       </section>
 

@@ -3,6 +3,7 @@ import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import MobileAppMockup from "@/components/MobileAppMockup";
 import FinalCTA from "@/components/FinalCTA";
+import { FeatureCardGrid, ContentCardList } from "@/components/ui/Card";
 
 const features = [
   { icon: "📱", title: "Branded iOS & Android App", desc: "Your clinic's logo, colours, and name — on every patient's home screen. Not a white-label generic app." },
@@ -66,29 +67,14 @@ export default function ClinicMobileApp() {
           <p className="text-gray-500 text-center mb-10 max-w-xl mx-auto">
             A self-service experience that cuts front-desk workload and keeps patients coming back.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((f) => (
-              <div key={f.title} className="card-white card-accent-light rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <div className="text-3xl mb-4">{f.icon}</div>
-                <h3 className="text-base font-bold text-[#00283C] mb-2">{f.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
-              </div>
-            ))}
-          </div>
+          <FeatureCardGrid items={features} className="grid md:grid-cols-2 lg:grid-cols-3 gap-5" />
         </div>
       </section>
 
       <section className="py-14 bg-[#F8FAFC]">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="text-2xl font-bold text-[#00283C] text-center mb-8">Common Questions</h2>
-          <div className="space-y-4">
-            {faqs.map((f) => (
-              <div key={f.q} className="card-white rounded-xl p-6 border border-gray-100">
-                <h3 className="font-bold text-[#00283C] mb-2">{f.q}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.a}</p>
-              </div>
-            ))}
-          </div>
+          <ContentCardList items={faqs} cardClassName="p-6 border border-gray-100" />
         </div>
       </section>
 

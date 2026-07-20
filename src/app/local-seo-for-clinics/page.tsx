@@ -3,6 +3,7 @@ import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import GoogleMapsMockup from "@/components/GoogleMapsMockup";
 import FinalCTA from "@/components/FinalCTA";
+import { FeatureCardGrid, AnimatedSurface } from "@/components/ui/Card";
 
 const features = [
   { icon: "📍", title: "Google Business Profile", desc: "Full optimisation of your GBP listing — photos, categories, hours, Q&A, posts, and review responses." },
@@ -62,21 +63,13 @@ export default function LocalSEOForClinics() {
           <p className="text-gray-500 text-center mb-10 max-w-xl mx-auto">
             A proven 6-step system that puts your clinic at the top of Google Maps — and keeps it there.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map((f) => (
-              <div key={f.title} className="card-white card-accent-light rounded-xl p-6 hover:-translate-y-1 transition-all">
-                <div className="text-3xl mb-4">{f.icon}</div>
-                <h3 className="text-base font-bold text-[#00283C] mb-2">{f.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
-              </div>
-            ))}
-          </div>
+          <FeatureCardGrid items={features} className="grid md:grid-cols-2 lg:grid-cols-3 gap-5" />
         </div>
       </section>
 
       <section className="py-14 bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="card-white rounded-2xl p-10 text-center border border-gray-100">
+          <AnimatedSurface className="p-10 text-center border border-gray-100">
             <h2 className="text-2xl font-bold text-[#00283C] mb-2">Cities We Operate In</h2>
             <p className="text-sm text-gray-400 mb-6">Local SEO for clinics in major US cities.</p>
             <div className="flex flex-wrap justify-center gap-3">
@@ -84,7 +77,7 @@ export default function LocalSEOForClinics() {
                 <span key={c} className="px-5 py-2.5 rounded-full text-sm font-semibold text-[#0077A8] bg-white border border-[#00B4D8]/30">{c}</span>
               ))}
             </div>
-          </div>
+          </AnimatedSurface>
         </div>
       </section>
 

@@ -3,6 +3,7 @@ import { Sparkles, Gauge, Search, Users, Wallet, MapPin, ChevronDown, Target, Us
 import { useState } from "react";
 import PageWrapper from "@/components/PageWrapper";
 import AuditChat, { BotAvatar } from "@/components/AuditChat";
+import { FeatureCardGrid } from "@/components/ui/Card";
 
 const checks = [
   { icon: Gauge, title: "Website Speed Test", desc: "Real Google PageSpeed (Lighthouse) data for your mobile load time and Core Web Vitals — the same metrics Google uses to rank you. Slow sites lose over half their visitors before the page even appears." },
@@ -97,17 +98,18 @@ export default function FreeWebsiteAudit() {
               Most free website checkers give you a score and jargon. Ours audits your clinic&apos;s website the way a patient — and Google — actually experiences it, then tells you what it&apos;s costing you.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {checks.map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="card-white rounded-xl p-6">
-                <div className="w-10 h-10 rounded-lg bg-[#00283C] flex items-center justify-center mb-4">
+          <FeatureCardGrid
+            items={checks.map(({ icon: Icon, title, desc }) => ({
+              icon: (
+                <span className="w-10 h-10 rounded-lg bg-[#00283C] flex items-center justify-center">
                   <Icon className="w-5 h-5 text-[#9FD3E8]" />
-                </div>
-                <h3 className="font-bold text-[#00283C] mb-2">{title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
+                </span>
+              ),
+              title,
+              desc,
+            }))}
+            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          />
         </div>
       </section>
 

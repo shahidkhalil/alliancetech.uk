@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Megaphone, Globe, Smartphone, MapPin, Search,
   PhoneCall, ClipboardList, ArrowRight, SearchCheck,
@@ -9,6 +10,8 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FinalCTA from "@/components/FinalCTA";
 import { FormProvider, useForm } from "@/context/FormContext";
+import { AnimatedLinkCard, AnimatedSurface } from "@/components/ui/Card";
+import { useCardMotion, staggerDelay } from "@/lib/motionVariants";
 import dynamic from "next/dynamic";
 
 const ConsultationForm = dynamic(() => import("@/components/ConsultationForm"), { ssr: false });
@@ -132,6 +135,7 @@ const tabs: { id: "all" | ServiceGroup; label: string }[] = [
 function ServicesContent() {
   const { isOpen, openForm, closeForm } = useForm();
   const [active, setActive] = useState<"all" | ServiceGroup>("all");
+  const { entrance, hoverProps } = useCardMotion();
 
   const visibleGroups =
     active === "all" ? groupOrder : groupOrder.filter((g) => g === active);
@@ -211,15 +215,15 @@ function ServicesContent() {
           </div>
 
           {/* Group preview chips */}
-          <div
-            className="mt-14 grid sm:grid-cols-3 gap-3 max-w-3xl"
-          >
-            {groupOrder.map((key) => (
-              <button
+          <div className="mt-14 grid sm:grid-cols-3 gap-3 max-w-3xl">
+            {groupOrder.map((key, i) => (
+              <motion.button
                 key={key}
                 type="button"
                 onClick={() => goTo(key)}
-                className="text-left rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-sm px-4 py-4 hover:bg-white/[0.08] hover:border-[#00B4D8]/40 transition-all group"
+                {...entrance(staggerDelay(i))}
+                {...hoverProps(true)}
+                className="text-left rounded-xl border border-white/10 bg-white/[0.04] backdrop-blur-sm px-4 py-4 hover:bg-white/[0.08] hover:border-[#00B4D8]/40 transition-colors group"
               >
                 <span className="text-[10px] font-bold tracking-widest text-[#00B4D8]/80">
                   {groupMeta[key].index}
@@ -227,7 +231,7 @@ function ServicesContent() {
                 <span className="block text-sm font-bold text-white mt-1 group-hover:text-[#7DD3EA] transition-colors">
                   {groupMeta[key].title}
                 </span>
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -261,7 +265,7 @@ function ServicesContent() {
       <section id="services" className="py-14 lg:py-20 scroll-mt-36">
         <div className="max-w-6xl mx-auto px-6 lg:px-8 space-y-16 lg:space-y-20">
 
-            {visibleGroups.map((groupKey, gi) => {
+            {visibleGroups.map((groupKey) => {
               const meta = groupMeta[groupKey];
               const items = services.filter((s) => s.group === groupKey);
               const flagship = items.find((s) => s.flagship);
@@ -292,7 +296,10 @@ function ServicesContent() {
                   </div>
 
                   {flagship && (
-                    <div className="relative mb-5 overflow-hidden rounded-2xl bg-[#00283C] text-white">
+                    <motion.div
+                      {...entrance(0)}
+                      className="relative mb-5 overflow-hidden rounded-2xl bg-[#00283C] text-white"
+                    >
                       <div
                         className="absolute inset-0 pointer-events-none"
                         style={{
@@ -335,10 +342,11 @@ function ServicesContent() {
                               </p>
                               <div className="space-y-2">
                                 {flagship.channels.map((ch, i) => (
-                                  <a
+                                  <motion.a
                                     key={ch.label}
                                     href={ch.href}
-
+                                    {...entrance(staggerDelay(i + 1))}
+                                    {...hoverProps(true)}
                                     className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3.5 hover:bg-white/[0.12] hover:border-[#00B4D8]/40 transition-colors"
                                   >
                                     <span className="w-9 h-9 rounded-lg bg-[#00B4D8]/15 flex items-center justify-center flex-shrink-0">
@@ -349,46 +357,53 @@ function ServicesContent() {
                                       <span className="block text-xs text-white/45">{ch.hint}</span>
                                     </span>
                                     <ArrowRight className="w-4 h-4 text-white/30 flex-shrink-0" />
-                                  </a>
+                                  </motion.a>
                                 ))}
                               </div>
                             </div>
                           )}
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   )}
 
                   {rest.length > 0 && (
-                    <div className={`grid gap-4 ${rest.length === 1 ? "sm:grid-cols-1 max-w-xl" : "sm:grid-cols-2"}`}>
+                    <div
+                      className={`grid gap-4 ${
+                        rest.length === 1
+                          ? "grid-cols-1 max-w-[280px] sm:max-w-[300px]"
+                          : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+                      }`}
+                    >
                       {rest.map((s, i) => (
-                        <a
+                        <AnimatedLinkCard
                           key={s.href}
                           href={s.href}
-
-                          className="group relative overflow-hidden rounded-2xl bg-white border border-[#00283C]/06 p-5 sm:p-6 hover:border-[#00B4D8]/35 transition-colors"
+                          delay={staggerDelay(i)}
+                          shine={false}
+                          className="group aspect-square max-h-[320px] sm:max-h-none p-6 sm:p-7"
                         >
-                          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#0077A8] to-[#00B4D8] opacity-0 group-hover:opacity-100 transition-opacity" />
-                          <div className="flex items-start gap-4">
-                            <span className="w-11 h-11 rounded-xl bg-[#E8F4F8] flex items-center justify-center flex-shrink-0 group-hover:bg-[#00283C] transition-colors">
-                              <s.Icon
-                                className="w-5 h-5 text-[#0077A8] group-hover:text-white transition-colors"
-                                strokeWidth={1.8}
-                              />
-                            </span>
-                            <span className="flex-1 min-w-0">
-                              <span className="flex items-center justify-between gap-2">
-                                <span className="text-base font-extrabold text-[#00283C]">
-                                  {s.title}
-                                </span>
-                                <ArrowRight className="w-4 h-4 text-[#00283C]/25 group-hover:text-[#0077A8] group-hover:translate-x-1 transition-all flex-shrink-0" />
+                          <div className="flex flex-col h-full min-h-0">
+                            <div className="flex items-start justify-between gap-3 mb-5">
+                              <span className="w-12 h-12 rounded-2xl bg-[#E8F4F8] flex items-center justify-center flex-shrink-0 transition-colors duration-200 group-hover:bg-[#00283C]">
+                                <s.Icon
+                                  className="w-5 h-5 text-[#0077A8] transition-colors duration-200 group-hover:text-white"
+                                  strokeWidth={1.8}
+                                />
                               </span>
-                              <span className="block text-sm text-[#00283C]/55 leading-relaxed mt-1.5">
-                                {s.summary}
-                              </span>
+                              <ArrowRight className="w-4 h-4 mt-1 text-[#00283C]/25 transition-all duration-200 group-hover:text-[#0077A8] group-hover:translate-x-1 flex-shrink-0" />
+                            </div>
+                            <h3 className="text-lg font-extrabold text-[#00283C] leading-snug mb-2">
+                              {s.title}
+                            </h3>
+                            <p className="text-sm text-[#00283C]/55 leading-relaxed flex-1">
+                              {s.summary}
+                            </p>
+                            <span className="mt-4 text-xs font-bold text-[#0077A8] opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0">
+                              Learn more →
                             </span>
                           </div>
-                        </a>
+                        </AnimatedLinkCard>
                       ))}
                     </div>
                   )}
@@ -402,7 +417,7 @@ function ServicesContent() {
       {/* Next step band */}
       <section className="pb-16 lg:pb-20">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl bg-white border border-[#00283C]/08 px-6 py-8 sm:px-10 sm:py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <AnimatedSurface className="relative overflow-hidden px-6 py-8 sm:px-10 sm:py-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6" delay={0.05}>
             <div
               className="absolute -right-16 -top-16 w-48 h-48 rounded-full pointer-events-none opacity-40"
               style={{ background: "radial-gradient(circle, rgba(0,180,216,0.25), transparent 70%)" }}
@@ -426,7 +441,7 @@ function ServicesContent() {
                 See pricing
               </a>
             </div>
-          </div>
+          </AnimatedSurface>
         </div>
       </section>
 

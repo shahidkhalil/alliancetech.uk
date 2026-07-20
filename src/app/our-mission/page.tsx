@@ -4,6 +4,8 @@ import { useRef } from "react";
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import FinalCTA from "@/components/FinalCTA";
+import { Card } from "@/components/ui/Card";
+import { staggerDelay } from "@/lib/motionVariants";
 
 const beliefs = [
   { lead: "Every patient lost is preventable.", desc: "A missed call, an unanswered WhatsApp message, a Google listing buried on page two. None of that is inevitable. It's a system failing the doctor behind it, and systems can be fixed." },
@@ -18,20 +20,14 @@ const vision = [
 ];
 
 function BeliefCard({ b, i }: { b: { lead: string; desc: string }; i: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: i * 0.1, duration: 0.5 }}
-      className="card-white rounded-xl p-7 flex flex-col"
-    >
+    <Card delay={staggerDelay(i)} className="p-7 flex flex-col">
       <div className="w-9 h-9 rounded-full bg-[#00283C] flex items-center justify-center text-xs font-extrabold text-white mb-5">
         {i + 1}
       </div>
       <p className="text-lg font-extrabold text-[#00283C] tracking-tight leading-snug mb-3">{b.lead}</p>
       <p className="text-gray-500 text-sm leading-relaxed">{b.desc}</p>
-    </motion.div>
+    </Card>
   );
 }
 

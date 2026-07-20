@@ -42,8 +42,8 @@ export default function BlogPage() {
 
       <section className="py-14 lg:py-16 bg-[#F8FAFC]">
         <div className="max-w-6xl mx-auto px-6 grid sm:grid-cols-2 gap-6">
-          {blogPosts.map((post) => (
-            <BlogCard key={post.slug} post={post} />
+          {blogPosts.map((post, i) => (
+            <BlogCard key={post.slug} post={post} delay={i * 0.1} />
           ))}
         </div>
       </section>
