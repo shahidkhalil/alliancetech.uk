@@ -7,7 +7,7 @@ const { checkRateLimit } = require("./lib/cache");
 const { clientIp } = require("./lib/security");
 const admin = require("firebase-admin");
 
-const DAILY_LIMIT_PER_IP = 8;
+const DAILY_LIMIT_PER_IP = 11;
 
 function sanitizeStr(v, max = 500) {
   return String(v ?? "").trim().slice(0, max);

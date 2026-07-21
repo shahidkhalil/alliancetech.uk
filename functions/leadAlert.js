@@ -10,6 +10,7 @@ const fs = require("fs");
 const { onDocumentCreated, onDocumentWritten } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
 const nodemailer = require("nodemailer");
+const { buildGrowthReportUserHtml, buildGrowthReportUserText } = require("./lib/growthReportEmail");
 
 const GMAIL_USER = defineSecret("GMAIL_USER");
 const GMAIL_APP_PASSWORD = defineSecret("GMAIL_APP_PASSWORD");
@@ -218,22 +219,28 @@ async function sendUserConfirmation(lead) {
 
   const logo = getLogoAttachment();
   const name = (lead.name || "there").split(" ")[0];
+  const isGrowthAudit = lead.source === "business_growth_audit" && lead.growthReport;
+
   await mail.transporter.sendMail({
     from: `"Alliance Tech" <${mail.user}>`,
     to: email,
-    subject: "We received your request — Alliance Tech",
-    text: [
-      `Hi ${name},`,
-      ``,
-      `Thanks for reaching out to Alliance Tech. We've received your details and our team will contact you within 2 hours.`,
-      ``,
-      `While you wait, you can run a free website audit here:`,
-      AUDIT_URL,
-      ``,
-      `— Alliance Tech`,
-      `Sales@alliancetechltd.com`,
-    ].join("\n"),
-    html: buildUserHtml(lead),
+    subject: isGrowthAudit
+      ? `Your Business Growth Report — Score ${lead.growthReport.growthScore ?? lead.auditScore ?? ""}/100`
+      : "We received your request — Alliance Tech",
+    text: isGrowthAudit
+      ? buildGrowthReportUserText(lead)
+      : [
+          `Hi ${name},`,
+          ``,
+          `Thanks for reaching out to Alliance Tech. We've received your details and our team will contact you within 2 hours.`,
+          ``,
+          `While you wait, you can run a free website audit here:`,
+          AUDIT_URL,
+          ``,
+          `— Alliance Tech`,
+          `Sales@alliancetechltd.com`,
+        ].join("\n"),
+    html: isGrowthAudit ? buildGrowthReportUserHtml(lead) : buildUserHtml(lead),
     attachments: logo ? [logo] : [],
   });
   return true;
@@ -259,14 +266,19 @@ exports.leadAlert = onDocumentCreated(
     }
 
     const isAudit = lead.source === "audit_bot";
+    const isGrowthAudit = lead.source === "business_growth_audit";
     const subject = isAudit
       ? `New audit lead: ${lead.name || "Unknown"} (${lead.website || "no site"}, score ${lead.auditScore ?? "?"})`
-      : `New lead: ${lead.name || "Unknown"} (${lead.source || "website"})`;
+      : isGrowthAudit
+        ? `New growth audit lead: ${lead.name || "Unknown"} (${lead.clinicName || "—"}, score ${lead.auditScore ?? "?"}/100)`
+        : `New lead: ${lead.name || "Unknown"} (${lead.source || "website"})`;
 
     const adminOk = await sendAdminAlert({
       subject,
-      badge: "New lead alert",
-      headline: "Someone just submitted your form",
+      badge: isGrowthAudit ? "Business growth audit" : "New lead alert",
+      headline: isGrowthAudit
+        ? "Someone completed the Business Growth Audit"
+        : "Someone just submitted your form",
       lead,
     });
     if (adminOk) console.log(`Admin lead email sent for ${event.params.leadId}`);

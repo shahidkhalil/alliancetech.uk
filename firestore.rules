@@ -27,6 +27,44 @@ service cloud.firestore {
         || request.resource.data[field] == null;
     }
 
+    function isAuditAnswers(data) {
+      return data is map
+        && data.keys().hasOnly([
+          'businessType', 'monthlyCustomers', 'marketingBudget',
+          'biggestChallenge', 'primaryGoal'
+        ])
+        && data.businessType is string && data.businessType.size() <= 80
+        && data.monthlyCustomers is string && data.monthlyCustomers.size() <= 120
+        && data.marketingBudget is string && data.marketingBudget.size() <= 80
+        && data.biggestChallenge is string && data.biggestChallenge.size() <= 80
+        && data.primaryGoal is string && data.primaryGoal.size() <= 600;
+    }
+
+    function isGrowthReport(data) {
+      return data is map
+        && data.keys().hasOnly([
+          'growthScore', 'summary', 'biggestIssues', 'opportunities',
+          'recommendedServices', 'timeline', 'estimatedROI', 'nextSteps'
+        ])
+        && data.growthScore is number
+        && data.growthScore >= 0
+        && data.growthScore <= 100
+        && data.summary is string
+        && data.summary.size() <= 1200
+        && data.biggestIssues is list
+        && data.biggestIssues.size() <= 8
+        && data.opportunities is list
+        && data.opportunities.size() <= 8
+        && data.recommendedServices is list
+        && data.recommendedServices.size() <= 8
+        && data.nextSteps is list
+        && data.nextSteps.size() <= 8
+        && data.timeline is string
+        && data.timeline.size() <= 300
+        && data.estimatedROI is string
+        && data.estimatedROI.size() <= 500;
+    }
+
     function hasTimestamp(field) {
       return field in request.resource.data
         && request.resource.data[field] is timestamp;
@@ -39,7 +77,8 @@ service cloud.firestore {
           'name', 'phone', 'email', 'clinicName', 'clinicType', 'message',
           'source', 'website', 'auditScore', 'auditVerdict', 'topIssue',
           'completionStatus', 'status',
-          'createdAt', 'updatedAt', 'step'
+          'createdAt', 'updatedAt', 'step',
+          'growthReport', 'auditAnswers'
         ])
         && request.resource.data.source is string
         && request.resource.data.source.size() > 0
@@ -58,6 +97,12 @@ service cloud.firestore {
         && optNumber('auditScore')
         && optNumber('step')
         && hasTimestamp('createdAt')
+        && (!('growthReport' in request.resource.data)
+          || (request.resource.data.source == 'business_growth_audit'
+            && isGrowthReport(request.resource.data.growthReport)))
+        && (!('auditAnswers' in request.resource.data)
+          || (request.resource.data.source == 'business_growth_audit'
+            && isAuditAnswers(request.resource.data.auditAnswers)))
         // Require at least one contact channel to cut empty spam.
         && (
           (request.resource.data.keys().hasAny(['email'])

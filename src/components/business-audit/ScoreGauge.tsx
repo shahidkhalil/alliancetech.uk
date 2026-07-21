@@ -7,15 +7,19 @@ type ScoreGaugeProps = {
   size?: number;
 };
 
+function scoreArcColor(score: number): string {
+  if (score >= 71) return "#16A34A"; // strong foundation — green
+  if (score >= 41) return "#D97706"; // moderate — amber
+  return "#EA580C"; // needs attention — red/orange
+}
+
 export default function ScoreGauge({ score, size = 168 }: ScoreGaugeProps) {
   const clamped = Math.min(100, Math.max(0, Math.round(score)));
   const stroke = 10;
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (clamped / 100) * circumference;
-
-  const color =
-    clamped >= 75 ? "#00B4D8" : clamped >= 50 ? "#0077A8" : clamped >= 35 ? "#D97706" : "#DC2626";
+  const color = scoreArcColor(clamped);
 
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>

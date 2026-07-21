@@ -23,6 +23,8 @@ export default function BusinessAudit() {
   const [answers, setAnswers] = useState<AuditAnswers>({ ...EMPTY_ANSWERS });
   const [report, setReport] = useState<BusinessGrowthReport | null>(null);
   const [error, setError] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const currentQuestion = AUDIT_QUESTIONS[questionIndex];
   const currentValue = answers[currentQuestion?.id ?? "businessType"] ?? "";
@@ -38,6 +40,9 @@ export default function BusinessAudit() {
   }, [currentQuestion]);
 
   const runAnalysis = async (finalAnswers: AuditAnswers) => {
+    if (isGenerating) return;
+
+    setIsGenerating(true);
     setStep("loading");
     setError("");
 
@@ -57,11 +62,13 @@ export default function BusinessAudit() {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setStep("questions");
       setQuestionIndex(AUDIT_QUESTIONS.length - 1);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
   const handleContinue = () => {
-    if (!canContinue) return;
+    if (!canContinue || isGenerating) return;
 
     if (questionIndex < AUDIT_QUESTIONS.length - 1) {
       setQuestionIndex((i) => i + 1);
@@ -152,6 +159,7 @@ export default function BusinessAudit() {
               onBack={handleBack}
               onContinue={handleContinue}
               canContinue={canContinue}
+              isGenerating={isGenerating}
             />
           </motion.div>
         )}

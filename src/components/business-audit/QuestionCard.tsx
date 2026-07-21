@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import type { AuditQuestion } from "@/lib/businessAuditTypes";
 
 type QuestionCardProps = {
@@ -13,6 +13,7 @@ type QuestionCardProps = {
   onBack?: () => void;
   onContinue: () => void;
   canContinue: boolean;
+  isGenerating?: boolean;
 };
 
 export default function QuestionCard({
@@ -24,6 +25,7 @@ export default function QuestionCard({
   onBack,
   onContinue,
   canContinue,
+  isGenerating = false,
 }: QuestionCardProps) {
   const progress = ((stepIndex + 1) / totalSteps) * 100;
 
@@ -122,11 +124,20 @@ export default function QuestionCard({
           <button
             type="button"
             onClick={onContinue}
-            disabled={!canContinue}
+            disabled={!canContinue || isGenerating}
             className="btn-dark inline-flex items-center gap-2 px-6 py-3 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {stepIndex === totalSteps - 1 ? "Generate Report" : "Continue"}
-            <ArrowRight className="w-4 h-4" />
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Generating…
+              </>
+            ) : (
+              <>
+                {stepIndex === totalSteps - 1 ? "Generate Report" : "Continue"}
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
           </button>
         </div>
       </div>

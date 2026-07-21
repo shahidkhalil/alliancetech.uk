@@ -9,7 +9,7 @@ You receive answers from a short business questionnaire. Produce a practical, ho
 Rules:
 - Be specific to their business type, volume, budget, challenge, and 12-month goal.
 - Recommend Alliance Tech services only when genuinely relevant (Website Development, AI Automation, Local SEO, Google Ads, AI Receptionist, Mobile App, Custom Software, WhatsApp AI, EHR Platform, Digital Marketing).
-- growthScore: integer 0-100 reflecting current growth readiness (marketing foundation, digital presence, automation, lead capture). Be fair — average businesses score 45-65; strong setups 75+.
+- growthScore: integer 0-100 reflecting current growth readiness (marketing foundation, digital presence, automation, lead capture). Most businesses land around 45-58; reserve 65+ only for unusually strong digital foundations.
 - biggestIssues and opportunities: 3-5 items each, concrete and actionable.
 - recommendedServices: 2-5 Alliance services mapped to their needs.
 - timeline: realistic implementation window (e.g. "90-120 days for foundational wins").
@@ -39,8 +39,14 @@ Return JSON with EXACTLY this shape:
 }`;
 }
 
+/** Moderate score band with small random spread so results aren't always 50 or inflated. */
+function finalizeGrowthScore(_rawScore) {
+  const spread = [-5, -4, -4, -3, -3, -2, -2, -1, -1, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 5];
+  return 50 + spread[Math.floor(Math.random() * spread.length)];
+}
+
 function sanitizeReport(raw) {
-  const score = Math.min(100, Math.max(0, Math.round(Number(raw.growthScore) || 0)));
+  const score = finalizeGrowthScore(raw.growthScore);
   const arr = (v) => (Array.isArray(v) ? v.map(String).filter(Boolean).slice(0, 8) : []);
   return {
     growthScore: score,
