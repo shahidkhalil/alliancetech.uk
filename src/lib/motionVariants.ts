@@ -3,15 +3,15 @@
 import { useReducedMotion } from "framer-motion";
 import type { Transition, Variants } from "framer-motion";
 
-/** Stagger between siblings in a card grid (80–120ms spec → 100ms default). */
-export const STAGGER_MS = 0.1;
+/** Stagger between siblings in a card grid. */
+export const STAGGER_MS = 0.08;
 
 /** Viewport trigger — once per card, slightly before fully visible. */
-export const VIEWPORT_ONCE = { once: true, margin: "-50px" } as const;
+export const VIEWPORT_ONCE = { once: true, amount: 0.3, margin: "-50px" } as const;
 
-export const EASE_OUT = [0.4, 0, 0.2, 1] as const;
+export const EASE_OUT = [0, 0, 0.2, 1] as const;
 
-export const cardEntranceHidden = { opacity: 0, y: 20 };
+export const cardEntranceHidden = { opacity: 0, y: 16 };
 export const cardEntranceVisible = { opacity: 1, y: 0 };
 
 export function staggerDelay(index: number, step = STAGGER_MS) {
@@ -19,15 +19,19 @@ export function staggerDelay(index: number, step = STAGGER_MS) {
 }
 
 export function cardEntranceTransition(delay = 0, reduced = false): Transition {
-  if (reduced) return { duration: 0 };
-  return { duration: 0.45, ease: EASE_OUT, delay };
+  if (reduced) return { duration: 0.2, ease: "easeOut" };
+  return { duration: 0.35, ease: "easeOut", delay };
 }
 
-/** Lift + subtle scale — transform/opacity only; shadow handled in CSS. */
+const springHover = { type: "spring" as const, stiffness: 300, damping: 20 };
+const springIcon = { type: "spring" as const, stiffness: 400, damping: 15 };
+const springTap = { type: "spring" as const, stiffness: 400, damping: 25 };
+
+/** Lift + subtle scale — transform only; shadow handled in CSS. */
 export const cardHoverLiftVariants: Variants = {
   rest: { y: 0, scale: 1 },
-  hover: { y: -6, scale: 1.02, transition: { duration: 0.2, ease: EASE_OUT } },
-  tap: { y: -2, scale: 0.99, transition: { duration: 0.15, ease: EASE_OUT } },
+  hover: { y: -4, scale: 1.01, transition: springHover },
+  tap: { scale: 0.98, transition: springTap },
 };
 
 export const cardHoverNoneVariants: Variants = {
@@ -35,6 +39,26 @@ export const cardHoverNoneVariants: Variants = {
   hover: { y: 0, scale: 1 },
   tap: { y: 0, scale: 1 },
 };
+
+export function staggerContainerVariants(reduced = false): Variants {
+  return {
+    hidden: {},
+    visible: {
+      transition: { staggerChildren: reduced ? 0 : STAGGER_MS },
+    },
+  };
+}
+
+export function staggerItemVariants(reduced = false): Variants {
+  return {
+    hidden: reduced ? { opacity: 0 } : { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: reduced ? 0.2 : 0.35, ease: "easeOut" },
+    },
+  };
+}
 
 /** Shared hook — respects prefers-reduced-motion via Framer Motion. */
 export function useCardMotion() {
@@ -44,17 +68,26 @@ export function useCardMotion() {
     reducedMotion,
     viewport: VIEWPORT_ONCE,
     staggerDelay,
+    containerVariants: staggerContainerVariants(reducedMotion),
+    itemVariants: staggerItemVariants(reducedMotion),
 
     entrance: (delay = 0) => ({
-      initial: reducedMotion ? cardEntranceVisible : cardEntranceHidden,
-      whileInView: cardEntranceVisible,
+      initial: reducedMotion ? { opacity: 0 } : cardEntranceHidden,
+      whileInView: reducedMotion ? { opacity: 1 } : cardEntranceVisible,
       viewport: VIEWPORT_ONCE,
+      transition: cardEntranceTransition(delay, reducedMotion),
+    }),
+
+    /** For menus / above-the-fold grids — animate on mount instead of scroll. */
+    entranceAnimate: (delay = 0) => ({
+      initial: reducedMotion ? { opacity: 0 } : cardEntranceHidden,
+      animate: reducedMotion ? { opacity: 1 } : cardEntranceVisible,
       transition: cardEntranceTransition(delay, reducedMotion),
     }),
 
     hoverProps: (enabled = true) =>
       !enabled || reducedMotion
-        ? {}
+        ? { whileTap: { scale: 0.98, transition: springTap } }
         : {
             initial: "rest" as const,
             whileHover: "hover" as const,
@@ -62,12 +95,14 @@ export function useCardMotion() {
             variants: cardHoverLiftVariants,
           },
 
-    iconMicro: () =>
+    iconMicro: (filled = false) =>
       reducedMotion
         ? {}
         : {
-            whileHover: { scale: 1.08, transition: { duration: 0.2, ease: EASE_OUT } },
-            whileTap: { scale: 0.98, transition: { duration: 0.15, ease: EASE_OUT } },
+            whileHover: filled
+              ? { scale: 1.08, transition: springIcon }
+              : { rotate: -8, scale: 1.08, transition: springIcon },
+            whileTap: { scale: 0.98, transition: springTap },
           },
 
     expandTransition: (): Transition =>

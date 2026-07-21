@@ -247,27 +247,60 @@ body {
 
 /* ===================== LIGHT THEME — HOME PAGE ===================== */
 
-/* White card — for light-bg sections */
+/* ── Premium card shell (gradient border + mesh) ─────────────────── */
 .card-white {
-  background: linear-gradient(165deg, #FFFFFF 0%, #F8FBFD 100%);
-  border: 1px solid rgba(0, 40, 60, 0.09);
-  box-shadow:
-    0 1px 2px rgba(0, 40, 60, 0.04),
-    0 4px 20px rgba(0, 40, 60, 0.06);
-  transition: border-color 0.35s ease, box-shadow 0.35s ease;
   position: relative;
+  isolation: isolate;
   transform-style: preserve-3d;
   will-change: transform;
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(155deg, #ffffff 0%, #f6fcfe 42%, #ffffff 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 40, 60, 0.04),
+    0 8px 28px rgba(0, 40, 60, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: box-shadow 0.35s ease;
+}
+/* Gradient border ring */
+.card-white::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(
+    140deg,
+    rgba(0, 180, 216, 0.45) 0%,
+    rgba(0, 40, 60, 0.06) 35%,
+    rgba(0, 119, 168, 0.08) 65%,
+    rgba(0, 180, 216, 0.35) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.35s ease;
+}
+.card-white:hover::before {
+  background: linear-gradient(
+    140deg,
+    rgba(0, 180, 216, 0.75) 0%,
+    rgba(0, 119, 168, 0.2) 50%,
+    rgba(0, 180, 216, 0.6) 100%
+  );
 }
 .card-white:hover {
-  border-color: rgba(0, 180, 216, 0.45);
   box-shadow:
-    0 8px 16px rgba(0, 40, 60, 0.06),
-    0 20px 48px rgba(0, 40, 60, 0.12),
-    0 0 0 1px rgba(0, 180, 216, 0.08);
+    0 0 0 1px rgba(0, 180, 216, 0.1),
+    0 16px 40px rgba(0, 40, 60, 0.1),
+    0 40px 80px rgba(0, 119, 168, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
   transform: translateY(-4px);
 }
-/* Motion-driven cards — framer handles transform */
+
+/* Framer Motion drives lift — cancel CSS transform */
 .card-motion:hover {
   transform: none;
 }
@@ -275,22 +308,134 @@ body {
   transform: none;
   box-shadow:
     0 1px 2px rgba(0, 40, 60, 0.04),
-    0 4px 20px rgba(0, 40, 60, 0.06);
-  border-color: rgba(0, 40, 60, 0.09);
+    0 8px 28px rgba(0, 40, 60, 0.07);
+}
+.card-no-hover:hover::before {
+  opacity: 0.7;
 }
 
-/* Shadow/border snap on hover — no animated box-shadow (Framer handles transform). */
+/* Hover shadow for link cards */
 .card-shadow-hover:hover {
-  border-color: rgba(0, 180, 216, 0.45);
   box-shadow:
-    0 8px 16px rgba(0, 40, 60, 0.06),
-    0 20px 48px rgba(0, 40, 60, 0.12),
-    0 0 0 1px rgba(0, 180, 216, 0.08);
+    0 0 0 1px rgba(0, 180, 216, 0.14),
+    0 16px 40px rgba(0, 40, 60, 0.11),
+    0 40px 80px rgba(0, 119, 168, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+.card-shadow-hover-dark {
+  background:
+    radial-gradient(ellipse 90% 70% at 100% 0%, rgba(0, 180, 216, 0.22) 0%, transparent 55%),
+    linear-gradient(155deg, #001e2e 0%, #00283C 40%, #003550 100%);
+  border: 1px solid rgba(0, 180, 216, 0.2) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 20, 30, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.card-shadow-hover-dark::before {
+  background: linear-gradient(
+    140deg,
+    rgba(0, 180, 216, 0.5) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(0, 180, 216, 0.3) 100%
+  ) !important;
 }
 .card-shadow-hover-dark:hover {
-  box-shadow: 0 24px 56px rgba(0, 40, 60, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(0, 180, 216, 0.35),
+    0 24px 56px rgba(0, 20, 30, 0.55),
+    0 0 60px rgba(0, 180, 216, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+/* ── Decorative corner dot grid ────────────────────────────────────── */
+.card-deco-dots {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.35;
+  background-image: radial-gradient(circle, rgba(0, 119, 168, 0.55) 1px, transparent 1px);
+  background-size: 7px 7px;
+  mask-image: radial-gradient(ellipse at top right, black 20%, transparent 75%);
+  transition: opacity 0.35s ease;
+}
+.group:hover .card-deco-dots {
+  opacity: 0.55;
+}
+
+/* ── Decorative bottom-left arc ──────────────────────────────────── */
+.card-deco-arc {
+  position: absolute;
+  bottom: -1.5rem;
+  left: -1.5rem;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 180, 216, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transition: transform 0.5s ease, opacity 0.35s ease;
+  opacity: 0.6;
+}
+.group:hover .card-deco-arc {
+  transform: scale(1.3);
+  opacity: 1;
+}
+
+/* ── Circular arrow CTA button ─────────────────────────────────────── */
+.card-arrow-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 40, 60, 0.1);
+  color: rgba(0, 40, 60, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 40, 60, 0.06);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.group:hover .card-arrow-circle {
+  background: linear-gradient(135deg, #0077A8 0%, #00B4D8 100%);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
+  transform: translateX(3px);
+}
+.card-arrow-circle--dark {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+  box-shadow: none;
+}
+.group:hover .card-arrow-circle--dark {
+  background: rgba(255, 255, 255, 0.95);
+  color: #00283C;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ── Card footer divider ───────────────────────────────────────────── */
+.card-footer-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 180, 216, 0.35) 0%, rgba(0, 40, 60, 0.06) 60%, transparent 100%);
+  border: none;
+  margin: 0;
+}
+.card-footer-rule--dark {
+  background: linear-gradient(90deg, rgba(0, 180, 216, 0.4) 0%, rgba(255, 255, 255, 0.08) 60%, transparent 100%);
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .card-white,
   .card-motion,
@@ -303,7 +448,7 @@ body {
     transform: none !important;
   }
   .card-shine-sweep::after,
-  .card-accent-animated::before,
+  .card-accent-bar,
   .card-cta-glow::after {
     animation: none !important;
     transition: none !important;
@@ -313,30 +458,32 @@ body {
   }
 }
 
-/* Richer feature cards — animated corner glow */
+/* ── Ambient corner orb that blooms on hover ───────────────────────── */
 .card-feature {
   overflow: hidden;
 }
 .card-feature::after {
   content: '';
   position: absolute;
-  top: -35%;
-  right: -20%;
-  width: 65%;
-  height: 65%;
-  background: radial-gradient(circle, rgba(0, 180, 216, 0.14) 0%, transparent 68%);
+  top: -40%;
+  right: -25%;
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(0, 180, 216, 0.18) 0%, transparent 65%);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.4s ease, transform 0.6s ease;
-  transform: scale(0.8);
+  transition: opacity 0.5s ease, transform 0.7s ease;
+  transform: scale(0.6);
+  border-radius: 50%;
+  filter: blur(8px);
 }
 .card-feature:hover::after,
 .card-motion:hover::after {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
-/* Shine sweep on hover */
+/* ── Diagonal shine sweep ──────────────────────────────────────────── */
 .card-shine-sweep {
   position: absolute;
   inset: 0;
@@ -348,72 +495,88 @@ body {
 .card-shine-sweep::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: -120%;
-  width: 55%;
-  height: 100%;
+  top: -10%;
+  left: -130%;
+  width: 60%;
+  height: 120%;
   background: linear-gradient(
     105deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.5) 48%,
+    rgba(255, 255, 255, 0.55) 45%,
+    rgba(255, 255, 255, 0.15) 55%,
     transparent 100%
   );
-  transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: skewX(-8deg);
+  transition: left 0.75s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .card-shine:hover .card-shine-sweep::after,
 .card-motion.card-shine:hover .card-shine-sweep::after {
-  left: 130%;
+  left: 140%;
 }
 
-/* Animated accent bar pulse */
-.card-accent-animated::before {
-  animation: accent-pulse 2.8s ease-in-out infinite;
-}
+/* ── Accent pulse keyframes ────────────────────────────────────────── */
 @keyframes accent-pulse {
-  0%, 100% { opacity: 0.88; filter: brightness(1); }
-  50% { opacity: 1; filter: brightness(1.15); }
+  0%, 100% { opacity: 0.85; filter: brightness(1); }
+  50%       { opacity: 1;    filter: brightness(1.2); }
 }
 
-/* Icon well inside cards */
+/* ── Icon well — glowing teal gem ─────────────────────────────────── */
 .card-icon-well {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  border-radius: 0.875rem;
-  background: linear-gradient(145deg, #E8F6FA 0%, #F4FBFD 100%);
-  border: 1px solid rgba(0, 180, 216, 0.18);
-  font-size: 1.5rem;
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 1.125rem;
+  background: linear-gradient(145deg, #d4f0f8 0%, #eefbff 45%, #c8eaf6 100%);
+  border: 1px solid rgba(0, 180, 216, 0.28);
+  font-size: 1.6rem;
   line-height: 1;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 2px 8px rgba(0, 40, 60, 0.04);
-  transition: box-shadow 0.35s ease;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(0, 119, 168, 0.06),
+    0 4px 14px rgba(0, 180, 216, 0.18);
+  transition: box-shadow 0.35s ease, background 0.35s ease;
+  position: relative;
+}
+.card-icon-well::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
 }
 .card-motion:hover .card-icon-well {
+  background: linear-gradient(145deg, #00283C 0%, #003d5c 50%, #004a6e 100%);
+  border-color: rgba(0, 180, 216, 0.4);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 8px 20px rgba(0, 180, 216, 0.22);
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 3px rgba(0, 180, 216, 0.15),
+    0 8px 28px rgba(0, 40, 60, 0.3);
 }
 
-/* Stat / time pill on process & service cards */
+/* ── Stat pill ─────────────────────────────────────────────────────── */
 .card-stat-pill {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 0.35rem 0.65rem;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.75rem;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #E6F4F8 0%, #F0FAFC 100%);
+  background: linear-gradient(135deg, rgba(0, 180, 216, 0.1) 0%, rgba(0, 119, 168, 0.08) 100%);
   color: #0077A8;
-  border: 1px solid rgba(0, 180, 216, 0.22);
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  box-shadow: 0 1px 4px rgba(0, 180, 216, 0.1);
 }
 
-/* Dark CTA strip card */
+/* ── Dark CTA strip card ───────────────────────────────────────────── */
 .card-cta-dark {
   background: linear-gradient(135deg, #00283C 0%, #003D5C 55%, #004A6E 100%);
-  border: 1px solid rgba(0, 180, 216, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 40, 60, 0.25);
+  border: 1px solid rgba(0, 180, 216, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 40, 60, 0.28);
 }
 .card-cta-glow {
   position: relative;
@@ -423,13 +586,97 @@ body {
   content: '';
   position: absolute;
   inset: -50%;
-  background: radial-gradient(circle at 30% 50%, rgba(0, 180, 216, 0.15), transparent 55%);
+  background: radial-gradient(circle at 30% 50%, rgba(0, 180, 216, 0.18), transparent 55%);
   pointer-events: none;
   animation: cta-glow-drift 6s ease-in-out infinite;
 }
 @keyframes cta-glow-drift {
   0%, 100% { transform: translate(0, 0); opacity: 0.6; }
-  50% { transform: translate(4%, -2%); opacity: 1; }
+  50%       { transform: translate(5%, -3%); opacity: 1; }
+}
+
+/* ── Card accent top bar (DOM element, not pseudo) ───────────────── */
+.card-accent-bar {
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  right: 1.25rem;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #0077A8 20%, #00B4D8 60%, #7DD3EA 80%, transparent 100%);
+  border-radius: 0 0 4px 4px;
+  opacity: 0.95;
+  z-index: 3;
+  pointer-events: none;
+  animation: accent-pulse 3s ease-in-out infinite;
+}
+.card-accent-light {
+  position: relative;
+}
+
+/* ── Feature card number badge ─────────────────────────────────────── */
+.card-number-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  background: linear-gradient(135deg, #0077A8 0%, #00B4D8 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 119, 168, 0.3);
+  flex-shrink: 0;
+}
+
+/* ── Service link card icon chip ───────────────────────────────────── */
+.svc-icon-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+  flex-shrink: 0;
+  background: linear-gradient(145deg, #d4f0f8 0%, #eefbff 50%, #c8eaf6 100%);
+  border: 1px solid rgba(0, 180, 216, 0.25);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 3px rgba(0, 119, 168, 0.06),
+    0 3px 12px rgba(0, 180, 216, 0.15);
+  transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+}
+.svc-icon-chip::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+.group:hover .svc-icon-chip {
+  background: linear-gradient(145deg, #00283C 0%, #003d5c 60%, #004a6e 100%);
+  border-color: rgba(0, 180, 216, 0.35);
+  box-shadow:
+    0 0 0 3px rgba(0, 180, 216, 0.12),
+    0 8px 24px rgba(0, 40, 60, 0.28);
+}
+.svc-icon-chip--filled {
+  background: linear-gradient(145deg, #00283C 0%, #004a6e 100%);
+  border-color: rgba(0, 180, 216, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 4px 16px rgba(0, 40, 60, 0.25);
+}
+.svc-icon-chip--dark {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.svc-icon-chip--dark::after {
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Dark teal solid button — for light bg */

@@ -1,12 +1,11 @@
 "use client";
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   Megaphone, Globe, Smartphone, MapPin, Search,
-  MessageCircle, ClipboardList, ArrowRight, Bot
+  MessageCircle, ClipboardList, Bot
 } from "lucide-react";
-import { AnimatedLinkCard } from "@/components/ui/Card";
-import { staggerDelay } from "@/lib/motionVariants";
+import { ServiceShowcaseCard, StaggerGrid } from "@/components/ui/Card";
 
 const services = [
   {
@@ -86,12 +85,20 @@ const services = [
 export default function Solutions() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [hoveredHref, setHoveredHref] = useState<string | null>(null);
 
   return (
-    <section className="py-16 lg:py-24 bg-white" id="services" ref={ref}>
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <section
+      className="py-16 lg:py-24 relative overflow-hidden"
+      id="services"
+      ref={ref}
+      style={{
+        background:
+          "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,180,216,0.07) 0%, transparent 60%), linear-gradient(180deg, #f8fcfe 0%, #ffffff 40%, #ffffff 100%)",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
 
-        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -108,81 +115,41 @@ export default function Solutions() {
           </p>
         </motion.div>
 
-        {/* Service grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-8">
-          {services.map((s, i) => (
-            <AnimatedLinkCard
+        <StaggerGrid className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-8">
+          {services.map((s) => (
+            <ServiceShowcaseCard
               key={s.title}
               href={s.href}
-              delay={staggerDelay(i)}
-              dark={s.popular}
-              className="gap-4 p-7"
-            >
-              {/* Popular badge */}
-              {s.popular && (
-                <span className="absolute top-4 right-4 text-[9px] font-bold px-2 py-0.5 rounded-full bg-white/20 text-white tracking-wider">
-                  MOST POPULAR
-                </span>
-              )}
-
-              {/* Icon */}
-              <motion.div
-                className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-300 ${
-                  s.popular
-                    ? "bg-white/15 ring-1 ring-white/20"
-                    : "bg-gradient-to-br from-[#E6F4F8] to-[#F0FAFC] border border-[#00B4D8]/15 group-hover:from-[#00283C] group-hover:to-[#003D5C] group-hover:border-transparent group-hover:shadow-lg"
-                }`}
-                whileHover={{ scale: 1.12, rotate: [0, -6, 6, 0] }}
-                transition={{ type: "spring", stiffness: 500, damping: 14 }}
-              >
-                <s.Icon className={`w-5 h-5 ${s.popular ? "text-white" : "text-[#0077A8] group-hover:text-white transition-colors duration-300"}`} strokeWidth={1.8} />
-              </motion.div>
-
-              {/* Text */}
-              <div className="flex-1">
-                <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${s.popular ? "text-white/60" : "text-[#00B4D8]"}`}>
-                  {s.subtitle}
-                </p>
-                <h3 className={`text-base font-bold mb-2 leading-snug ${s.popular ? "text-white" : "text-[#00283C]"}`}>
-                  {s.title}
-                </h3>
-                <p className={`text-xs leading-relaxed ${s.popular ? "text-white/65" : "text-gray-500"}`}>
-                  {s.desc}
-                </p>
-              </div>
-
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-2 border-t border-dashed border-opacity-20"
-                style={{ borderColor: s.popular ? "rgba(255,255,255,0.15)" : "#E2EBF0" }}>
-                <motion.span
-                  className={`text-xs font-bold ${s.popular ? "text-white/70" : "text-[#0077A8]"}`}
-                  initial={false}
-                  whileHover={{ x: 2 }}
-                >
-                  {s.stat}
-                </motion.span>
-                <ArrowRight className={`w-4 h-4 transition-transform duration-300 group-hover:translate-x-1.5 ${s.popular ? "text-white/60" : "text-gray-300 group-hover:text-[#0077A8]"}`} strokeWidth={2} />
-              </div>
-            </AnimatedLinkCard>
+              icon={s.Icon}
+              title={s.title}
+              subtitle={s.subtitle}
+              description={s.desc}
+              stat={s.stat}
+              popular={s.popular}
+              showAccentBar={hoveredHref === s.href}
+              accentLayoutId="homeServiceCardBorder"
+              onPointerEnter={() => setHoveredHref(s.href)}
+              onPointerLeave={() => setHoveredHref((prev) => (prev === s.href ? null : prev))}
+            />
           ))}
-        </div>
+        </StaggerGrid>
 
-        {/* Bottom strip */}
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.97 }}
           animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
           transition={{ delay: 0.55, type: "spring", stiffness: 300, damping: 26 }}
           whileHover={{ scale: 1.01, y: -2 }}
-          className="rounded-xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-[#00283C]/10 bg-[#F0F7FA] card-feature"
+          whileTap={{ scale: 0.98 }}
+          className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 card-cta-dark card-cta-glow"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 relative z-[1]">
             <MapPin className="w-5 h-5 text-[#00B4D8] flex-shrink-0" strokeWidth={2} />
             <div>
-              <p className="text-[#00283C] font-bold text-sm">Houston-based — serving clinics across the United States</p>
-              <p className="text-gray-400 text-xs mt-0.5">Houston · Los Angeles · Chicago · Dallas · and beyond</p>
+              <p className="text-white font-bold text-sm">Houston-based — serving clinics across the United States</p>
+              <p className="text-white/50 text-xs mt-0.5">Houston · Los Angeles · Chicago · Dallas · and beyond</p>
             </div>
           </div>
-          <a href="/dental-clinic-houston" className="flex-shrink-0 btn-dark px-5 py-2.5 text-sm whitespace-nowrap">
+          <a href="/dental-clinic-houston" className="relative z-[1] flex-shrink-0 btn-dark px-5 py-2.5 text-sm whitespace-nowrap">
             Houston Clinics →
           </a>
         </motion.div>

@@ -1,8 +1,7 @@
 "use client";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { FeatureCard } from "@/components/ui/Card";
-import { staggerDelay } from "@/lib/motionVariants";
+import { FeatureCardGrid } from "@/components/ui/Card";
 
 const problems = [
   { icon: "📵", title: "Missed calls = missed patients", desc: "80% of patients who can't reach a clinic on the first try call the next one. No AI receptionist = lost revenue every single day." },
@@ -31,18 +30,15 @@ export default function Problems() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {problems.map((p, i) => (
-            <FeatureCard key={p.title} icon={p.icon} title={p.title} description={p.desc} delay={staggerDelay(i)} className="h-full" />
-          ))}
-        </div>
+        <FeatureCardGrid items={problems} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" />
 
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.97 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true }}
-          transition={{ ...{ type: "spring", stiffness: 300, damping: 24 }, delay: 0.5 }}
+          transition={{ type: "spring", stiffness: 300, damping: 24, delay: 0.5 }}
           whileHover={{ scale: 1.01, y: -3 }}
+          whileTap={{ scale: 0.98 }}
           className="mt-10 rounded-2xl p-6 lg:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 card-cta-dark card-cta-glow"
         >
           <div>

@@ -3,8 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { pricingServices } from "@/lib/pricingData";
-import { AnimatedLinkCard } from "@/components/ui/Card";
-import { staggerDelay } from "@/lib/motionVariants";
+import { AnimatedLinkCard, ServiceCardArrow, StaggerGrid } from "@/components/ui/Card";
 
 // Headline services shown as a homepage preview — full list lives on /pricing.
 const FEATURED_IDS = ["ai-automation", "healthcare-website", "local-seo", "google-ads"];
@@ -63,12 +62,12 @@ export default function PricingPackages() {
         </motion.div>
 
         {/* ── Mobile: stacked cards (the 4-col table can't fit a phone) ── */}
-        <div className="sm:hidden space-y-4">
-          {featured.map((service, i) => (
+        <StaggerGrid className="sm:hidden space-y-4">
+          {featured.map((service) => (
             <AnimatedLinkCard
               key={service.id}
               href={`/pricing#${service.id}`}
-              delay={staggerDelay(i)}
+              skipEntrance
               className="block shadow-md overflow-hidden"
             >
               <div className="px-4 pt-4 pb-3">
@@ -103,13 +102,13 @@ export default function PricingPackages() {
             </AnimatedLinkCard>
           ))}
 
-          <AnimatedLinkCard href="/pricing" delay={staggerDelay(featured.length)} className="bg-[#F8FAFC] border border-gray-200 px-4 py-4">
+          <AnimatedLinkCard href="/pricing" skipEntrance className="bg-[#F8FAFC] border border-gray-200 px-4 py-4">
             <span className="flex items-center justify-between gap-2 text-sm font-bold text-[#0077A8]">
               View all {pricingServices.length} services &amp; pricing
-              <ArrowRight className="w-4 h-4 text-[#0077A8] flex-shrink-0" />
+              <ServiceCardArrow className="text-[#0077A8] opacity-100 translate-x-0" />
             </span>
           </AnimatedLinkCard>
-        </div>
+        </StaggerGrid>
 
         {/* ── Pricing matrix (sm and up) ── */}
         <motion.div

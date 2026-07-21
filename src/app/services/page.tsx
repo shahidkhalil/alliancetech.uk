@@ -10,7 +10,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import FinalCTA from "@/components/FinalCTA";
 import { FormProvider, useForm } from "@/context/FormContext";
-import { AnimatedLinkCard, AnimatedSurface } from "@/components/ui/Card";
+import { ActiveTabBar, AnimatedSurface, ServiceCardGrid } from "@/components/ui/Card";
 import { useCardMotion, staggerDelay } from "@/lib/motionVariants";
 import dynamic from "next/dynamic";
 
@@ -240,24 +240,7 @@ function ServicesContent() {
       {/* Sticky filter */}
       <div className="sticky top-20 z-30 border-b border-[#00283C]/08 bg-[#F4F8FB]/90 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <nav aria-label="Service groups" className="flex gap-2 overflow-x-auto py-3.5 scrollbar-hide">
-            {tabs.map((tab) => {
-              const selected = active === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => goTo(tab.id)}
-                  className={`relative flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                    selected ? "text-white" : "text-[#00283C]/55 hover:text-[#00283C] hover:bg-white"
-                  }`}
-                >
-                  {selected && <span className="absolute inset-0 rounded-full bg-[#00283C]" />}
-                  <span className="relative">{tab.label}</span>
-                </button>
-              );
-            })}
-          </nav>
+          <ActiveTabBar tabs={tabs} active={active} onChange={goTo} />
         </div>
       </div>
 
@@ -368,43 +351,20 @@ function ServicesContent() {
                   )}
 
                   {rest.length > 0 && (
-                    <div
-                      className={`grid gap-3 ${
+                    <ServiceCardGrid
+                      accentLayoutId={`serviceCardBorder-${groupKey}`}
+                      className={`grid gap-4 ${
                         rest.length === 1
                           ? "grid-cols-1 max-w-md"
                           : "grid-cols-1 sm:grid-cols-2"
                       }`}
-                    >
-                      {rest.map((s, i) => (
-                        <AnimatedLinkCard
-                          key={s.href}
-                          href={s.href}
-                          delay={staggerDelay(i)}
-                          shine={false}
-                          className="group p-5"
-                        >
-                          <div className="flex items-start gap-3.5">
-                            <span className="w-10 h-10 rounded-xl bg-[#E8F4F8] flex items-center justify-center flex-shrink-0 transition-colors duration-200 group-hover:bg-[#00283C]">
-                                <s.Icon
-                                  className="w-5 h-5 text-[#0077A8] transition-colors duration-200 group-hover:text-white"
-                                  strokeWidth={1.8}
-                                />
-                            </span>
-                            <span className="flex-1 min-w-0">
-                              <span className="flex items-center justify-between gap-2">
-                                <span className="text-[15px] font-extrabold text-[#00283C] leading-snug">
-                                  {s.title}
-                                </span>
-                                <ArrowRight className="w-4 h-4 text-[#00283C]/25 transition-all duration-200 group-hover:text-[#0077A8] group-hover:translate-x-1 flex-shrink-0" />
-                              </span>
-                              <span className="block text-sm text-[#00283C]/55 leading-relaxed mt-1.5">
-                                {s.summary}
-                              </span>
-                            </span>
-                          </div>
-                        </AnimatedLinkCard>
-                      ))}
-                    </div>
+                      items={rest.map((s) => ({
+                        href: s.href,
+                        icon: s.Icon,
+                        title: s.title,
+                        description: s.summary,
+                      }))}
+                    />
                   )}
                 </div>
               );
