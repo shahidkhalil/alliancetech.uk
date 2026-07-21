@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, CheckCircle2, Loader2, Download } from "lucide-react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
 import type { AuditAnswers, BusinessGrowthReport } from "@/lib/businessAuditTypes";
+import { trackEvent } from "@/lib/analytics";
 import { printGrowthReport } from "./printReport";
 
 type LeadCaptureFormProps = {
@@ -20,10 +21,16 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "done" | "error">("idle");
   const [error, setError] = useState("");
+  const startedRef = useRef(false);
 
   const emailOk = !email.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const canSubmit = name.trim().length >= 2 && company.trim().length >= 2 && email.trim() && emailOk;
   const isSaving = status === "saving";
+  const markStarted = () => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    trackEvent("form_start", { form_id: "business_growth_audit" });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +63,14 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
         status: "new",
       });
       setStatus("done");
+      trackEvent("form_submit", {
+        form_id: "business_growth_audit",
+        business_type: answers.businessType,
+      });
+      trackEvent("generate_lead", {
+        lead_source: "business_growth_audit",
+        business_type: answers.businessType,
+      });
     } catch (err) {
       console.error("Lead save failed:", err);
       setStatus("error");
@@ -110,7 +125,10 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
         <div className="grid sm:grid-cols-2 gap-3">
           <input
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              markStarted();
+              setName(e.target.value);
+            }}
             placeholder="Your name *"
             required
             className="w-full px-4 py-3 rounded-xl border border-[#00283C]/12 text-sm text-[#00283C] outline-none focus:border-[#0077A8] focus:ring-2 focus:ring-[#00B4D8]/15"
@@ -118,7 +136,10 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
           />
           <input
             value={company}
-            onChange={(e) => setCompany(e.target.value)}
+            onChange={(e) => {
+              markStarted();
+              setCompany(e.target.value);
+            }}
             placeholder="Company name *"
             required
             className="w-full px-4 py-3 rounded-xl border border-[#00283C]/12 text-sm text-[#00283C] outline-none focus:border-[#0077A8] focus:ring-2 focus:ring-[#00B4D8]/15"
@@ -127,7 +148,10 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
         </div>
         <input
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            markStarted();
+            setEmail(e.target.value);
+          }}
           type="email"
           placeholder="Email address *"
           required
@@ -136,7 +160,10 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
         />
         <input
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => {
+            markStarted();
+            setPhone(e.target.value);
+          }}
           type="tel"
           placeholder="Phone (optional)"
           className="w-full px-4 py-3 rounded-xl border border-[#00283C]/12 text-sm text-[#00283C] outline-none focus:border-[#0077A8] focus:ring-2 focus:ring-[#00B4D8]/15"
@@ -170,7 +197,13 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
           </button>
           <button
             type="button"
-            onClick={() => printGrowthReport(report, answers)}
+            onClick={() => {
+              trackEvent("file_download", {
+                file_name: "business_growth_report",
+                business_type: answers.businessType,
+              });
+              printGrowthReport(report, answers);
+            }}
             className="inline-flex items-center justify-center gap-2 rounded-lg py-3.5 px-4 text-sm font-semibold text-[#00283C] bg-white border border-[#00283C]/15 hover:border-[#0077A8] hover:text-[#0077A8] transition-colors min-h-[48px]"
           >
             <Download className="w-4 h-4 flex-shrink-0" />

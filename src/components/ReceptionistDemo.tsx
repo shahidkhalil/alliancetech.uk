@@ -16,6 +16,7 @@ import {
   draftIsComplete,
 } from "@/lib/bookingExtract";
 
+import { trackEvent } from "@/lib/analytics";
 import { receptionistUrl } from "@/lib/receptionistEndpoints";
 const MAX_RECORD_SECONDS = 30;
 
@@ -224,6 +225,7 @@ export default function ReceptionistDemo() {
   const messagesRef = useRef(messages);
   messagesRef.current = messages;
   const draftRef = useRef(draft);
+  const bookingTrackedRef = useRef(false);
   draftRef.current = draft;
 
   useEffect(() => {
@@ -274,6 +276,8 @@ export default function ReceptionistDemo() {
 
   const openFormFor = (service: string) => {
     if (busy) return;
+    bookingTrackedRef.current = false;
+    trackEvent("appointment_booking_start", { channel: "chat" });
     setShowSuggestions(false);
     setDraft(mergeDraft({ ...EMPTY_DRAFT }, service ? { service } : {}));
     setMessages((prev) => [
@@ -331,7 +335,14 @@ export default function ReceptionistDemo() {
     }
 
     if (data.audio) playAudio(data.audio);
-    if (data.booking) setBooking(data.booking);
+    if (data.booking) {
+      setBooking(data.booking);
+      if (!bookingTrackedRef.current) {
+        bookingTrackedRef.current = true;
+        trackEvent("appointment_booking_complete", { channel: "chat" });
+        trackEvent("generate_lead", { lead_source: "ai_receptionist_chat" });
+      }
+    }
   };
 
   const send = async (text: string, opts?: { voice?: boolean; forceBooking?: boolean }) => {

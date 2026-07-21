@@ -22,6 +22,7 @@ import {
   saveFormDraft,
   submitCompleteLead,
 } from "@/lib/formTracking";
+import { trackEvent } from "@/lib/analytics";
 
 const clinicTypes = [
   { label: "Dental Clinic", icon: Stethoscope },
@@ -57,6 +58,7 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
   const formRef = useRef(form);
   const stepRef = useRef(step);
   const submittedRef = useRef(false);
+  const startedRef = useRef(false);
   const draftTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   formRef.current = form;
@@ -66,8 +68,16 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
     if (isOpen) {
       sessionIdRef.current = getFormSessionId();
       submittedRef.current = false;
+      startedRef.current = false;
+      trackEvent("form_view", { form_id: "consultation_form" });
     }
   }, [isOpen]);
+
+  const markStarted = () => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    trackEvent("form_start", { form_id: "consultation_form" });
+  };
 
   const persistDraft = useCallback(async () => {
     if (submittedRef.current) return;
@@ -91,11 +101,13 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    markStarted();
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     scheduleDraftSave();
   };
 
   const selectClinicType = (label: string) => {
+    markStarted();
     setForm((p) => ({ ...p, clinicType: label }));
     scheduleDraftSave();
   };
@@ -125,6 +137,14 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
     try {
       await submitCompleteLead(form, sessionIdRef.current);
       setStatus("success");
+      trackEvent("form_submit", {
+        form_id: "consultation_form",
+        clinic_type: form.clinicType,
+      });
+      trackEvent("generate_lead", {
+        lead_source: "consultation_form",
+        clinic_type: form.clinicType,
+      });
     } catch (err) {
       console.error("Lead save failed:", err);
       submittedRef.current = false;

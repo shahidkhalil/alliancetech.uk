@@ -10,6 +10,7 @@ import {
   extractBookingDraft,
   mergeDraft,
 } from "@/lib/bookingExtract";
+import { trackEvent } from "@/lib/analytics";
 import { realtimeTokenUrl, bookUrl } from "@/lib/receptionistEndpoints";
 
 const LIVE_SERVICES = [
@@ -358,8 +359,13 @@ export default function LiveCall({ onClose }: Props) {
   const draftRef = useRef<BookingDraft>({ ...EMPTY_DRAFT });
   const hangUpRef = useRef<() => void>(() => {});
   const pendingRecallRef = useRef<{ field: RecallField } | null>(null);
+  const bookingTrackedRef = useRef(false);
 
   draftRef.current = draft;
+
+  useEffect(() => {
+    trackEvent("appointment_booking_start", { channel: "voice" });
+  }, []);
 
   const applyFieldConfirm = useCallback((field: RecallField | "service" | "schedule", opts?: { emailSkipped?: boolean }) => {
     const flags = { ...confirmationFlagsRef.current };
@@ -761,6 +767,11 @@ export default function LiveCall({ onClose }: Props) {
                         output = { booked: true, reference: bd.reference };
                         const bookedLabel = `${payload.service} · ${payload.preferredTime} (Ref ${bd.reference})`;
                         setBooked(bookedLabel);
+                        if (!bookingTrackedRef.current) {
+                          bookingTrackedRef.current = true;
+                          trackEvent("appointment_booking_complete", { channel: "voice" });
+                          trackEvent("generate_lead", { lead_source: "ai_receptionist_voice" });
+                        }
                         // End call shortly after booking so Maya can finish her confirmation line.
                         setTimeout(() => hangUpRef.current(), 3000);
                       } else {

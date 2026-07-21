@@ -247,7 +247,7 @@ export function StaggerGrid({
       initial="hidden"
       {...(animateOnMount
         ? { animate: "visible" }
-        : { whileInView: "visible", viewport: { once: true, amount: 0.3, margin: "-50px" } })}
+        : { whileInView: "visible", viewport: { once: true, amount: 0.05, margin: "-50px" } })}
     >
       {items.map((child, i) => (
         <motion.div

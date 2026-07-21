@@ -15,6 +15,7 @@ import {
 import { useForm } from "@/context/FormContext";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
+import { trackEvent } from "@/lib/analytics";
 
 const AUDIT_ENDPOINT =
   process.env.NEXT_PUBLIC_AUDIT_ENDPOINT ||
@@ -190,10 +191,16 @@ function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string
   const [email, setEmail] = useState("");
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
+  const startedRef = useRef(false);
   const phoneOk = phone.replace(/\D/g, "").length >= 10;
   // Email is optional, but if provided it must look valid.
   const emailOk = email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const canSubmit = name.trim().length >= 2 && phoneOk && emailOk && !saving;
+  const markStarted = () => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    trackEvent("form_start", { form_id: "website_audit_gate" });
+  };
 
   if (done) return <p className="text-sm text-green-600 font-semibold">✓ Unlocked — here comes your full report…</p>;
 
@@ -206,20 +213,29 @@ function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string
       <div className="space-y-2">
         <input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            markStarted();
+            setName(e.target.value);
+          }}
           placeholder="Your name"
           className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-[#00283C] outline-none focus:border-[#0077A8]"
         />
         <input
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => {
+            markStarted();
+            setPhone(e.target.value);
+          }}
           placeholder="WhatsApp number (03XX…)"
           inputMode="tel"
           className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-[#00283C] outline-none focus:border-[#0077A8]"
         />
         <input
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            markStarted();
+            setEmail(e.target.value);
+          }}
           placeholder="Email (optional)"
           type="email"
           inputMode="email"
@@ -231,6 +247,8 @@ function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string
             setSaving(true);
             await onUnlock(name.trim(), phone.trim(), email.trim());
             setDone(true);
+            trackEvent("form_submit", { form_id: "website_audit_gate" });
+            trackEvent("generate_lead", { lead_source: "website_audit_gate" });
           }}
           className="btn-dark w-full py-2.5 text-sm disabled:opacity-40"
         >

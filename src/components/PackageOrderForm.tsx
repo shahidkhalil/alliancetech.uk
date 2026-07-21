@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
 import { usePackageOrder } from "@/context/PackageOrderContext";
+import { priceToNumber, trackEvent } from "@/lib/analytics";
 
 const ENDPOINT =
   process.env.NEXT_PUBLIC_PACKAGE_ORDER_ENDPOINT ||
@@ -14,6 +15,7 @@ export default function PackageOrderForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [reference, setReference] = useState("");
   const [error, setError] = useState("");
+  const startedRef = useRef(false);
 
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
   const phoneOk = form.phone.replace(/\D/g, "").length >= 10;
@@ -24,7 +26,20 @@ export default function PackageOrderForm() {
     setTimeout(() => {
       setStatus("idle"); setReference(""); setError("");
       setForm({ name: "", email: "", phone: "", clinicName: "", notes: "" });
+      startedRef.current = false;
     }, 300);
+  };
+
+  const updateField = (fieldName: keyof typeof form, value: string) => {
+    if (!startedRef.current && selection) {
+      startedRef.current = true;
+      trackEvent("form_start", {
+        form_id: "package_order",
+        service_id: selection.serviceId,
+        package_name: selection.packageName,
+      });
+    }
+    setForm((current) => ({ ...current, [fieldName]: value }));
   };
 
   const submit = async () => {
@@ -40,6 +55,19 @@ export default function PackageOrderForm() {
       if (!res.ok) throw new Error(data.error || "Something went wrong.");
       setReference(data.reference);
       setStatus("done");
+      const value = priceToNumber(selection.price);
+      trackEvent("form_submit", {
+        form_id: "package_order",
+        service_id: selection.serviceId,
+        package_name: selection.packageName,
+      });
+      trackEvent("generate_lead", {
+        lead_source: "package_order",
+        currency: "USD",
+        value,
+        service_id: selection.serviceId,
+        package_name: selection.packageName,
+      });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Please try again.");
       setStatus("error");
@@ -103,28 +131,28 @@ export default function PackageOrderForm() {
                   <div>
                     <label className={label}>Your name *</label>
                     <input className={field} value={form.name} placeholder="Dr. Jane Smith"
-                      onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                      onChange={(e) => updateField("name", e.target.value)} />
                   </div>
                   <div>
                     <label className={label}>Email * <span className="normal-case font-normal text-gray-300">(we send your confirmation here)</span></label>
                     <input className={field} type="email" value={form.email} placeholder="you@clinic.com"
-                      onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                      onChange={(e) => updateField("email", e.target.value)} />
                   </div>
                   <div>
                     <label className={label}>Phone / WhatsApp *</label>
                     <input className={field} inputMode="tel" value={form.phone} placeholder="(555) 123-4567"
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                      onChange={(e) => updateField("phone", e.target.value)} />
                   </div>
                   <div>
                     <label className={label}>Clinic name</label>
                     <input className={field} value={form.clinicName} placeholder="Bright Smile Dental"
-                      onChange={(e) => setForm({ ...form, clinicName: e.target.value })} />
+                      onChange={(e) => updateField("clinicName", e.target.value)} />
                   </div>
                   <div>
                     <label className={label}>Anything we should know?</label>
                     <textarea className={`${field} resize-none`} rows={2} value={form.notes}
                       placeholder="Timeline, goals, questions…"
-                      onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+                      onChange={(e) => updateField("notes", e.target.value)} />
                   </div>
 
                   {status === "error" && <p className="text-xs text-red-500 text-center">{error}</p>}
