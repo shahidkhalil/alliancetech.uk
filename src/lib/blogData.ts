@@ -18,9 +18,148 @@ export interface BlogPost {
   metaTitle?: string;
   metaDescription?: string;
   keywords?: string[];
+  serviceLink?: {
+    href: string;
+    label: string;
+    description: string;
+  };
 }
 
 export const blogPosts: BlogPost[] = [
+  {
+    slug: "free-business-growth-audit-houston-texas-clinics",
+    title: "Free Business Growth Audit for Clinics in Houston and Texas",
+    metaTitle: "Free Clinic Growth Audit Houston TX | AI Business Growth Plan",
+    metaDescription:
+      "Take a free AI business growth audit for your Houston or Texas clinic. Find marketing gaps, patient-growth opportunities, and practical next steps in minutes.",
+    keywords: [
+      "free business growth audit Houston",
+      "clinic growth audit Houston TX",
+      "healthcare marketing audit Texas",
+      "dental clinic business audit Houston",
+      "medical practice growth strategy Texas",
+      "aesthetic clinic marketing audit Houston",
+      "AI business audit for Texas clinics",
+    ],
+    serviceLink: {
+      href: "/business-growth-audit",
+      label: "Start your free Business Growth Audit",
+      description:
+        "Answer five quick questions and receive an AI-generated growth score, tailored opportunities, and a practical action plan for your clinic.",
+    },
+    excerpt:
+      "A business growth audit shows Houston and Texas clinics where they are losing visibility, inquiries, and appointments—and which improvements can create the greatest impact.",
+    location: "Houston",
+    state: "Texas",
+    readTime: "7 min read",
+    date: "July 21, 2026",
+    imageGradient: "linear-gradient(135deg, #00283C 0%, #005C7A 50%, #00B4D8 100%)",
+    content: [],
+    sections: [
+      {
+        heading: "What is a business growth audit for Houston clinics?",
+        paragraphs: [
+          "A business growth audit is a structured review of the systems that help a Houston clinic attract, convert, and retain patients. It looks beyond surface-level website traffic to identify gaps in marketing, local visibility, lead response, appointment booking, and follow-up. The goal is to show what is slowing growth and which action should come first.",
+          "For dental practices, medical clinics, and aesthetic businesses across Texas, this matters because patient growth rarely depends on one channel. A clinic may rank well on Google but lose inquiries through missed calls, or run successful ads that lead to a slow website with no simple booking path. An audit connects these parts into one clear picture.",
+        ],
+      },
+      {
+        heading: "What does the free Texas clinic growth audit evaluate?",
+        paragraphs: [
+          "Alliance Tech’s free AI Business Growth Audit asks five focused questions about your business type, current goals, marketing challenges, and growth priorities. Your answers are analyzed to produce a tailored growth score, identify important gaps, and highlight opportunities for your Houston or Texas clinic.",
+          "The report is designed to give useful direction without requiring technical marketing knowledge. It summarizes your strongest opportunities, recommends relevant services, and provides an action plan you can use to decide what to improve now, what to measure, and what can wait.",
+        ],
+      },
+      {
+        heading: "Common patient-growth gaps in Houston and Texas",
+        paragraphs: [
+          "Many Houston clinics invest in marketing before fixing conversion problems. Common gaps include weak Google Maps visibility, incomplete treatment pages, poor mobile performance, unclear calls to action, unanswered phone calls, slow responses to online inquiries, and no follow-up process for patients who do not book immediately.",
+          "A healthcare marketing audit can also expose measurement gaps. If a clinic tracks clicks but not phone calls, consultation requests, or completed appointments, it cannot tell which campaigns create revenue. Better tracking helps owners move budget toward the services and locations that produce real patients.",
+        ],
+      },
+      {
+        heading: "How to use your clinic growth audit results",
+        paragraphs: [
+          "Start with the highest-impact bottleneck rather than trying to change everything at once. If patients cannot find the clinic, prioritize local SEO and Google Business Profile improvements. If inquiries arrive but do not become appointments, improve response times, booking options, and follow-up before spending more on advertising.",
+          "Turn each recommendation into a measurable action. Examples include increasing qualified calls from Google Maps, improving landing-page conversion rates, responding to every lead within five minutes, or reducing missed appointments with automated reminders. Review progress regularly and update the plan as your clinic grows.",
+        ],
+      },
+      {
+        heading: "Get a tailored Houston clinic growth strategy in minutes",
+        paragraphs: [
+          "The free Business Growth Audit takes about two minutes and does not require a credit card. After answering five questions, you receive an AI-generated report with a growth score, tailored opportunities, recommended services, and practical next steps.",
+          "Whether you run a dental clinic, medical practice, med spa, or another patient-focused business in Houston or elsewhere in Texas, the audit can help you understand where growth is being lost and where your next investment is most likely to make a difference.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "how-clinics-get-more-patients-houston-texas",
+    title: "How Clinics Can Get More Patients in Houston and Across Texas",
+    metaTitle: "How to Get More Clinic Patients in Houston & Texas | Growth Guide",
+    metaDescription:
+      "Learn how dental, medical, and aesthetic clinics can attract more patients in Houston and across Texas using local SEO, Google Maps, reviews, paid ads, and faster booking.",
+    keywords: [
+      "how to get more patients Houston",
+      "clinic marketing Houston Texas",
+      "get more patients for clinic Texas",
+      "medical clinic marketing Houston",
+      "dental patient growth Texas",
+      "aesthetic clinic marketing Houston",
+      "local SEO for clinics Texas",
+    ],
+    serviceLink: {
+      href: "/digital-marketing-for-clinics",
+      label: "Explore our clinic marketing services",
+      description:
+        "See how Alliance Tech combines local SEO, paid advertising, conversion-focused websites, and automated follow-up to help clinics attract more patients.",
+    },
+    excerpt:
+      "A practical patient-growth plan for Houston and Texas clinics—covering Google Maps, local SEO, reviews, paid ads, and booking systems that turn searches into appointments.",
+    location: "Houston",
+    state: "Texas",
+    readTime: "8 min read",
+    date: "July 21, 2026",
+    imageGradient: "linear-gradient(135deg, #00283C 0%, #0077A8 55%, #00B4D8 100%)",
+    content: [],
+    sections: [
+      {
+        heading: "How to get more patients for your Houston clinic",
+        paragraphs: [
+          "Clinics that want more patients in Houston, Texas need to be visible and easy to book at the moment someone searches for care. Most patients begin with a local query such as “dentist near me,” “urgent care Houston,” or “med spa in Sugar Land.” They compare Google Maps listings, patient reviews, photos, services, and appointment availability before contacting a clinic.",
+          "Effective clinic marketing in Houston starts with a focused service area. Instead of targeting all of Texas with one broad campaign, build visibility in the neighborhoods and suburbs your clinic can realistically serve, such as Memorial, Katy, Sugar Land, Pearland, The Woodlands, or Cypress. Strong local relevance usually generates better patient leads than generic statewide advertising.",
+        ],
+      },
+      {
+        heading: "Improve local SEO and Google Maps rankings in Houston",
+        paragraphs: [
+          "Local SEO helps Houston clinics appear when nearby patients search for a treatment. Complete every section of your Google Business Profile, select accurate service categories, upload recent clinic and team photos, and keep your name, address, and phone number consistent across directories. Publish useful updates and create dedicated website pages for your main treatments and service areas instead of placing everything on one general page.",
+          "Patient reviews are one of the strongest trust signals in local search. Ask satisfied patients for feedback shortly after their visit and respond professionally to every review. A steady flow of genuine, detailed reviews is more valuable than collecting many reviews in one short burst and then stopping.",
+        ],
+      },
+      {
+        heading: "Build a clinic website that converts visitors into patients",
+        paragraphs: [
+          "A clinic website should load quickly on mobile, explain treatments in plain language, show real trust signals, and make the next step obvious. Place call, text, and online booking options near the top of every important page. Create focused landing pages for high-value services such as dental implants, Invisalign, cosmetic injectables, weight management, or urgent appointments in Houston.",
+          "Speed matters after a patient contacts you. Many prospects message several clinics and book with the first one that provides a helpful answer. An AI receptionist, live chat, or well-managed phone team can answer common questions, qualify inquiries, and schedule appointments after hours so leads do not go cold overnight.",
+        ],
+      },
+      {
+        heading: "Use healthcare marketing and paid ads to reach Texas patients",
+        paragraphs: [
+          "Google Ads can reach Texas patients already searching for a treatment, while Facebook and Instagram are useful for creating demand for aesthetic and elective services. Send each campaign to a relevant landing page, track phone calls and completed bookings, and exclude locations your clinic cannot serve. Measuring clicks alone can hide campaigns that generate attention but no patients.",
+          "Growth also depends on follow-up. Use text or email reminders for unbooked inquiries, appointment confirmations, recalls, and missed appointments. Start with one service and one local market, measure the cost per booked patient, then expand what works. Clinics that combine local visibility, strong reviews, fast response, and consistent follow-up build a repeatable patient pipeline instead of relying on occasional promotions.",
+        ],
+      },
+      {
+        heading: "Build a patient-growth plan for your Houston clinic",
+        paragraphs: [
+          "Begin by auditing your Google Maps presence, website conversion path, response times, and tracking. Fix the biggest leak first—whether that is weak rankings, slow mobile performance, unanswered calls, or poor follow-up—before adding more advertising spend.",
+          "Alliance Tech helps dental, medical, and aesthetic clinics in Houston and across Texas improve local visibility and automate patient booking. Run our free business growth audit to identify the clearest opportunities for attracting and converting more patients.",
+        ],
+      },
+    ],
+  },
   {
     slug: "houston-ai-receptionist-for-clinics",
     title: "AI Receptionist for Houston Clinics: Never Miss Another Patient Call",

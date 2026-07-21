@@ -153,7 +153,7 @@ export function ServiceCardAccentBar({ layoutId = "activeCardBorder" }: { layout
     <motion.div
       layoutId={layoutId}
       className="pointer-events-none absolute left-0 top-4 bottom-4 w-[3px] rounded-full bg-gradient-to-b from-[#0077A8] via-[#00B4D8] to-[#7DD3EA] z-[3]"
-      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+      transition={{ duration: 0 }}
     />
   );
 }
@@ -237,7 +237,7 @@ export function StaggerGrid({
   className?: string;
   animateOnMount?: boolean;
 }) {
-  const { containerVariants, itemVariants } = useCardMotion();
+  const { containerVariants, itemVariants, viewport } = useCardMotion();
   const items = Children.toArray(children);
 
   return (
@@ -247,7 +247,7 @@ export function StaggerGrid({
       initial="hidden"
       {...(animateOnMount
         ? { animate: "visible" }
-        : { whileInView: "visible", viewport: { once: true, amount: 0.05, margin: "-50px" } })}
+        : { whileInView: "visible", viewport })}
     >
       {items.map((child, i) => (
         <motion.div

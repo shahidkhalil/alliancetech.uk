@@ -877,3 +877,26 @@ body {
   animation: blink 1s step-end infinite;
   vertical-align: text-bottom;
 }
+
+/* Keep shared website cards static. */
+.card-motion,
+.card-motion::before,
+.card-motion::after,
+.card-motion *,
+.card-motion *::before,
+.card-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.card-motion:hover,
+.card-motion:hover::after,
+.card-motion:hover .card-deco-arc,
+.card-motion:hover .card-arrow-circle,
+.card-motion:hover h3 {
+  transform: none !important;
+}
+
+.card-motion .card-shine-sweep::after {
+  display: none;
+}

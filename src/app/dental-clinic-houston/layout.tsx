@@ -1,16 +1,29 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dental Clinic Marketing in Houston | Alliance Tech",
+  title: "AI Automation for Dental Clinics Houston TX | AI Receptionist",
   description:
-    "Helping dental clinics in Houston rank #1 on Google Maps, run targeted local ads, and book more patients with WhatsApp AI automation.",
-  keywords: ["dental clinic Houston", "dentist marketing Houston", "dental clinic SEO Houston", "AI receptionist Houston", "dental marketing Texas", "WhatsApp automation dental Houston"],
+    "AI automation for Houston dental clinics: 24/7 AI receptionist, WhatsApp responses, lead follow-up, appointment workflows, and conversion tracking.",
+  keywords: [
+    "AI automation for dental clinics Houston",
+    "AI receptionist Houston TX",
+    "dental AI receptionist Houston",
+    "dental appointment automation Texas",
+    "WhatsApp automation for dentists Houston",
+    "automated dental lead follow up",
+    "AI patient booking Houston",
+    "dental clinic automation Texas",
+    "24/7 dental receptionist Houston",
+  ],
   alternates: { canonical: "/dental-clinic-houston" },
   openGraph: {
-    title: "Dental Clinic Marketing in Houston | Alliance Tech",
-    description: "Helping dental clinics in Houston rank #1 on Google Maps and book more patients.",
-    url: "/dental-clinic-houston",
+    title: "AI Automation for Houston Dental Clinics | Alliance Tech",
+    description:
+      "AI receptionist, WhatsApp automation, lead follow-up, and appointment workflows for dental clinics in Houston, TX.",
+    url: "https://alliancetechltd.com/dental-clinic-houston",
     type: "website",
+    locale: "en_US",
+    siteName: "Alliance Tech",
   },
 };
 

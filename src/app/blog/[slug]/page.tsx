@@ -143,6 +143,20 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                   </p>
                 ))}
           </div>
+
+          {post.serviceLink && (
+            <aside className="mt-10 rounded-2xl border border-[#0077A8]/15 bg-[#F0FAFD] p-6">
+              <p className="text-sm leading-relaxed text-gray-600">
+                {post.serviceLink.description}
+              </p>
+              <a
+                href={post.serviceLink.href}
+                className="mt-4 inline-flex items-center font-bold text-[#0077A8] hover:text-[#00283C] transition-colors"
+              >
+                {post.serviceLink.label} →
+              </a>
+            </aside>
+          )}
         </div>
       </article>
 

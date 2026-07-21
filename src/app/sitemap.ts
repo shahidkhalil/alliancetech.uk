@@ -21,6 +21,8 @@ const routes = [
   { path: "/portfolio", priority: 0.7 },
   { path: "/pricing", priority: 0.9 },
   { path: "/blog", priority: 0.8 },
+  { path: "/blog/free-business-growth-audit-houston-texas-clinics", priority: 0.8 },
+  { path: "/blog/how-clinics-get-more-patients-houston-texas", priority: 0.8 },
   { path: "/blog/houston-ai-receptionist-for-clinics", priority: 0.8 },
   { path: "/blog/houston-ai-automation-patient-booking", priority: 0.8 },
   { path: "/blog/houston-dental-clinic-marketing", priority: 0.7 },

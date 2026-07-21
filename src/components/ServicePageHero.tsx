@@ -9,9 +9,17 @@ interface Props {
   highlight: string;
   subheadline: string;
   ctaText?: string;
+  ctaHref?: string;
 }
 
-export default function ServicePageHero({ badge, headline, highlight, subheadline, ctaText = "Book Free Consultation" }: Props) {
+export default function ServicePageHero({
+  badge,
+  headline,
+  highlight,
+  subheadline,
+  ctaText = "Book Free Consultation",
+  ctaHref,
+}: Props) {
   const { openForm } = useForm();
 
   return (
@@ -41,9 +49,15 @@ export default function ServicePageHero({ badge, headline, highlight, subheadlin
           <p className="text-lg text-gray-500 max-w-2xl mb-10 leading-relaxed">{subheadline}</p>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <button onClick={openForm} className="btn-dark px-8 py-4 text-base">
-              {ctaText}
-            </button>
+            {ctaHref ? (
+              <a href={ctaHref} className="btn-dark px-8 py-4 text-base">
+                {ctaText}
+              </a>
+            ) : (
+              <button onClick={openForm} className="btn-dark px-8 py-4 text-base">
+                {ctaText}
+              </button>
+            )}
             <a href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-[#00283C] transition-colors">
               <ArrowLeft className="w-4 h-4" /> Back to Home
             </a>
