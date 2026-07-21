@@ -1,7 +1,17 @@
 "use client";
+import { useEffect } from "react";
 import PageWrapper from "@/components/PageWrapper";
+import { trackEvent } from "@/lib/analytics";
 
 export default function NotFound() {
+  useEffect(() => {
+    trackEvent("error", {
+      error_type: "404",
+      page: window.location.pathname,
+      fatal: false,
+    });
+  }, []);
+
   return (
     <PageWrapper>
       <section className="pt-40 pb-24 bg-white text-center">

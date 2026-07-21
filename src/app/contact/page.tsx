@@ -90,7 +90,7 @@ export default function Contact() {
             <div>
               <h2 className="text-xl font-bold text-[#00283C] mb-3">Free Clinic Audit</h2>
               <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                In 30 minutes, we'll review your current online presence, identify exactly where you're losing patients to competitors, and hand you a custom growth plan. Completely free, no obligation.
+                In 30 minutes, we&apos;ll review your current online presence, identify exactly where you&apos;re losing patients to competitors, and hand you a custom growth plan. Completely free, no obligation.
               </p>
               <ul className="space-y-3 mb-8">
                 {[

@@ -1,7 +1,9 @@
 "use client";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useForm } from "@/context/FormContext";
 import { ArrowLeft } from "lucide-react";
+import { BreadcrumbSchema, ServiceSchema } from "@/components/StructuredData";
 
 interface Props {
   badge: string;
@@ -21,9 +23,18 @@ export default function ServicePageHero({
   ctaHref,
 }: Props) {
   const { openForm } = useForm();
+  const pathname = usePathname();
 
   return (
-    <section className="relative pt-32 pb-16 bg-white border-b border-gray-100 overflow-hidden">
+    <>
+      <ServiceSchema name={`${headline} ${highlight}`} description={subheadline} path={pathname} />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", path: "/" },
+          { name: `${headline} ${highlight}`, path: pathname },
+        ]}
+      />
+      <section className="relative pt-32 pb-16 bg-white border-b border-gray-100 overflow-hidden">
       {/* Subtle grid */}
       <div className="absolute inset-0 pointer-events-none" style={{
         backgroundImage: "linear-gradient(rgba(0,40,60,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,40,60,0.035) 1px, transparent 1px)",
@@ -50,11 +61,21 @@ export default function ServicePageHero({
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {ctaHref ? (
-              <a href={ctaHref} className="btn-dark px-8 py-4 text-base">
+              <a
+                href={ctaHref}
+                data-analytics-label={ctaText}
+                data-analytics-location="service_hero"
+                className="btn-dark px-8 py-4 text-base"
+              >
                 {ctaText}
               </a>
             ) : (
-              <button onClick={openForm} className="btn-dark px-8 py-4 text-base">
+              <button
+                onClick={openForm}
+                data-analytics-label="book_consultation"
+                data-analytics-location="service_hero"
+                className="btn-dark px-8 py-4 text-base"
+              >
                 {ctaText}
               </button>
             )}
@@ -64,6 +85,7 @@ export default function ServicePageHero({
           </div>
         </motion.div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

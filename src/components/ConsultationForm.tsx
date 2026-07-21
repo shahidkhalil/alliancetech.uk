@@ -22,7 +22,7 @@ import {
   saveFormDraft,
   submitCompleteLead,
 } from "@/lib/formTracking";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackFormSubmit } from "@/lib/analytics";
 
 const clinicTypes = [
   { label: "Dental Clinic", icon: Stethoscope },
@@ -121,14 +121,29 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
 
   const handleClose = () => {
     if (draftTimerRef.current) clearTimeout(draftTimerRef.current);
+    if (startedRef.current && !submittedRef.current) {
+      trackEvent("form_abandon", {
+        form_id: "consultation_form",
+        form_step: stepRef.current,
+      });
+    }
     void persistDraft();
     onClose();
     setTimeout(reset, 300);
   };
 
-  const canContinue = step === 0 ? !!form.clinicType : !!form.name && !!form.phone;
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
+  const phoneOk = form.phone.replace(/\D/g, "").length >= 7;
+  const canContinue =
+    step === 0
+      ? !!form.clinicType
+      : form.name.trim().length >= 2 && phoneOk && emailOk;
 
   const handleSubmit = async () => {
+    if (!form.name.trim() || !phoneOk || !emailOk) {
+      setErrorMsg("Please enter your name, phone number, and a valid email address.");
+      return;
+    }
     setStatus("loading");
     setErrorMsg("");
     submittedRef.current = true;
@@ -137,6 +152,10 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
     try {
       await submitCompleteLead(form, sessionIdRef.current);
       setStatus("success");
+      trackFormSubmit("consultation_form", {
+        service: form.clinicType,
+        lead_source: "consultation_form",
+      });
       trackEvent("form_submit", {
         form_id: "consultation_form",
         clinic_type: form.clinicType,
@@ -327,7 +346,8 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                             type="email"
                             value={form.email}
                             onChange={handleChange}
-                            placeholder="Email address (optional)"
+                            required
+                            placeholder="Email address"
                             className="w-full pl-9 pr-3 py-3 rounded-xl text-sm text-white placeholder-white/30 outline-none focus:border-brand-blue transition-colors"
                             style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
                           />

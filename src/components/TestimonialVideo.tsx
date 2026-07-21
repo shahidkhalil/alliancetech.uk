@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { Play, Quote } from "lucide-react";
+import { trackEvent, trackVideoPlay } from "@/lib/analytics";
 
 const VIDEO_URL =
   "https://res.cloudinary.com/jzmvisx4/video/upload/v1784334648/f8612e1dab88f9fc9d638d614a86a702_jknnlz.mp4";
@@ -11,6 +12,8 @@ const POSTER_URL =
 export default function TestimonialVideo() {
   const ref = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const startedRef = useRef(false);
+  const milestonesRef = useRef(new Set<number>());
   const [activated, setActivated] = useState(false);
   const [playing, setPlaying] = useState(false);
 
@@ -19,6 +22,28 @@ export default function TestimonialVideo() {
     // Play after src mounts
     requestAnimationFrame(() => {
       void videoRef.current?.play();
+    });
+  };
+
+  const onVideoPlay = () => {
+    setPlaying(true);
+    if (!startedRef.current) {
+      startedRef.current = true;
+      trackVideoPlay("client_testimonial");
+    }
+  };
+
+  const onTimeUpdate = () => {
+    const video = videoRef.current;
+    if (!video?.duration) return;
+    const percent = Math.round((video.currentTime / video.duration) * 100);
+    [25, 50, 75].forEach((milestone) => {
+      if (percent >= milestone && !milestonesRef.current.has(milestone)) {
+        milestonesRef.current.add(milestone);
+        trackEvent(`video_${milestone}` as "video_25" | "video_50" | "video_75", {
+          video_title: "client_testimonial",
+        });
+      }
     });
   };
 
@@ -89,8 +114,12 @@ export default function TestimonialVideo() {
                   playsInline
                   autoPlay
                   preload="none"
-                  onPlay={() => setPlaying(true)}
+                  onPlay={onVideoPlay}
                   onPause={() => setPlaying(false)}
+                  onTimeUpdate={onTimeUpdate}
+                  onEnded={() =>
+                    trackEvent("video_complete", { video_title: "client_testimonial" })
+                  }
                   className="relative h-full w-auto max-w-full block shadow-xl"
                   poster={POSTER_URL}
                 >

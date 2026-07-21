@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, ArrowRight, BarChart3, Target, Zap } from "lucide-react";
 import QuestionCard from "./QuestionCard";
@@ -14,6 +14,7 @@ import {
   type BusinessGrowthReport,
 } from "@/lib/businessAuditTypes";
 import { fetchBusinessGrowthReport } from "@/lib/businessAuditApi";
+import { trackDemoComplete, trackDemoStart, trackEvent } from "@/lib/analytics";
 
 const MIN_LOADING_MS = 3200;
 
@@ -25,6 +26,7 @@ export default function BusinessAudit() {
   const [error, setError] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const auditStartedAtRef = useRef(0);
 
   const currentQuestion = AUDIT_QUESTIONS[questionIndex];
   const currentValue = answers[currentQuestion?.id ?? "businessType"] ?? "";
@@ -58,7 +60,15 @@ export default function BusinessAudit() {
       }
       setReport(result);
       setStep("report");
+      trackDemoComplete({
+        demo_type: "business_growth_audit",
+        duration: Math.round((Date.now() - auditStartedAtRef.current) / 1000),
+      });
     } catch (err) {
+      trackEvent("api_error", {
+        api_name: "business_growth_audit",
+        error_message: err instanceof Error ? err.message : "Growth audit failed",
+      });
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setStep("questions");
       setQuestionIndex(AUDIT_QUESTIONS.length - 1);
@@ -131,7 +141,11 @@ export default function BusinessAudit() {
 
                 <button
                   type="button"
-                  onClick={() => setStep("questions")}
+                  onClick={() => {
+                    auditStartedAtRef.current = Date.now();
+                    trackDemoStart({ demo_type: "business_growth_audit" });
+                    setStep("questions");
+                  }}
                   className="btn-dark inline-flex items-center gap-2 px-8 py-4 text-base"
                 >
                   Start Free Audit

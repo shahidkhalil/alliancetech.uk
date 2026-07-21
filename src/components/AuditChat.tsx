@@ -15,7 +15,12 @@ import {
 import { useForm } from "@/context/FormContext";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
-import { trackEvent } from "@/lib/analytics";
+import {
+  trackDemoComplete,
+  trackDemoStart,
+  trackEvent,
+  trackFormSubmit,
+} from "@/lib/analytics";
 
 const AUDIT_ENDPOINT =
   process.env.NEXT_PUBLIC_AUDIT_ENDPOINT ||
@@ -192,9 +197,8 @@ function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const startedRef = useRef(false);
-  const phoneOk = phone.replace(/\D/g, "").length >= 10;
-  // Email is optional, but if provided it must look valid.
-  const emailOk = email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const phoneOk = phone.trim() === "" || phone.replace(/\D/g, "").length >= 7;
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const canSubmit = name.trim().length >= 2 && phoneOk && emailOk && !saving;
   const markStarted = () => {
     if (startedRef.current) return;
@@ -221,25 +225,26 @@ function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string
           className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-[#00283C] outline-none focus:border-[#0077A8]"
         />
         <input
-          value={phone}
-          onChange={(e) => {
-            markStarted();
-            setPhone(e.target.value);
-          }}
-          placeholder="WhatsApp number (03XX…)"
-          inputMode="tel"
-          className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-[#00283C] outline-none focus:border-[#0077A8]"
-        />
-        <input
           value={email}
           onChange={(e) => {
             markStarted();
             setEmail(e.target.value);
           }}
-          placeholder="Email (optional)"
+          placeholder="Email address"
           type="email"
           inputMode="email"
-          className={`w-full px-3 py-2.5 rounded-lg border text-sm text-[#00283C] outline-none focus:border-[#0077A8] ${emailOk ? "border-gray-200" : "border-red-300"}`}
+          required
+          className={`w-full px-3 py-2.5 rounded-lg border text-sm text-[#00283C] outline-none focus:border-[#0077A8] ${email.trim() === "" || emailOk ? "border-gray-200" : "border-red-300"}`}
+        />
+        <input
+          value={phone}
+          onChange={(e) => {
+            markStarted();
+            setPhone(e.target.value);
+          }}
+          placeholder="Phone / WhatsApp number (optional)"
+          inputMode="tel"
+          className={`w-full px-3 py-2.5 rounded-lg border text-sm text-[#00283C] outline-none focus:border-[#0077A8] ${phoneOk ? "border-gray-200" : "border-red-300"}`}
         />
         <button
           disabled={!canSubmit}
@@ -247,6 +252,7 @@ function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string
             setSaving(true);
             await onUnlock(name.trim(), phone.trim(), email.trim());
             setDone(true);
+            trackFormSubmit("website_audit_gate", { lead_source: "website_audit_gate" });
             trackEvent("form_submit", { form_id: "website_audit_gate" });
             trackEvent("generate_lead", { lead_source: "website_audit_gate" });
           }}
@@ -255,7 +261,14 @@ function LeadGate({ onUnlock, onSkip }: { onUnlock: (name: string, phone: string
           {saving ? "Unlocking…" : "Show My Full Report →"}
         </button>
       </div>
-      <button onClick={() => { setDone(true); onSkip(); }} className="mt-2 text-[11px] text-gray-400 hover:text-gray-600 underline">
+      <button
+        onClick={() => {
+          trackEvent("form_abandon", { form_id: "website_audit_gate", form_step: "lead_gate" });
+          setDone(true);
+          onSkip();
+        }}
+        className="mt-2 text-[11px] text-gray-400 hover:text-gray-600 underline"
+      >
         Maybe later — just show me a summary
       </button>
       <p className="mt-2 text-[10px] text-gray-300">🔒 Private. No spam, ever.</p>
@@ -486,6 +499,8 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
   }, [messages]);
 
   const runAudit = async (rawUrl: string) => {
+    const auditStartedAt = Date.now();
+    trackDemoStart({ demo_type: "website_audit", audit_mode: mode });
     setBusy(true);
     push({ from: "user", kind: "text", text: rawUrl });
     push({ from: "bot", kind: "typing" });
@@ -524,6 +539,11 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
 
       const report: Report = { ...data.report, competitorData: data.competitors || null, gmbData: data.gmb || null };
       const url: string = data.url || rawUrl;
+      trackDemoComplete({
+        demo_type: "website_audit",
+        audit_mode: mode,
+        duration: Math.round((Date.now() - auditStartedAt) / 1000),
+      });
 
       replaceTyping({ from: "bot", kind: "text", text: "Done! Here's what I found. 👇" });
 
@@ -553,7 +573,7 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
         fullSteps.forEach((m, i) => setTimeout(() => push(m), 1600 + i * 1000));
         setTimeout(() => setBusy(false), 1600 + fullSteps.length * 1000);
       } else {
-        // Peek-and-gate: score + one teaser issue, then ask for name+WhatsApp.
+        // Peek-and-gate: score + one teaser issue, then ask for name and email.
         pendingRef.current = { steps: fullSteps, report, url };
         setTimeout(() => push({ from: "bot", kind: "teaser", report }), 1600);
         setTimeout(() => push({ from: "bot", kind: "gate" }), 2400);
@@ -561,6 +581,10 @@ export default function AuditChat({ heightClass = "h-[520px]" }: { heightClass?:
       }
     } catch (err) {
       clearInterval(progressTimer);
+      trackEvent("api_error", {
+        api_name: "website_audit",
+        error_message: err instanceof Error ? err.message : "Audit failed",
+      });
       replaceTyping({
         from: "bot",
         kind: "text",

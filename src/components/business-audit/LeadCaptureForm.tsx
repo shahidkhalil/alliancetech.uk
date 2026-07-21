@@ -6,7 +6,7 @@ import { Mail, CheckCircle2, Loader2, Download } from "lucide-react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getDb } from "@/lib/firebase";
 import type { AuditAnswers, BusinessGrowthReport } from "@/lib/businessAuditTypes";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, trackFormSubmit } from "@/lib/analytics";
 import { printGrowthReport } from "./printReport";
 
 type LeadCaptureFormProps = {
@@ -63,6 +63,11 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
         status: "new",
       });
       setStatus("done");
+      trackFormSubmit("business_growth_audit", {
+        service: "business_growth_audit",
+        lead_source: "business_growth_audit",
+        business_type: answers.businessType,
+      });
       trackEvent("form_submit", {
         form_id: "business_growth_audit",
         business_type: answers.businessType,
@@ -73,6 +78,10 @@ export default function LeadCaptureForm({ answers, report }: LeadCaptureFormProp
       });
     } catch (err) {
       console.error("Lead save failed:", err);
+      trackEvent("api_error", {
+        api_name: "business_growth_audit_lead",
+        error_message: err instanceof Error ? err.message : "Lead save failed",
+      });
       setStatus("error");
       const msg = err instanceof Error ? err.message : "";
       setError(

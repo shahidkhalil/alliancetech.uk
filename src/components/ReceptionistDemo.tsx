@@ -16,7 +16,7 @@ import {
   draftIsComplete,
 } from "@/lib/bookingExtract";
 
-import { trackEvent } from "@/lib/analytics";
+import { trackDemoComplete, trackDemoStart, trackEvent } from "@/lib/analytics";
 import { receptionistUrl } from "@/lib/receptionistEndpoints";
 const MAX_RECORD_SECONDS = 30;
 
@@ -226,7 +226,19 @@ export default function ReceptionistDemo() {
   messagesRef.current = messages;
   const draftRef = useRef(draft);
   const bookingTrackedRef = useRef(false);
+  const demoStartedRef = useRef(false);
+  const demoStartedAtRef = useRef(0);
+  const messagesSentRef = useRef(0);
+  const voiceUsedRef = useRef(false);
   draftRef.current = draft;
+
+  const markDemoStarted = (voiceUsed = false) => {
+    if (voiceUsed) voiceUsedRef.current = true;
+    if (demoStartedRef.current) return;
+    demoStartedRef.current = true;
+    demoStartedAtRef.current = Date.now();
+    trackDemoStart({ demo_type: "ai_receptionist_chat", voice_used: voiceUsed });
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -339,6 +351,12 @@ export default function ReceptionistDemo() {
       setBooking(data.booking);
       if (!bookingTrackedRef.current) {
         bookingTrackedRef.current = true;
+        trackDemoComplete({
+          demo_type: "ai_receptionist_chat",
+          voice_used: voiceUsedRef.current,
+          messages_sent: messagesSentRef.current,
+          duration: Math.round((Date.now() - demoStartedAtRef.current) / 1000),
+        });
         trackEvent("appointment_booking_complete", { channel: "chat" });
         trackEvent("generate_lead", { lead_source: "ai_receptionist_chat" });
       }
@@ -348,6 +366,8 @@ export default function ReceptionistDemo() {
   const send = async (text: string, opts?: { voice?: boolean; forceBooking?: boolean }) => {
     const v = text.trim();
     if (!v || busy) return;
+    markDemoStarted(Boolean(opts?.voice));
+    messagesSentRef.current += 1;
     setInput("");
     setShowSuggestions(false);
 
@@ -389,6 +409,10 @@ export default function ReceptionistDemo() {
       if (!res.ok) throw new Error(data.error || "Something went wrong");
       handleResponse(data, next);
     } catch (err) {
+      trackEvent("api_error", {
+        api_name: "ai_receptionist_chat",
+        error_message: err instanceof Error ? err.message : "Chat request failed",
+      });
       setMessages((prev) => [...prev, { role: "assistant", content: `😕 ${err instanceof Error ? err.message : "Please try again."}` }]);
     } finally {
       setBusy(false);
@@ -408,6 +432,7 @@ export default function ReceptionistDemo() {
 
   const startRecording = async () => {
     if (busy || recState !== "idle") return;
+    markDemoStarted(true);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
@@ -459,6 +484,10 @@ export default function ReceptionistDemo() {
           handleResponse(data, pending);
           setBusy(false);
         } catch (err) {
+          trackEvent("api_error", {
+            api_name: "ai_receptionist_voice_note",
+            error_message: err instanceof Error ? err.message : "Voice note failed",
+          });
           setRecState("idle");
           setBusy(false);
           setMessages((prev) => [...prev, { role: "assistant", content: `🎤 ${err instanceof Error ? err.message : "Couldn't process the voice note."}` }]);
@@ -476,6 +505,10 @@ export default function ReceptionistDemo() {
         });
       }, 1000);
     } catch {
+      trackEvent("demo_error", {
+        demo_type: "ai_receptionist_chat",
+        error_context: "microphone_permission",
+      });
       setMessages((prev) => [...prev, { role: "assistant", content: "🎤 I couldn't access your microphone — please allow mic access, or type your message instead." }]);
     }
   };

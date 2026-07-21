@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 interface FormContextType {
   openForm: () => void;
@@ -15,9 +16,16 @@ const FormContext = createContext<FormContextType>({
 
 export function FormProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const openForm = () => {
+    trackEvent("book_consultation", {
+      stage: "open",
+      page: window.location.pathname,
+    });
+    setIsOpen(true);
+  };
   return (
     <FormContext.Provider
-      value={{ isOpen, openForm: () => setIsOpen(true), closeForm: () => setIsOpen(false) }}
+      value={{ isOpen, openForm, closeForm: () => setIsOpen(false) }}
     >
       {children}
     </FormContext.Provider>

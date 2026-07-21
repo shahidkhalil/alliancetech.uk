@@ -10,7 +10,7 @@ import {
   extractBookingDraft,
   mergeDraft,
 } from "@/lib/bookingExtract";
-import { trackEvent } from "@/lib/analytics";
+import { trackDemoComplete, trackDemoStart, trackEvent } from "@/lib/analytics";
 import { realtimeTokenUrl, bookUrl } from "@/lib/receptionistEndpoints";
 
 const LIVE_SERVICES = [
@@ -360,10 +360,13 @@ export default function LiveCall({ onClose }: Props) {
   const hangUpRef = useRef<() => void>(() => {});
   const pendingRecallRef = useRef<{ field: RecallField } | null>(null);
   const bookingTrackedRef = useRef(false);
+  const secondsRef = useRef(0);
 
   draftRef.current = draft;
+  secondsRef.current = seconds;
 
   useEffect(() => {
+    trackDemoStart({ demo_type: "ai_receptionist_voice", voice_used: true });
     trackEvent("appointment_booking_start", { channel: "voice" });
   }, []);
 
@@ -769,6 +772,12 @@ export default function LiveCall({ onClose }: Props) {
                         setBooked(bookedLabel);
                         if (!bookingTrackedRef.current) {
                           bookingTrackedRef.current = true;
+                          trackDemoComplete({
+                            demo_type: "ai_receptionist_voice",
+                            voice_used: true,
+                            messages_sent: userTranscriptsRef.current.length,
+                            duration: secondsRef.current,
+                          });
                           trackEvent("appointment_booking_complete", { channel: "voice" });
                           trackEvent("generate_lead", { lead_source: "ai_receptionist_voice" });
                         }
@@ -826,6 +835,10 @@ export default function LiveCall({ onClose }: Props) {
         }, 1000);
       } catch (err) {
         if (cancelled) return;
+        trackEvent("api_error", {
+          api_name: "ai_receptionist_voice",
+          error_message: err instanceof Error ? err.message : "Voice call failed",
+        });
         setError(err instanceof Error ? err.message : "Couldn't start the call.");
         setState("error");
       }

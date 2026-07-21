@@ -16,10 +16,14 @@ export default function FinalCTA() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button onClick={openForm}
+            data-analytics-label="book_consultation"
+            data-analytics-location="final_cta"
             className="bg-white text-[#00283C] font-bold px-8 py-4 rounded-md text-base hover:bg-gray-100 transition-colors w-full sm:w-auto">
             Get Your Free Clinic Audit
           </button>
           <a href="/free-website-audit"
+            data-analytics-label="start_website_audit"
+            data-analytics-location="final_cta"
             className="flex items-center gap-2 text-sm font-semibold text-white border border-white/30 px-6 py-4 rounded-md hover:bg-white/10 transition-colors w-full sm:w-auto justify-center">
             Free Website Audit
           </a>

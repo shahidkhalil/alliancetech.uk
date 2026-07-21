@@ -139,11 +139,19 @@ export default function Hero() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button type="button" onClick={openForm} className="btn-dark px-8 py-4 text-base w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={openForm}
+              data-analytics-label="book_consultation"
+              data-analytics-location="hero"
+              className="btn-dark px-8 py-4 text-base w-full sm:w-auto"
+            >
               Get Your Free Clinic Audit
             </button>
             <a
               href={s.cta.href}
+              data-analytics-label={s.cta.href === "/ai-receptionist" ? "start_ai_demo" : "start_website_audit"}
+              data-analytics-location="hero"
               className="flex items-center gap-2 text-sm font-semibold text-[#0077A8] border border-[#0077A8]/30 px-6 py-4 rounded-md hover:bg-[#0077A8]/5 transition-colors w-full sm:w-auto justify-center"
             >
               {s.cta.label}

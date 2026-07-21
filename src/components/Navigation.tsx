@@ -205,7 +205,12 @@ export default function Navigation() {
 
             {/* Desktop CTA */}
             <div className="hidden lg:flex items-center gap-3">
-              <button onClick={openForm} className="btn-dark px-5 py-2.5 text-sm">
+              <button
+                onClick={openForm}
+                data-analytics-label="book_consultation"
+                data-analytics-location="desktop_navigation"
+                className="btn-dark px-5 py-2.5 text-sm"
+              >
                 Book a Free Audit
               </button>
             </div>
@@ -279,7 +284,11 @@ export default function Navigation() {
                 </div>
               ))}
               <div className="pt-3 border-t border-gray-100 mt-2">
-                <button type="button" onClick={() => { setMobileOpen(false); openForm(); }}
+                <button
+                  type="button"
+                  onClick={() => { setMobileOpen(false); openForm(); }}
+                  data-analytics-label="book_consultation"
+                  data-analytics-location="mobile_navigation"
                   className="btn-dark w-full py-3 text-sm">
                   Book a Free Audit
                 </button>

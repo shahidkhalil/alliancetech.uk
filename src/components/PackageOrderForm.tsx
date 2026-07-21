@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
 import { usePackageOrder } from "@/context/PackageOrderContext";
-import { priceToNumber, trackEvent } from "@/lib/analytics";
+import { priceToNumber, trackConversion, trackEvent } from "@/lib/analytics";
 
 const ENDPOINT =
   process.env.NEXT_PUBLIC_PACKAGE_ORDER_ENDPOINT ||
@@ -61,6 +61,12 @@ export default function PackageOrderForm() {
         service_id: selection.serviceId,
         package_name: selection.packageName,
       });
+      trackConversion("quote_request", {
+        budget: value,
+        industry: "healthcare",
+        service: selection.serviceId,
+        package_name: selection.packageName,
+      });
       trackEvent("generate_lead", {
         lead_source: "package_order",
         currency: "USD",
@@ -69,6 +75,10 @@ export default function PackageOrderForm() {
         package_name: selection.packageName,
       });
     } catch (e) {
+      trackEvent("api_error", {
+        api_name: "package_order",
+        error_message: e instanceof Error ? e.message : "Package order failed",
+      });
       setError(e instanceof Error ? e.message : "Please try again.");
       setStatus("error");
     }

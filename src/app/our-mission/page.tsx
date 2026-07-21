@@ -48,7 +48,7 @@ export default function OurMission() {
       <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <p className="text-2xl lg:text-3xl font-bold text-[#00283C] leading-snug tracking-tight">
-            Most clinics that struggle aren't struggling because the care is lacking. They're struggling because the digital infrastructure around them was never built for healthcare in the United States. We started Alliance Tech to close that gap.
+            Most clinics that struggle aren&apos;t struggling because the care is lacking. They&apos;re struggling because the digital infrastructure around them was never built for healthcare in the United States. We started Alliance Tech to close that gap.
           </p>
         </div>
       </section>
@@ -67,7 +67,7 @@ export default function OurMission() {
 
       <section className="py-16 bg-[#00283C]" ref={visionRef}>
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-2xl lg:text-3xl font-extrabold text-white text-center mb-10">Where We're Headed</h2>
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-white text-center mb-10">Where We&apos;re Headed</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {vision.map((v, i) => (
               <motion.div key={v.label}

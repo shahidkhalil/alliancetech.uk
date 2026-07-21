@@ -1,4 +1,5 @@
 import Image from "next/image";
+import ConsentSettingsButton from "@/components/ConsentSettingsButton";
 
 const services = [
   { label: "AI Receptionist", href: "/ai-receptionist" },
@@ -110,6 +111,7 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <a href="/privacy-policy" className="hover:text-white/60 transition-colors">Privacy Policy</a>
             <a href="/terms-of-service" className="hover:text-white/60 transition-colors">Terms of Service</a>
+            <ConsentSettingsButton />
           </div>
         </div>
       </div>

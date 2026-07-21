@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageWrapper from "@/components/PageWrapper";
 import BlogCard from "@/components/BlogCard";
 import FinalCTA from "@/components/FinalCTA";
+import { BreadcrumbSchema } from "@/components/StructuredData";
 import { blogPosts, getBlogBySlug } from "@/lib/blogData";
 import { notFound } from "next/navigation";
 
@@ -88,6 +89,13 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   return (
     <PageWrapper>
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
