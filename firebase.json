@@ -30,7 +30,7 @@
       },
       {
         "source": "/api/business-audit",
-        "function": { "functionId": "businessAudit", "region": "asia-south1" }
+        "function": { "functionId": "auditWebsite", "region": "asia-south1" }
       }
     ],
     "headers": [

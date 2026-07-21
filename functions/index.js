@@ -47,8 +47,7 @@ exports.packageOrder = require("./packageOrder").packageOrder;
 exports.realtimeToken = require("./realtime").realtimeToken;
 exports.bookAppointmentHttp = require("./realtime").bookAppointmentHttp;
 
-// AI Business Growth Advisor (questionnaire → growth report).
-exports.businessAudit = require("./businessAudit").businessAudit;
+const { handleBusinessAudit, isBusinessAuditRequest } = require("./businessAudit");
 
 exports.auditWebsite = onRequest(
   {
@@ -63,6 +62,12 @@ exports.auditWebsite = onRequest(
 
     if (req.method !== "POST") {
       res.status(405).json({ error: "Use POST" });
+      return;
+    }
+
+    // Business Growth Audit (questionnaire) — same function, different payload.
+    if (isBusinessAuditRequest(req.body)) {
+      await handleBusinessAudit(req, res, OPENAI_API_KEY.value());
       return;
     }
 
