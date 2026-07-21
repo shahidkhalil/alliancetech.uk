@@ -84,6 +84,7 @@ const navLinks: NavLink[] = [
       heading: "Try It Live",
       links: [
         { label: "Free Website Audit", href: "/free-website-audit" },
+        { label: "AI Business Growth Audit", href: "/business-growth-audit" },
         { label: "AI Receptionist", href: "/ai-receptionist" },
       ],
     },

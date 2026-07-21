@@ -10,6 +10,7 @@ const nextConfig = {
       { source: "/api/receptionist", destination: `${CF}/clinicReceptionist` },
       { source: "/api/realtime-token", destination: `${CF}/realtimeToken` },
       { source: "/api/book", destination: `${CF}/bookAppointmentHttp` },
+      { source: "/api/business-audit", destination: `${CF}/businessAudit` },
     ];
   },
 };

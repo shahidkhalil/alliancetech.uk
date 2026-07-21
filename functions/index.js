@@ -47,6 +47,9 @@ exports.packageOrder = require("./packageOrder").packageOrder;
 exports.realtimeToken = require("./realtime").realtimeToken;
 exports.bookAppointmentHttp = require("./realtime").bookAppointmentHttp;
 
+// AI Business Growth Advisor (questionnaire → growth report).
+exports.businessAudit = require("./businessAudit").businessAudit;
+
 exports.auditWebsite = onRequest(
   {
     region: "asia-south1",

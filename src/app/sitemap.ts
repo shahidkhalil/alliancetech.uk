@@ -28,6 +28,7 @@ const routes = [
   { path: "/blog/los-angeles-aesthetic-clinic-seo", priority: 0.7 },
   { path: "/blog/chicago-dental-marketing-guide", priority: 0.7 },
   { path: "/free-website-audit", priority: 0.8 },
+  { path: "/business-growth-audit", priority: 0.8 },
   { path: "/contact", priority: 0.5 },
   { path: "/privacy-policy", priority: 0.3 },
   { path: "/terms-of-service", priority: 0.3 },
