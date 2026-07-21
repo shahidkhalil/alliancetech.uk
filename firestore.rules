@@ -2,17 +2,9 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Only verified @alliancetechltd.com accounts (disable public signup in Console).
+    // Any signed-in Firebase Auth user (create in Console; keep public signup off).
     function isAdmin() {
-      return request.auth != null
-        && (
-          request.auth.token.admin == true
-          || (
-            request.auth.token.email_verified == true
-            && request.auth.token.email is string
-            && request.auth.token.email.matches('(?i).*@alliancetechltd[.]com$')
-          )
-        );
+      return request.auth != null;
     }
 
     function strMax(field, max) {

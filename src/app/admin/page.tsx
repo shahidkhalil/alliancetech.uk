@@ -120,23 +120,9 @@ export default function AdminPage() {
   const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
-    return onAuthStateChanged(getFirebaseAuth(), async (u) => {
-      if (!u) {
-        setUser(null);
-        setAuthReady(true);
-        return;
-      }
-      const email = (u.email || "").toLowerCase();
-      const token = await u.getIdTokenResult().catch(() => null);
-      const isAdminClaim = token?.claims?.admin === true;
-      const isDomainAdmin = u.emailVerified && email.endsWith("@alliancetechltd.com");
-      if (!isAdminClaim && !isDomainAdmin) {
-        await signOut(getFirebaseAuth());
-        setLoginError("This account is not authorized for admin access.");
-        setUser(null);
-        setAuthReady(true);
-        return;
-      }
+    return onAuthStateChanged(getFirebaseAuth(), (u) => {
+      // Any Firebase Auth user may access admin (create users in Console;
+      // keep Email/Password public signup disabled).
       setUser(u);
       setAuthReady(true);
     });
