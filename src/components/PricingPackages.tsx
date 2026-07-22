@@ -45,7 +45,7 @@ export default function PricingPackages() {
           </h2>
 
           <p className="text-gray-500 text-base max-w-lg mx-auto leading-relaxed mb-8">
-            {pricingServices.length} services · 3 clear packages each · no hidden quotes, no surprises.
+            {pricingServices.length} services · clear published prices · no hidden quotes.
             <span className="block text-sm text-gray-400 mt-1">A few of our most popular below — see all {pricingServices.length} on the pricing page.</span>
           </p>
 
@@ -81,19 +81,19 @@ export default function PricingPackages() {
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-3 border-t border-gray-100">
+              <div className={`grid border-t border-gray-100 ${service.packages.length === 1 ? "grid-cols-1" : "grid-cols-3"}`}>
                 {service.packages.map((pkg, pi) => (
                   <div
                     key={pkg.name}
-                    className={`py-3 px-1 flex flex-col items-center justify-center text-center ${pi === 1 ? "bg-[#0077A8]/[0.06]" : ""} ${pi > 0 ? "border-l border-gray-100" : ""}`}
+                    className={`py-3 px-1 flex flex-col items-center justify-center text-center ${pi === 1 || service.packages.length === 1 ? "bg-[#0077A8]/[0.06]" : ""} ${pi > 0 ? "border-l border-gray-100" : ""}`}
                   >
-                    <span className={`text-[9px] font-black uppercase tracking-wider mb-1 ${pi === 1 ? "text-[#0077A8]" : "text-gray-400"}`}>
-                      {pkg.name}
+                    <span className={`text-[9px] font-black uppercase tracking-wider mb-1 ${pi === 1 || service.packages.length === 1 ? "text-[#0077A8]" : "text-gray-400"}`}>
+                      {service.fixedPrice ? "Fixed" : pkg.name}
                     </span>
-                    <span className={`text-sm font-extrabold leading-none ${pi === 1 ? "text-[#0077A8]" : "text-[#00283C]"}`}>
+                    <span className={`text-sm font-extrabold leading-none ${pi === 1 || service.packages.length === 1 ? "text-[#0077A8]" : "text-[#00283C]"}`}>
                       {pkg.price}
                     </span>
-                    <span className={`text-[9px] mt-1 leading-none ${pi === 1 ? "text-[#0077A8]/60" : "text-gray-400"}`}>
+                    <span className={`text-[9px] mt-1 leading-none ${pi === 1 || service.packages.length === 1 ? "text-[#0077A8]/60" : "text-gray-400"}`}>
                       {pkg.period === "one-time" ? "one-time" : pkg.period.replace("/ month + ad spend", "+spend")}
                     </span>
                   </div>
@@ -156,20 +156,40 @@ export default function PricingPackages() {
                 <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">{service.category}</span>
               </div>
 
-              {/* Package prices */}
-              {service.packages.map((pkg, pi) => (
-                <div
-                  key={pkg.name}
-                  className={`py-5 flex flex-col items-center justify-center text-center px-1 ${pi === 1 ? "bg-[#0077A8]/[0.06]" : ""}`}
-                >
-                  <span className={`text-sm font-extrabold leading-none ${pi === 1 ? "text-[#0077A8]" : "text-[#00283C]"}`}>
-                    {pkg.price}
-                  </span>
-                  <span className={`text-[10px] mt-1 leading-none ${pi === 1 ? "text-[#0077A8]/60" : "text-gray-400"}`}>
-                    {pkg.period === "one-time" ? "one-time" : pkg.period.replace("/ month + ad spend", "+spend")}
-                  </span>
-                </div>
-              ))}
+              {/* Package prices — fixed-price products span the middle column */}
+              {service.fixedPrice || service.packages.length === 1 ? (
+                <>
+                  <div className="py-5" />
+                  <div className="py-5 flex flex-col items-center justify-center text-center px-1 bg-[#0077A8]/[0.06]">
+                    <span className="text-[9px] font-black uppercase tracking-wider text-[#0077A8] mb-1">
+                      Fixed
+                    </span>
+                    <span className="text-sm font-extrabold leading-none text-[#0077A8]">
+                      {service.packages[0].price}
+                    </span>
+                    <span className="text-[10px] mt-1 leading-none text-[#0077A8]/60">
+                      {service.packages[0].period === "one-time"
+                        ? "one-time"
+                        : service.packages[0].period.replace("/ month + ad spend", "+spend")}
+                    </span>
+                  </div>
+                  <div className="py-5" />
+                </>
+              ) : (
+                service.packages.map((pkg, pi) => (
+                  <div
+                    key={pkg.name}
+                    className={`py-5 flex flex-col items-center justify-center text-center px-1 ${pi === 1 ? "bg-[#0077A8]/[0.06]" : ""}`}
+                  >
+                    <span className={`text-sm font-extrabold leading-none ${pi === 1 ? "text-[#0077A8]" : "text-[#00283C]"}`}>
+                      {pkg.price}
+                    </span>
+                    <span className={`text-[10px] mt-1 leading-none ${pi === 1 ? "text-[#0077A8]/60" : "text-gray-400"}`}>
+                      {pkg.period === "one-time" ? "one-time" : pkg.period.replace("/ month + ad spend", "+spend")}
+                    </span>
+                  </div>
+                ))
+              )}
             </motion.a>
           ))}
 

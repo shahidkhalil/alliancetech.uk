@@ -16,6 +16,11 @@ const { bookAndNotify } = require("./lib/booking");
 const { extractBookingDraft, hasBookingIntent, isServicesQuery } = require("./lib/bookingExtract");
 const { checkRateLimit } = require("./lib/cache");
 const { applyCors, clientIp } = require("./lib/security");
+const {
+  detectEmergency,
+  buildTriagePayload,
+  persistUrgentAlert,
+} = require("./lib/triage");
 
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
 const GMAIL_USER = defineSecret("GMAIL_USER");
@@ -58,8 +63,18 @@ FAQs:
 ${c.faqs.map((f) => `Q: ${f.q} A: ${f.a}`).join("\n")}
 ${bookingFormContext(draft)}
 
+EMERGENCY TRIAGE PROTOCOL (highest priority):
+If the patient mentions bleeding, severe pain, a knocked-out tooth, implant falling out, facial swelling, abscess, or says "emergency":
+1. Stay calm and acknowledge the urgency in one sentence.
+2. Call flag_emergency with the reason (and name/phone if already known).
+3. Offer the earliest emergency slot returned by the tool.
+4. Tell them staff has been alerted and they can call ${c.phone} for immediate transfer.
+5. If symptoms sound life-threatening (can't breathe, heavy uncontrolled bleeding, loss of consciousness), tell them to call 911 first.
+6. Do NOT give medical diagnoses. Do NOT downplay pain.
+7. After triage, offer to collect name + phone quickly via the booking form for the emergency slot.
+
 RULES:
-- Never give medical advice or diagnoses. Suggest a check-up instead.
+- Never give medical advice or diagnoses. Suggest a check-up instead (except during emergency triage — then follow the protocol above).
 - When asked about services: give a brief friendly intro (1 sentence). The UI shows a service menu — do NOT list every service in text.
 - When asked about a specific treatment: explain what it involves in 1–2 sentences. No prices unless they ask about cost.
 - If asked about price/cost: say pricing depends on the case and the team will confirm at booking — do not quote dollar amounts.
@@ -70,6 +85,24 @@ RULES:
 }
 
 const TOOLS = [
+  {
+    type: "function",
+    function: {
+      name: "flag_emergency",
+      description:
+        "Call immediately when the patient describes a dental emergency (bleeding, severe pain, knocked-out tooth, implant fell out, swelling, etc.). Alerts staff and returns the earliest emergency slot.",
+      parameters: {
+        type: "object",
+        properties: {
+          reason: { type: "string", description: "Short reason, e.g. bleeding, severe pain, implant displaced." },
+          name: { type: "string" },
+          phone: { type: "string" },
+          notes: { type: "string", description: "What the patient said." },
+        },
+        required: ["reason"],
+      },
+    },
+  },
   {
     type: "function",
     function: {
@@ -84,6 +117,8 @@ const TOOLS = [
           service: { type: "string" },
           preferredTime: { type: "string", description: "Preferred day and time in the patient's words, e.g. 'Saturday evening around 7pm'." },
           notes: { type: "string", description: "Any extra context (symptoms, preferences)." },
+          urgent: { type: "boolean", description: "True if this is an emergency / triage booking." },
+          triageReason: { type: "string" },
         },
         required: ["name", "phone", "service", "preferredTime"],
       },
@@ -158,29 +193,119 @@ exports.clinicReceptionist = onRequest(
           return r.json();
         });
 
+      let booking = null;
+      let triage = null;
+
+      // Detect emergency before the first model call so triage happens in the same turn
+      const lastUserText =
+        (transcript || history.filter((m) => m.role === "user").slice(-1)[0]?.content || "").toString();
+      const emergencyHit = detectEmergency(lastUserText);
+      if (emergencyHit) {
+        triage = buildTriagePayload(emergencyHit, clinic);
+        messages[0] = {
+          role: "system",
+          content:
+            messages[0].content +
+            `\n\nACTIVE EMERGENCY DETECTED (${emergencyHit.matched}). Follow EMERGENCY TRIAGE PROTOCOL now. Earliest slot: ${triage.emergencySlot}. Call flag_emergency immediately.`,
+        };
+      }
+
       let data = await call({ model: "gpt-4o-mini", temperature: 0.4, max_tokens: 350, messages, tools: TOOLS });
       let msg = data.choices[0].message;
-      let booking = null;
 
-      // If the model chose to book, persist it and let the model confirm.
-      const toolCall = msg.tool_calls?.[0];
-      if (toolCall?.function?.name === "book_appointment") {
-        const args = JSON.parse(toolCall.function.arguments || "{}");
-        const { id, reference } = await bookAndNotify({
-          args,
-          clinicId: req.body?.clinicId || "demo",
-          clinic,
-          source: "ai_receptionist",
-          gmailUser: GMAIL_USER.value(),
-          gmailPass: GMAIL_APP_PASSWORD.value(),
-        });
-        booking = { id, ...args, clinicName: clinic.name };
+      // Handle tool calls (may chain: flag_emergency then reply, or book_appointment)
+      for (let round = 0; round < 2; round++) {
+        const toolCall = msg.tool_calls?.[0];
+        if (!toolCall?.function?.name) break;
 
-        // Feed the tool result back so the model writes a natural confirmation.
-        messages.push(msg);
-        messages.push({ role: "tool", tool_call_id: toolCall.id, content: JSON.stringify({ booked: true, reference, confirmationEmailSentTo: args.email || null }) });
-        data = await call({ model: "gpt-4o-mini", temperature: 0.6, max_tokens: 300, messages });
-        msg = data.choices[0].message;
+        if (toolCall.function.name === "flag_emergency") {
+          const args = JSON.parse(toolCall.function.arguments || "{}");
+          const reason = args.reason || emergencyHit?.matched || "urgent dental concern";
+          const detection = { matched: reason, excerpt: args.notes || lastUserText };
+          triage = buildTriagePayload(detection, clinic);
+          try {
+            await persistUrgentAlert({
+              clinic,
+              clinicId: req.body?.clinicId || "demo",
+              reason: triage.reason,
+              excerpt: triage.excerpt,
+              emergencySlot: triage.emergencySlot,
+              name: args.name,
+              phone: args.phone,
+              source: "ai_receptionist_emergency",
+            });
+          } catch (e) {
+            console.warn("Urgent alert persist failed:", e.message);
+          }
+          messages.push(msg);
+          messages.push({
+            role: "tool",
+            tool_call_id: toolCall.id,
+            content: JSON.stringify({
+              staff_alerted: true,
+              priority: "urgent",
+              emergency_slot: triage.emergencySlot,
+              clinic_phone: clinic.phone,
+              transfer_available: true,
+              guidance: triage.guidance,
+            }),
+          });
+          data = await call({ model: "gpt-4o-mini", temperature: 0.45, max_tokens: 320, messages, tools: TOOLS });
+          msg = data.choices[0].message;
+          continue;
+        }
+
+        if (toolCall.function.name === "book_appointment") {
+          const args = JSON.parse(toolCall.function.arguments || "{}");
+          if (triage?.urgent) {
+            args.urgent = true;
+            args.triageReason = args.triageReason || triage.reason;
+            args.priority = "urgent";
+            if (!args.preferredTime) args.preferredTime = triage.emergencySlot;
+            if (!args.notes) args.notes = `Emergency: ${triage.reason}`;
+          }
+          const { id, reference } = await bookAndNotify({
+            args,
+            clinicId: req.body?.clinicId || "demo",
+            clinic,
+            source: args.urgent ? "ai_receptionist_emergency" : "ai_receptionist",
+            gmailUser: GMAIL_USER.value(),
+            gmailPass: GMAIL_APP_PASSWORD.value(),
+          });
+          booking = { id, ...args, clinicName: clinic.name };
+
+          messages.push(msg);
+          messages.push({
+            role: "tool",
+            tool_call_id: toolCall.id,
+            content: JSON.stringify({
+              booked: true,
+              reference,
+              confirmationEmailSentTo: args.email || null,
+              urgent: !!args.urgent,
+            }),
+          });
+          data = await call({ model: "gpt-4o-mini", temperature: 0.6, max_tokens: 300, messages });
+          msg = data.choices[0].message;
+          break;
+        }
+        break;
+      }
+
+      // Persist triage alert if keywords fired but model skipped the tool
+      if (triage?.urgent && !booking) {
+        try {
+          await persistUrgentAlert({
+            clinic,
+            clinicId: req.body?.clinicId || "demo",
+            reason: triage.reason,
+            excerpt: triage.excerpt,
+            emergencySlot: triage.emergencySlot,
+            source: "ai_receptionist_emergency",
+          });
+        } catch (e) {
+          console.warn("Urgent alert persist failed:", e.message);
+        }
       }
 
       const replyText = msg.content || "Sorry, could you say that again?";
@@ -226,7 +351,7 @@ exports.clinicReceptionist = onRequest(
         !isServicesQuery(lastUser) &&
         (isFormSubmit || (hasBookingIntent(lastUser) && !/^(what|how|tell me about)\b/i.test(lastUser.trim())));
 
-      res.status(200).json({ reply: replyText, booking, audio, transcript, bookingDraft, showBookingForm });
+      res.status(200).json({ reply: replyText, booking, triage, audio, transcript, bookingDraft, showBookingForm });
     } catch (err) {
       console.error("Receptionist error:", err);
       res.status(500).json({ error: "I'm having a moment — please try again or WhatsApp us." });

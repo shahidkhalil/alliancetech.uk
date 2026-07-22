@@ -185,6 +185,9 @@ function FeatureRow({ text, dark }: { text: string; dark: boolean }) {
 /* ─── Comparison Table ─────────────────────────────────────────────────────── */
 function ComparisonTable({ service }: { service: ServicePricing }) {
   const [open, setOpen] = useState(false);
+  if (!service.comparison.length || service.fixedPrice || service.packages.length < 3) {
+    return null;
+  }
 
   return (
     <div className="mt-8 border border-gray-200 rounded-xl overflow-hidden">
@@ -209,9 +212,9 @@ function ComparisonTable({ service }: { service: ServicePricing }) {
             {/* Header */}
             <div className="grid grid-cols-4 bg-[#00283C]">
               <div className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white/60">Feature</div>
-              {["Basic", "Standard", "Premium"].map((n, i) => (
-                <div key={n} className={`px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest ${i === 1 ? "text-[#00B4D8]" : "text-white/60"}`}>
-                  {n}
+              {service.packages.slice(0, 3).map((pkg, i) => (
+                <div key={pkg.name} className={`px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest ${i === 1 ? "text-[#00B4D8]" : "text-white/60"}`}>
+                  {pkg.name}
                 </div>
               ))}
             </div>
@@ -307,11 +310,23 @@ export default function ServicePricingSection({ service }: { service: ServicePri
         </div>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-3 gap-5">
+        <div
+          className={
+            service.fixedPrice || service.packages.length === 1
+              ? "max-w-md mx-auto"
+              : "grid md:grid-cols-3 gap-5"
+          }
+        >
           {service.packages.map((pkg, i) => (
             <PricingCard key={pkg.name} pkg={pkg} index={i} service={service} />
           ))}
         </div>
+
+        {service.fixedPrice && (
+          <p className="mt-4 text-center text-xs text-gray-400 max-w-lg mx-auto">
+            AI Receptionist (live front desk) is sold separately — see that product for chat, WhatsApp answering, and voice.
+          </p>
+        )}
 
         <ComparisonTable service={service} />
         <TrustBar service={service} />

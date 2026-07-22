@@ -54,6 +54,9 @@ async function bookAndNotify({ args, clinicId, clinic, source, gmailUser, gmailP
     clinicName: clinic.name,
     source: source || "ai_receptionist",
     status: "new",
+    priority: args.urgent || args.priority === "urgent" ? "urgent" : "normal",
+    urgent: Boolean(args.urgent),
+    triageReason: args.triageReason || "",
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   });
   const reference = doc.id.slice(0, 6).toUpperCase();
@@ -64,8 +67,12 @@ async function bookAndNotify({ args, clinicId, clinic, source, gmailUser, gmailP
     email: args.email || "",
     source: source || "ai_receptionist",
     clinicName: clinic.name,
-    message: `Appointment: ${args.service} — ${args.preferredTime}${args.notes ? ` (${args.notes})` : ""}`,
+    message: `${args.urgent ? "🚨 URGENT — " : ""}Appointment: ${args.service} — ${args.preferredTime}${args.notes ? ` (${args.notes})` : ""}`,
+    priority: args.urgent ? "urgent" : "normal",
+    urgent: Boolean(args.urgent),
+    triageReason: args.triageReason || "",
     status: "new",
+    completionStatus: "complete",
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   }).catch(() => {});
 

@@ -79,7 +79,11 @@ export async function saveFormDraft(
 }
 
 /** Finalize a complete submission and close the draft (no client delete). */
-export async function submitCompleteLead(form: FormFields, sessionId: string) {
+export async function submitCompleteLead(
+  form: FormFields,
+  sessionId: string,
+  source: string = "consultation_form"
+) {
   await addDoc(collection(getDb(), "leads"), {
     name: form.name.trim().slice(0, 120),
     phone: form.phone.trim().slice(0, 40),
@@ -87,7 +91,7 @@ export async function submitCompleteLead(form: FormFields, sessionId: string) {
     clinicName: form.clinicName.trim().slice(0, 160),
     clinicType: form.clinicType.trim().slice(0, 80),
     message: form.message.trim().slice(0, 2000),
-    source: "consultation_form",
+    source,
     completionStatus: "complete",
     status: "new",
     createdAt: serverTimestamp(),

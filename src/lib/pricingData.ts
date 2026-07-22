@@ -22,7 +22,9 @@ export type ServicePricing = {
   name: string;
   category: string;
   tagline: string;
-  packages: [PricingPackage, PricingPackage, PricingPackage];
+  /** When true, show one fixed-price card instead of Basic/Standard/Premium tiers. */
+  fixedPrice?: boolean;
+  packages: PricingPackage[];
   comparison: ComparisonRow[];
   faqs: { q: string; a: string }[];
   timeline: string;
@@ -118,6 +120,67 @@ const allServices: ServicePricing[] = [
     technologies: ["GPT-4o", "Realtime voice AI", "WhatsApp Business API", "Calendar & EHR integrations"],
     support: "Included ongoing support; dedicated success manager on Premium.",
     guarantee: "30-day money-back guarantee if it doesn't reduce your missed patients.",
+  },
+{
+    id: "clinic-ai-automation",
+    name: "AI Automation for Clinics",
+    category: "AI & Automation",
+    fixedPrice: true,
+    tagline: "Fixed-price clinic workflows — reminders, follow-ups, reviews, and lead routing. Separate from the AI Receptionist front desk.",
+    packages: [
+      {
+        name: "Clinic Automation",
+        price: "$1,499",
+        period: "/ month",
+        savings: "One fixed price — no tiers",
+        description: "Behind-the-scenes AI workflows that recover missed patients and keep your calendar full — without replacing your front desk.",
+        features: [
+          "Automated appointment reminders (SMS / email / WhatsApp)",
+          "No-show recovery sequences",
+          "Post-visit review requests (Google)",
+          "New-lead follow-up automation (missed inquiries)",
+          "Recall / rebooking campaigns for past patients",
+          "Staff alerts for hot leads & urgent cases",
+          "CRM / calendar sync for your clinic stack",
+          "Live dashboard: reminders sent, recoveries, reviews",
+          "Setup & training included — live in ~7 days",
+          "Monthly optimization call",
+        ],
+        cta: "Get Clinic Automation",
+        popular: true,
+        addOns: [
+          "AI Receptionist (front desk) sold separately — from $500/mo",
+          "Extra locations from $399/mo each",
+        ],
+      },
+    ],
+    comparison: [],
+    faqs: [
+      {
+        q: "How is this different from the AI Receptionist?",
+        a: "AI Receptionist is your front desk — it answers calls, chats, and WhatsApp and books appointments live. AI Automation for Clinics runs the follow-up engine behind the scenes: reminders, no-show recovery, reviews, and lead chase. You can buy either alone or both together.",
+      },
+      {
+        q: "Is the price really fixed?",
+        a: "Yes — $1,499/month covers the full clinic automation stack listed above. No Basic/Standard/Premium tiers. Extra clinic locations are optional add-ons.",
+      },
+      {
+        q: "Do I need the AI Receptionist too?",
+        a: "No. Many clinics start with automation only (reminders + recovery) and add the AI Receptionist later for 24/7 answering. If you want both, we’ll package them cleanly.",
+      },
+      {
+        q: "How fast can we go live?",
+        a: "Typically about 7 business days — we connect your calendar/CRM, set reminder and recovery flows, and test with your team before switching on.",
+      },
+      {
+        q: "What channels do reminders use?",
+        a: "SMS, email, and WhatsApp where enabled for your clinic. We configure the mix that your patients actually open.",
+      },
+    ],
+    timeline: "Live in ~7 business days",
+    technologies: ["Workflow automation", "WhatsApp / SMS / Email", "Calendar & CRM sync", "Analytics dashboard"],
+    support: "Included monitoring + monthly optimization call",
+    guarantee: "30-day satisfaction guarantee — if automation isn’t running as scoped, we make it right or refund the month.",
   },
 {
     id: "healthcare-website",
@@ -891,15 +954,16 @@ const allServices: ServicePricing[] = [
 
 // Only services that have a live page on the website
 const ACTIVE_IDS = [
-  "ai-automation",        // flagship — AI Receptionist (voice + WhatsApp + web chat)
-  "healthcare-website",   // /clinic-website-design
-  "mobile-app",           // /clinic-mobile-app
-  "whatsapp-automation",  // WhatsApp channel packages (optional deep-link)
-  "emr-ehr",              // /ehr-platform
-  "local-seo",            // /local-seo-for-clinics
-  "seo",                  // /seo-for-clinics
-  "google-ads",           // /digital-marketing-for-clinics
-  "meta-ads",             // /digital-marketing-for-clinics
+  "ai-automation",          // AI Receptionist (front desk)
+  // "clinic-ai-automation", // hidden for now — fixed-price clinic workflow automation
+  "healthcare-website",     // /clinic-website-design
+  "mobile-app",             // /clinic-mobile-app
+  "whatsapp-automation",    // WhatsApp AI Automation
+  "emr-ehr",                // /ehr-platform
+  "local-seo",              // /local-seo-for-clinics
+  "seo",                    // /seo-for-clinics
+  "google-ads",             // /digital-marketing-for-clinics
+  "meta-ads",               // /digital-marketing-for-clinics
 ] as const;
 
 // Order follows ACTIVE_IDS so the flagship (AI Receptionist) leads everywhere.

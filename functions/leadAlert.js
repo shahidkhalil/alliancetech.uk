@@ -267,7 +267,10 @@ exports.leadAlert = onDocumentCreated(
 
     const isAudit = lead.source === "audit_bot";
     const isGrowthAudit = lead.source === "business_growth_audit";
-    const subject = isAudit
+    const isUrgent = lead.urgent === true || lead.priority === "urgent";
+    const subject = isUrgent
+      ? `🚨 URGENT triage: ${lead.name || "Caller"} — ${lead.triageReason || lead.message || "emergency"}`
+      : isAudit
       ? `New audit lead: ${lead.name || "Unknown"} (${lead.website || "no site"}, score ${lead.auditScore ?? "?"})`
       : isGrowthAudit
         ? `New growth audit lead: ${lead.name || "Unknown"} (${lead.clinicName || "—"}, score ${lead.auditScore ?? "?"}/100)`
@@ -275,8 +278,10 @@ exports.leadAlert = onDocumentCreated(
 
     const adminOk = await sendAdminAlert({
       subject,
-      badge: isGrowthAudit ? "Business growth audit" : "New lead alert",
-      headline: isGrowthAudit
+      badge: isUrgent ? "🚨 Urgent triage" : isGrowthAudit ? "Business growth audit" : "New lead alert",
+      headline: isUrgent
+        ? "Emergency triage — staff action needed"
+        : isGrowthAudit
         ? "Someone completed the Business Growth Audit"
         : "Someone just submitted your form",
       lead,

@@ -39,7 +39,7 @@ const CLINICS = {
       payment: "Cash, card, and bank transfer accepted. Installment plans available for implants, braces, and aligners.",
       firstVisit: "Please arrive 10 minutes early. Bring any previous X-rays or dental records if available.",
       cancellation: "Free rescheduling with 4 hours' notice.",
-      emergency: "For dental emergencies, message us on WhatsApp and we'll try to fit you in the same day.",
+      emergency: "Dental emergencies (bleeding, severe pain, knocked-out tooth, implant displacement, facial swelling): triage immediately — calm the patient, mark urgent, offer the earliest emergency slot, alert staff, and offer to transfer to the clinic line. Life-threatening symptoms → advise calling 911.",
     },
     faqs: [
       { q: "Do you offer painless treatment?", a: "Yes — we use modern anaesthesia and gentle techniques. Most patients feel little to no discomfort." },

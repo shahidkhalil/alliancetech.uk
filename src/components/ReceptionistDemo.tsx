@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Loader2, CalendarCheck2, Phone, Clock, Sparkles, Mic, Square, Trash2, Volume2, VolumeX } from "lucide-react";
+import { Send, Loader2, CalendarCheck2, Phone, Clock, Sparkles, Mic, Square, Trash2, Volume2, VolumeX, AlertTriangle } from "lucide-react";
 import { LiveCallLauncher } from "./LiveCall";
 import {
   BookingDraft,
@@ -18,6 +18,7 @@ import {
 
 import { trackDemoComplete, trackDemoStart, trackEvent } from "@/lib/analytics";
 import { receptionistUrl } from "@/lib/receptionistEndpoints";
+import { buildClientTriage, type TriageInfo } from "@/lib/emergencyTriage";
 const MAX_RECORD_SECONDS = 30;
 
 interface ChatMsg {
@@ -36,13 +37,19 @@ interface Booking {
   service: string;
   preferredTime: string;
   clinicName?: string;
+  urgent?: boolean;
 }
 
-const SUGGESTIONS = [
-  { icon: "🦷", label: "What services do you offer?", action: "services" as const },
-  { icon: "🕐", label: "What are your hours?", action: "chat" as const },
-  { icon: "✨", label: "Tell me about braces", action: "detail" as const, service: "Braces (Orthodontics)" },
-  { icon: "📅", label: "Book me an appointment", action: "book" as const },
+const SUGGESTIONS: {
+  icon: string;
+  label: string;
+  action: "chat" | "services" | "detail" | "book";
+  service?: string;
+}[] = [
+  { icon: "🚨", label: "My tooth is bleeding", action: "chat" },
+  { icon: "🦷", label: "What services do you offer?", action: "services" },
+  { icon: "🕐", label: "What are your hours?", action: "chat" },
+  { icon: "📅", label: "Book me an appointment", action: "book" },
 ];
 
 const SERVICES = [
@@ -214,6 +221,7 @@ export default function ReceptionistDemo() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [booking, setBooking] = useState<Booking | null>(null);
+  const [triage, setTriage] = useState<TriageInfo | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [recState, setRecState] = useState<"idle" | "recording" | "transcribing">("idle");
   const [recSeconds, setRecSeconds] = useState(0);
@@ -332,7 +340,7 @@ export default function ReceptionistDemo() {
     send(msg, { forceBooking: true });
   };
 
-  const handleResponse = (data: { reply?: string; booking?: Booking; audio?: string; transcript?: string; bookingDraft?: Partial<BookingDraft> }, prevMessages: ChatMsg[]) => {
+  const handleResponse = (data: { reply?: string; booking?: Booking; triage?: TriageInfo; audio?: string; transcript?: string; bookingDraft?: Partial<BookingDraft> }, prevMessages: ChatMsg[]) => {
     const updated = [...prevMessages];
     if (data.transcript) {
       const idx = updated.map((m) => m.content).lastIndexOf("🎤 Voice note…");
@@ -346,9 +354,21 @@ export default function ReceptionistDemo() {
       applyDraftFromMessages(updated, data.bookingDraft);
     }
 
+    const triagePayload = data.triage?.urgent
+      ? data.triage
+      : buildClientTriage(data.transcript || prevMessages[prevMessages.length - 1]?.content || "");
+    if (triagePayload?.urgent) {
+      setTriage(triagePayload);
+      trackEvent("element_click", {
+        element_text: "emergency_triage",
+        button_location: "ai_receptionist_demo",
+        triage_reason: triagePayload.reason,
+      });
+    }
+
     if (data.audio) playAudio(data.audio);
     if (data.booking) {
-      setBooking(data.booking);
+      setBooking({ ...data.booking, urgent: !!(data.booking.urgent || triagePayload?.urgent) });
       if (!bookingTrackedRef.current) {
         bookingTrackedRef.current = true;
         trackDemoComplete({
@@ -357,8 +377,13 @@ export default function ReceptionistDemo() {
           messages_sent: messagesSentRef.current,
           duration: Math.round((Date.now() - demoStartedAtRef.current) / 1000),
         });
-        trackEvent("appointment_booking_complete", { channel: "chat" });
-        trackEvent("generate_lead", { lead_source: "ai_receptionist_chat" });
+        trackEvent("appointment_booking_complete", {
+          channel: "chat",
+          urgent: !!(data.booking.urgent || triagePayload?.urgent),
+        });
+        trackEvent("generate_lead", {
+          lead_source: triagePayload?.urgent ? "ai_receptionist_emergency" : "ai_receptionist_chat",
+        });
       }
     }
   };
@@ -604,14 +629,53 @@ export default function ReceptionistDemo() {
             })}
           </AnimatePresence>
 
+          {triage?.urgent && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2.5 justify-start">
+              <MayaAvatar />
+              <div className="rounded-2xl rounded-tl-md px-4 py-3.5 bg-gradient-to-br from-red-50 to-orange-50 border border-red-200 shadow-sm max-w-[85%]">
+                <p className="flex items-center gap-1.5 text-sm font-bold text-red-800 mb-1.5">
+                  <AlertTriangle className="w-4 h-4" /> Emergency Triage Active
+                </p>
+                <div className="text-xs text-red-700 space-y-1">
+                  <p>
+                    Flagged: <span className="font-semibold">{triage.reason}</span>
+                  </p>
+                  <p className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> Holding {triage.emergencySlot}
+                  </p>
+                  {triage.staffAlerted && (
+                    <p className="font-semibold text-red-800">Front desk alerted — priority queue</p>
+                  )}
+                  {triage.clinicPhone && (
+                    <p className="flex items-center gap-1">
+                      <Phone className="w-3 h-3" /> Transfer: {triage.clinicPhone}
+                    </p>
+                  )}
+                  {triage.guidance && <p className="text-red-600/90 pt-0.5">{triage.guidance}</p>}
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {booking && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-2.5 justify-start">
               <MayaAvatar />
-              <div className="rounded-2xl rounded-tl-md px-4 py-3.5 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 shadow-sm max-w-[85%]">
-                <p className="flex items-center gap-1.5 text-sm font-bold text-green-800 mb-1.5">
-                  <CalendarCheck2 className="w-4 h-4" /> Appointment Confirmed
+              <div
+                className={`rounded-2xl rounded-tl-md px-4 py-3.5 shadow-sm max-w-[85%] border ${
+                  booking.urgent || triage?.urgent
+                    ? "bg-gradient-to-br from-red-50 to-orange-50 border-red-200"
+                    : "bg-gradient-to-br from-green-50 to-emerald-50 border-green-200"
+                }`}
+              >
+                <p
+                  className={`flex items-center gap-1.5 text-sm font-bold mb-1.5 ${
+                    booking.urgent || triage?.urgent ? "text-red-800" : "text-green-800"
+                  }`}
+                >
+                  <CalendarCheck2 className="w-4 h-4" />
+                  {booking.urgent || triage?.urgent ? "Emergency Slot Held" : "Appointment Confirmed"}
                 </p>
-                <div className="text-xs text-green-700 space-y-0.5">
+                <div className={`text-xs space-y-0.5 ${booking.urgent || triage?.urgent ? "text-red-700" : "text-green-700"}`}>
                   <p><span className="font-semibold">{booking.name}</span> · {booking.service}</p>
                   <p className="flex items-center gap-1"><Clock className="w-3 h-3" /> {booking.preferredTime}</p>
                   <p className="flex items-center gap-1"><Phone className="w-3 h-3" /> We&apos;ll confirm on WhatsApp shortly</p>
@@ -645,7 +709,11 @@ export default function ReceptionistDemo() {
                     else if (s.action === "detail" && s.service) showServiceDetail(s.label, s.service);
                     else send(s.label);
                   }}
-                  className="text-[11px] sm:text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white text-gray-600 border border-gray-200 shadow-sm hover:border-[#0E7C6B]/40 hover:text-[#0E7C6B] transition-all"
+                  className={`text-[11px] sm:text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full border shadow-sm transition-all ${
+                    s.label.includes("bleeding")
+                      ? "bg-red-50 text-red-700 border-red-200 hover:border-red-400 hover:bg-red-100"
+                      : "bg-white text-gray-600 border-gray-200 hover:border-[#0E7C6B]/40 hover:text-[#0E7C6B]"
+                  }`}
                 >
                   {s.icon} {s.label}
                 </button>

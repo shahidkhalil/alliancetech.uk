@@ -40,34 +40,68 @@ function BottomCTA() {
   return (
     <section className="py-16 bg-[#00283C]">
       <div className="max-w-2xl mx-auto px-6 text-center">
-        <p className="text-[#00B4D8] text-xs font-black uppercase tracking-widest mb-4">FREE STRATEGY CALL</p>
+        <p className="text-[#00B4D8] text-xs font-black uppercase tracking-widest mb-4">NEXT STEP</p>
         <h2 className="text-2xl lg:text-3xl font-black text-white tracking-tight mb-4">
           Not sure which plan fits?
         </h2>
         <p className="text-white/55 text-sm leading-relaxed mb-8">
-          Book a free 30-minute call. We&apos;ll audit your current setup and recommend the exact plan for your budget — no sales pressure.
+          Start with a free clinic audit — then we&apos;ll recommend the exact package for your budget on a 30-minute call.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button
-            onClick={openForm}
-            className="px-8 py-3.5 bg-white text-[#00283C] rounded-xl font-black text-sm hover:bg-[#E8F7FB] transition-colors shadow flex items-center gap-2"
-          >
-            Book Free Strategy Call <ArrowRight className="w-4 h-4" />
-          </button>
           <a
             href="/free-website-audit"
-            className="text-white/80 font-semibold text-sm hover:text-white transition-colors"
+            data-analytics-label="start_website_audit"
+            data-analytics-location="pricing_bottom"
+            className="px-8 py-3.5 bg-white text-[#00283C] rounded-xl font-black text-sm hover:bg-[#E8F7FB] transition-colors shadow flex items-center gap-2"
           >
-            Or run a free website audit →
+            Run Free Website Audit <ArrowRight className="w-4 h-4" />
           </a>
+          <button
+            type="button"
+            onClick={openForm}
+            data-analytics-label="book_consultation"
+            data-analytics-location="pricing_bottom"
+            className="px-8 py-3.5 border border-white/30 text-white rounded-xl font-bold text-sm hover:bg-white/10 transition-colors"
+          >
+            Book Free Strategy Call
+          </button>
         </div>
       </div>
     </section>
   );
 }
 
+/* ─── Mobile sticky closer ──────────────────────────────────────────────────── */
+function StickySalesBar() {
+  const { openForm } = useForm();
+  return (
+    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md px-4 py-3 safe-pb">
+      <div className="flex gap-2 max-w-lg mx-auto">
+        <a
+          href="/free-website-audit"
+          data-analytics-label="start_website_audit"
+          data-analytics-location="pricing_sticky"
+          className="flex-1 text-center py-3 rounded-xl bg-[#00283C] text-white text-xs font-black"
+        >
+          Free Audit
+        </a>
+        <button
+          type="button"
+          onClick={openForm}
+          data-analytics-label="book_consultation"
+          data-analytics-location="pricing_sticky"
+          className="flex-1 py-3 rounded-xl border border-[#00283C]/20 text-[#00283C] text-xs font-black"
+        >
+          Book a Call
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Main page content ──────────────────────────────────────────────────────── */
 function PricingContent() {
+  const { openForm } = useForm();
   const [activeCategory, setActiveCategory] = useState<ServiceCategory>("All");
   const [activeId, setActiveId] = useState(pricingServices[0].id);
 
@@ -125,8 +159,30 @@ function PricingContent() {
               Transparent Pricing.<br />
               <span className="gradient-heading">No Surprises, Ever.</span>
             </h1>
-            <p className="text-gray-500 text-base leading-relaxed mb-8 max-w-2xl">
+            <p className="text-gray-500 text-base leading-relaxed mb-6 max-w-2xl">
               Every service has three clearly defined packages with published prices and feature lists. Pick what you need and know exactly what you&apos;re paying before you sign anything.
+            </p>
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 mb-6">
+              <a
+                href="/free-website-audit"
+                data-analytics-label="start_website_audit"
+                data-analytics-location="pricing_hero"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#00283C] text-white text-sm font-black hover:bg-[#003D5C] transition-colors"
+              >
+                Free Clinic Audit First <ArrowRight className="w-4 h-4" />
+              </a>
+              <button
+                type="button"
+                onClick={openForm}
+                data-analytics-label="book_consultation"
+                data-analytics-location="pricing_hero"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-[#00283C]/20 text-[#00283C] text-sm font-bold hover:bg-[#F8FAFC] transition-colors"
+              >
+                Book Free Strategy Call
+              </button>
+            </div>
+            <p className="text-xs text-gray-400 mb-5 max-w-xl">
+              Built for Houston dental &amp; aesthetic clinics that need more booked appointments — not vanity traffic.
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2">
               {["No hidden fees", "Cancel monthly plans anytime", "You own everything we build", "US market pricing"].map((t) => (
@@ -230,6 +286,9 @@ function PricingContent() {
 
       <WhySection />
       <BottomCTA />
+      <StickySalesBar />
+      {/* Spacer so sticky bar doesn't cover content on mobile */}
+      <div className="h-20 lg:hidden" aria-hidden />
     </>
   );
 }

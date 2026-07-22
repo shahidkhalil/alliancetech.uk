@@ -12,6 +12,7 @@ const features = [
   { icon: "🟢", title: "WhatsApp Integration", desc: "Booking confirmations, reminders, and follow-ups land straight in the patient's WhatsApp — the channel Houston patients already check first." },
   { icon: "🎙️", title: "Live Voice Agent", desc: "Patients can talk to the AI receptionist directly, in real time, and get a natural spoken conversation — not a robotic phone tree." },
   { icon: "📅", title: "Automated Appointment Booking", desc: "It checks your calendar and books the next available slot automatically, straight into your system. No human needed." },
+  { icon: "🚨", title: "Emergency Triage", desc: "Detects bleeding, severe pain, swelling, and other urgent symptoms — alerts your front desk, holds an emergency slot, and offers an immediate transfer." },
   { icon: "✅", title: "Instant Confirmations & Reminders", desc: "Every booking is confirmed by WhatsApp and email immediately, with automatic reminders that cut no-shows before they happen." },
   { icon: "🔁", title: "Missed-Call Follow-Ups", desc: "Calls back missed numbers automatically so no Houston patient who tried to reach you is ever left hanging." },
   { icon: "🧠", title: "Trained on Your Clinic", desc: "Trained on your services, prices, hours, and FAQs — gives accurate answers without ever putting patients on hold." },
@@ -30,7 +31,7 @@ const stats = [
 
 const faqs = [
   { q: "Does it sound natural?", a: "Yes. The AI speaks natural, fluent English — no accent issues, no hold music." },
-  { q: "What if a patient has a complex query?", a: "It handles common questions automatically and escalates complex cases to your human staff via WhatsApp." },
+  { q: "What if a patient has a complex query?", a: "It handles common questions automatically and escalates complex cases to your human staff via WhatsApp. For emergencies (bleeding, severe pain, swelling), it runs triage: alerts your front desk, holds an emergency slot, and offers an immediate transfer." },
   { q: "How long to set up?", a: "Typically 3–5 days. We train it on your clinic, test it, and go live." },
   { q: "Does it work with my existing number?", a: "Yes. We port your existing clinic number or set up a new dedicated line." },
   { q: "How many calls can it handle at once?", a: "Unlimited — it answers every call and website chat simultaneously. Unlike a human front desk, it never puts patients on hold or misses a call during peak hours, lunch, or after closing." },
