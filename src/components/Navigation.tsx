@@ -50,7 +50,7 @@ const navLinks: NavLink[] = [
     },
   },
   {
-    label: "Who It's For",
+    label: "Clinics",
     href: "#",
     dropdown: {
       heading: "Who It's For",
@@ -123,30 +123,24 @@ export default function Navigation() {
         scrolled ? "bg-white border-b border-gray-100 shadow-sm" : "bg-white/95 backdrop-blur-sm"
       }`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between gap-4 h-16 lg:h-[4.25rem]">
 
-            {/* Logo — horizontal lockup fits a header bar properly */}
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <a href="/" className="flex items-center bg-transparent">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/logo-horizontal.png"
-                  alt="Alliance Tech"
-                  width={1043}
-                  height={200}
-                  className="h-9 lg:h-11 w-auto object-contain bg-transparent"
-                  decoding="async"
-                  fetchPriority="high"
-                />
-              </a>
-              <a href="/contact"
-                className="hidden xl:inline-flex items-center gap-1 text-xs font-semibold text-gray-400 hover:text-[#00283C] border-l border-gray-200 pl-3 transition-colors">
-                📍 Blackburn, UK
-              </a>
-            </div>
+            {/* Logo */}
+            <a href="/" className="flex items-center flex-shrink-0 bg-transparent">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-horizontal.png"
+                alt="Alliance Tech"
+                width={1043}
+                height={200}
+                className="h-8 lg:h-9 w-auto object-contain bg-transparent"
+                decoding="async"
+                fetchPriority="high"
+              />
+            </a>
 
             {/* Desktop nav */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 gap-0.5">
               {navLinks.map((link) =>
                 link.dropdown ? (
                   <div key={link.label} className="relative group">
@@ -154,10 +148,10 @@ export default function Navigation() {
                       type="button"
                       aria-label={`${link.label} menu`}
                       aria-haspopup="true"
-                      className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-[#00283C] transition-colors px-3 py-2 rounded-md hover:bg-gray-50"
+                      className="flex items-center gap-0.5 whitespace-nowrap text-[13px] font-medium text-gray-600 hover:text-[#00283C] transition-colors px-2.5 py-2 rounded-md hover:bg-gray-50"
                     >
                       {link.label}
-                      <ChevronDown className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-200" />
+                      <ChevronDown className="w-3 h-3 opacity-60 group-hover:rotate-180 transition-transform duration-200" />
                     </button>
 
                     {/* Transparent bridge + dropdown panel — pt-2 closes the hover gap */}
@@ -199,39 +193,41 @@ export default function Navigation() {
                   </div>
                 ) : (
                   <a key={link.label} href={link.href}
-                    className="text-sm font-medium text-gray-700 hover:text-[#00283C] transition-colors px-3 py-2 rounded-md hover:bg-gray-50 relative group">
+                    className="whitespace-nowrap text-[13px] font-medium text-gray-600 hover:text-[#00283C] transition-colors px-2.5 py-2 rounded-md hover:bg-gray-50 relative group">
                     {link.label}
-                    <span className="absolute bottom-0 left-3 right-3 h-px bg-[#00283C] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                    <span className="absolute bottom-0.5 left-2.5 right-2.5 h-px bg-[#00283C] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                   </a>
                 )
               )}
             </div>
 
             {/* Desktop CTA */}
-            <div className="hidden lg:flex items-center gap-2">
+            <div className="hidden lg:flex items-center flex-shrink-0 gap-1.5">
               <a
                 href={UK_WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-[#25D366] hover:bg-[#F0F7FA] transition-colors"
+                aria-label="Chat on WhatsApp"
+                title="WhatsApp"
+                className="inline-flex items-center justify-center w-9 h-9 rounded-full text-[#25D366] hover:bg-[#ECFDF5] transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
               </a>
               <a
                 href={UK_PHONE_TEL}
-                className="hidden xl:inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-[#00283C] px-2"
+                aria-label={`Call ${UK_PHONE_DISPLAY}`}
+                title={UK_PHONE_DISPLAY}
+                className="inline-flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-[#00283C] hover:bg-gray-50 transition-colors"
               >
-                <Phone className="w-3.5 h-3.5" />
-                {UK_PHONE_DISPLAY}
+                <Phone className="w-4 h-4" />
               </a>
               <button
                 onClick={openForm}
                 data-analytics-label="book_consultation"
                 data-analytics-location="desktop_navigation"
-                className="btn-dark px-5 py-2.5 text-sm"
+                className="btn-dark ml-1 px-4 py-2 text-[13px] whitespace-nowrap"
               >
-                Book a Free Audit
+                Free Audit
               </button>
             </div>
 
@@ -248,7 +244,7 @@ export default function Navigation() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-          <div className="fixed top-20 left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-lg max-h-[80vh] overflow-y-auto">
+          <div className="fixed top-16 lg:top-[4.25rem] left-0 right-0 z-40 bg-white border-b border-gray-100 shadow-lg max-h-[80vh] overflow-y-auto">
             <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
               {navLinks.map((link) => (
                 <div key={link.label}>
