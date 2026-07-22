@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const CF = "https://asia-south1-alliancepak.cloudfunctions.net";
+const CF = "https://asia-south1-alliance-tech-656ba.cloudfunctions.net";
 
 const nextConfig = {
   output: "export",

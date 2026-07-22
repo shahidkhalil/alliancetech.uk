@@ -7,7 +7,7 @@ import { priceToNumber, trackConversion, trackEvent } from "@/lib/analytics";
 
 const ENDPOINT =
   process.env.NEXT_PUBLIC_PACKAGE_ORDER_ENDPOINT ||
-  "https://asia-south1-alliancepak.cloudfunctions.net/packageOrder";
+  "https://asia-south1-alliance-tech-656ba.cloudfunctions.net/packageOrder";
 
 export default function PackageOrderForm() {
   const { selection, closeOrder } = usePackageOrder();

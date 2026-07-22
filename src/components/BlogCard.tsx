@@ -12,17 +12,26 @@ function likedKey(slug: string) {
   return `alliance_liked_${slug}`;
 }
 
-export default function BlogCard({ post, delay = 0 }: { post: BlogPost; delay?: number }) {
+export default function BlogCard({
+  post,
+  delay = 0,
+  href,
+}: {
+  post: BlogPost;
+  delay?: number;
+  href?: string;
+}) {
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const { entrance, hoverProps } = useCardMotion();
+  const postHref = href || `/blog/${post.slug}`;
 
   const url =
     typeof window !== "undefined"
-      ? `${window.location.origin}/blog/${post.slug}`
-      : `https://alliancetechltd.com/blog/${post.slug}`;
+      ? `${window.location.origin}${postHref}`
+      : `https://alliancetechltd.com${postHref}`;
 
   useEffect(() => {
     setLiked(localStorage.getItem(likedKey(post.slug)) === "1");
@@ -73,12 +82,24 @@ export default function BlogCard({ post, delay = 0 }: { post: BlogPost; delay?: 
       className="group card-white card-feature card-shine card-motion card-shadow-hover flex flex-col overflow-hidden rounded-2xl h-full relative"
     >
       <span aria-hidden className="card-shine-sweep" />
-      <a href={`/blog/${post.slug}`} className="block relative overflow-hidden z-[1]">
+      <a href={postHref} className="block relative overflow-hidden z-[1]">
         <div
-          className="h-44 px-6 flex flex-col justify-end pb-5 transition-transform duration-300 ease-out group-hover:scale-[1.03] origin-center"
-          style={{ background: post.imageGradient }}
+          className="h-44 px-6 flex flex-col justify-end pb-5 transition-transform duration-300 ease-out group-hover:scale-[1.03] origin-center relative"
+          style={
+            post.coverImageUrl
+              ? undefined
+              : { background: post.imageGradient }
+          }
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-60" />
+          {post.coverImageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={post.coverImageUrl}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-70" />
           <span className="relative inline-flex self-start text-[10px] font-bold uppercase tracking-widest text-white/90 bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-full mb-3 border border-white/20">
             {post.location}, {post.state}
           </span>

@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useForm } from "@/context/FormContext";
 
 const heroSlides = [
@@ -64,6 +65,18 @@ export default function Hero() {
   const { openForm } = useForm();
   const [slide, setSlide] = useState(0);
   const n = heroSlides.length;
+  const sectionRef = useRef<HTMLElement>(null);
+  const reducedMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const contentScale = useTransform(scrollYProgress, [0, 1], reducedMotion ? [1, 1] : [1, 0.88]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], reducedMotion ? [1, 1] : [1, 0.35]);
+  const contentY = useTransform(scrollYProgress, [0, 1], reducedMotion ? [0, 0] : [0, 80]);
+  const glowScale = useTransform(scrollYProgress, [0, 1], reducedMotion ? [1, 1] : [1, 1.35]);
 
   useEffect(() => {
     const t = setInterval(() => setSlide((p) => (p + 1) % n), 5000);
@@ -73,7 +86,7 @@ export default function Hero() {
   const s = heroSlides[slide];
 
   return (
-    <section className="relative pt-28 pb-0 overflow-hidden bg-white">
+    <section ref={sectionRef} className="relative pt-28 pb-0 overflow-hidden bg-white">
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -82,12 +95,19 @@ export default function Hero() {
           backgroundSize: "60px 60px",
         }}
       />
-      <div
+      <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[420px] rounded-full pointer-events-none opacity-[0.08]"
-        style={{ background: "radial-gradient(circle, #00B4D8, transparent 70%)", filter: "blur(80px)" }}
+        style={{
+          background: "radial-gradient(circle, #00B4D8, transparent 70%)",
+          filter: "blur(80px)",
+          scale: glowScale,
+        }}
       />
 
-      <div className="relative min-h-[70vh] flex items-center">
+      <motion.div
+        className="relative min-h-[70vh] flex items-center will-change-transform"
+        style={{ scale: contentScale, opacity: contentOpacity, y: contentY }}
+      >
         <div className="max-w-4xl mx-auto px-6 text-center py-16">
           <div key={slide}>
             <span className="badge-light inline-flex items-center gap-2 mb-6">
@@ -150,7 +170,7 @@ export default function Hero() {
             </a>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="border-t border-b border-gray-100 bg-[#F8FAFC] py-4 overflow-hidden">
         <div className="flex overflow-hidden">

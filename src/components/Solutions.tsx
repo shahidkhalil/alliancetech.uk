@@ -1,11 +1,11 @@
 "use client";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef, useState } from "react";
 import {
   Megaphone, Globe, Smartphone, MapPin, Search,
   MessageCircle, ClipboardList, Bot
 } from "lucide-react";
-import { ServiceShowcaseCard, StaggerGrid } from "@/components/ui/Card";
+import { ServiceShowcaseCard } from "@/components/ui/Card";
 
 const services = [
   {
@@ -86,6 +86,7 @@ export default function Solutions() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
+  const reducedMotion = useReducedMotion();
 
   return (
     <section
@@ -100,9 +101,9 @@ export default function Solutions() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
 
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.96 }}
+          animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+          transition={{ duration: 0.55, ease: [0, 0, 0.2, 1] }}
           className="max-w-2xl mx-auto text-center mb-14"
         >
           <span className="badge-light mb-5">WHAT WE DO</span>
@@ -115,31 +116,44 @@ export default function Solutions() {
           </p>
         </motion.div>
 
-        <StaggerGrid className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-8">
-          {services.map((s) => (
-            <ServiceShowcaseCard
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-8">
+          {services.map((s, i) => (
+            <motion.div
               key={s.title}
-              href={s.href}
-              icon={s.Icon}
-              title={s.title}
-              subtitle={s.subtitle}
-              description={s.desc}
-              stat={s.stat}
-              popular={s.popular}
-              showAccentBar={hoveredHref === s.href}
-              accentLayoutId="homeServiceCardBorder"
-              onPointerEnter={() => setHoveredHref(s.href)}
-              onPointerLeave={() => setHoveredHref((prev) => (prev === s.href ? null : prev))}
-            />
+              className="h-full"
+              initial={reducedMotion ? false : { opacity: 0, scale: 0.86, y: 28 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{
+                duration: 0.5,
+                delay: reducedMotion ? 0 : i * 0.06,
+                ease: [0, 0, 0.2, 1],
+              }}
+            >
+              <ServiceShowcaseCard
+                href={s.href}
+                icon={s.Icon}
+                title={s.title}
+                subtitle={s.subtitle}
+                description={s.desc}
+                stat={s.stat}
+                popular={s.popular}
+                showAccentBar={hoveredHref === s.href}
+                accentLayoutId="homeServiceCardBorder"
+                onPointerEnter={() => setHoveredHref(s.href)}
+                onPointerLeave={() => setHoveredHref((prev) => (prev === s.href ? null : prev))}
+              />
+            </motion.div>
           ))}
-        </StaggerGrid>
+        </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.97 }}
-          animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ delay: 0.55, type: "spring", stiffness: 300, damping: 26 }}
-          whileHover={{ scale: 1.01, y: -2 }}
-          whileTap={{ scale: 0.98 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.94 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.5, ease: [0, 0, 0.2, 1] }}
+          whileHover={reducedMotion ? undefined : { scale: 1.01, y: -2 }}
+          whileTap={reducedMotion ? undefined : { scale: 0.98 }}
           className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 card-cta-dark card-cta-glow"
         >
           <div className="flex items-center gap-3 relative z-[1]">

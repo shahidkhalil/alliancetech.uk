@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import PageWrapper from "@/components/PageWrapper";
-import BlogCard from "@/components/BlogCard";
-import { blogPosts } from "@/lib/blogData";
+import BlogPostsGrid from "@/components/BlogPostsGrid";
 
 export const metadata: Metadata = {
   title: "Clinic Growth Blog | UK AI Automation, SEO & Booking | Alliance Tech",
@@ -41,11 +40,7 @@ export default function BlogPage() {
       </section>
 
       <section className="py-14 lg:py-16 bg-[#F8FAFC]">
-        <div className="max-w-6xl mx-auto px-6 grid sm:grid-cols-2 gap-6">
-          {blogPosts.map((post, i) => (
-            <BlogCard key={post.slug} post={post} delay={i * 0.1} />
-          ))}
-        </div>
+        <BlogPostsGrid />
       </section>
     </PageWrapper>
   );

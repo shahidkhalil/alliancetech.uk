@@ -4,7 +4,7 @@ import type { AuditAnswers, BusinessGrowthReport } from "./businessAuditTypes";
 const ENDPOINT =
   process.env.NEXT_PUBLIC_BUSINESS_AUDIT_ENDPOINT ||
   process.env.NEXT_PUBLIC_AUDIT_ENDPOINT ||
-  "https://asia-south1-alliancepak.cloudfunctions.net/auditWebsite";
+  "https://asia-south1-alliance-tech-656ba.cloudfunctions.net/auditWebsite";
 
 function isValidReport(data: unknown): data is { report: BusinessGrowthReport } {
   if (!data || typeof data !== "object") return false;

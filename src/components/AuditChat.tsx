@@ -24,7 +24,7 @@ import {
 
 const AUDIT_ENDPOINT =
   process.env.NEXT_PUBLIC_AUDIT_ENDPOINT ||
-  "https://asia-south1-alliancepak.cloudfunctions.net/auditWebsite";
+  "https://asia-south1-alliance-tech-656ba.cloudfunctions.net/auditWebsite";
 
 interface Issue { title: string; impact: string; fix: string }
 interface MoneyMapRow {

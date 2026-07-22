@@ -1,15 +1,16 @@
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
 import { getAuth, type Auth } from "firebase/auth";
+import { getStorage, type FirebaseStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDRQGCPHq99dVFXIQVH0C4FlIz3GQhUR1Y",
-  authDomain: "alliancepak.firebaseapp.com",
-  projectId: "alliancepak",
-  storageBucket: "alliancepak.firebasestorage.app",
-  messagingSenderId: "636273208966",
-  appId: "1:636273208966:web:655a262305128f76c92b07",
-  measurementId: "G-R9WQSXQFLE",
+  apiKey: "AIzaSyClnwfLBrM088xsGzSc3ob9IU-IHJbW1VQ",
+  authDomain: "alliance-tech-656ba.firebaseapp.com",
+  projectId: "alliance-tech-656ba",
+  storageBucket: "alliance-tech-656ba.firebasestorage.app",
+  messagingSenderId: "232722176419",
+  appId: "1:232722176419:web:eeb2144c9ed1970c26e216",
+  measurementId: "G-34PXZF6WML",
 };
 
 function getApp(): FirebaseApp {
@@ -28,4 +29,11 @@ let _auth: Auth | undefined;
 export function getFirebaseAuth(): Auth {
   if (!_auth) _auth = getAuth(getApp());
   return _auth;
+}
+
+let _storage: FirebaseStorage | undefined;
+/** Lazy Storage — blog cover images and admin uploads. */
+export function getFirebaseStorage(): FirebaseStorage {
+  if (!_storage) _storage = getStorage(getApp());
+  return _storage;
 }

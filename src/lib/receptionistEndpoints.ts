@@ -3,7 +3,7 @@
  * Prefer same-origin /api/* (Firebase Hosting rewrites) — avoids CORS & CSP issues.
  * Fallback: cloudfunctions.net (NOT *.run.app — blocked by CSP multi-level subdomain rules).
  */
-const CF = "https://asia-south1-alliancepak.cloudfunctions.net";
+const CF = "https://asia-south1-alliance-tech-656ba.cloudfunctions.net";
 
 export const RECEPTIONIST_ENDPOINT =
   process.env.NEXT_PUBLIC_RECEPTIONIST_ENDPOINT || "/api/receptionist";

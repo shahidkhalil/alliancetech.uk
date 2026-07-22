@@ -12,6 +12,8 @@ export interface BlogPost {
   readTime: string;
   date: string;
   imageGradient: string;
+  /** Optional cover image from Firebase Storage (CMS). */
+  coverImageUrl?: string;
   /** Plain paragraphs (legacy). Prefer `sections` for SEO H2 structure. */
   content: string[];
   sections?: BlogSection[];

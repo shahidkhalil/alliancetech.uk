@@ -5,8 +5,8 @@
 const ALLOWED_ORIGINS = new Set([
   "https://alliancetechltd.com",
   "https://www.alliancetechltd.com",
-  "https://alliancepak.web.app",
-  "https://alliancepak.firebaseapp.com",
+  "https://alliance-tech-656ba.web.app",
+  "https://alliance-tech-656ba.firebaseapp.com",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
 ]);

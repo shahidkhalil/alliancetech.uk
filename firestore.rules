@@ -147,7 +147,64 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Lock everything else (audits, orders, appointments, cache = Admin SDK only).
+    // CMS blog posts — public read published only; admin full CRUD
+    match /blog_posts/{doc} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasAll(['slug', 'title', 'status', 'updatedAt'])
+        && request.resource.data.slug is string
+        && request.resource.data.slug.size() > 0
+        && request.resource.data.slug.size() <= 120
+        && request.resource.data.title is string
+        && request.resource.data.title.size() <= 200
+        && request.resource.data.status in ['draft', 'published']
+        && strMax('excerpt', 600)
+        && strMax('location', 80)
+        && strMax('state', 80)
+        && strMax('readTime', 40)
+        && strMax('date', 40)
+        && strMax('imageGradient', 200)
+        && strMax('metaTitle', 200)
+        && strMax('metaDescription', 400)
+        && strMax('coverImageUrl', 800);
+      allow delete: if isAdmin();
+    }
+
+    // Live visitor presence — public heartbeat create/update own session; admin read
+    match /presence/{sessionId} {
+      allow read: if isAdmin();
+      allow create, update: if request.resource.data.keys().hasAll(['path', 'updatedAt'])
+        && request.resource.data.keys().hasOnly([
+          'path', 'title', 'updatedAt', 'createdAt', 'userAgent', 'referrer'
+        ])
+        && request.resource.data.path is string
+        && request.resource.data.path.size() <= 300
+        && strMax('title', 200)
+        && strMax('userAgent', 400)
+        && strMax('referrer', 400)
+        && hasTimestamp('updatedAt');
+      allow delete: if isAdmin();
+    }
+
+    // Admin read-only for Function-written collections
+    match /orders/{doc} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+    match /appointments/{doc} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+    match /audits/{doc} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+    match /business_audits/{doc} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Lock everything else (cache = Admin SDK only).
     match /{document=**} {
       allow read, write: if false;
     }
