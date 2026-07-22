@@ -56,7 +56,19 @@ const NAV: { id: AdminTab; label: string; icon: typeof Inbox }[] = [
   { id: "database", label: "Database", icon: Database },
 ];
 
-const emptyBlog = {
+const emptyBlog: {
+  title: string;
+  slug: string;
+  excerpt: string;
+  location: string;
+  state: string;
+  readTime: string;
+  contentText: string;
+  status: "draft" | "published";
+  metaTitle: string;
+  metaDescription: string;
+  coverImageUrl: string;
+} = {
   title: "",
   slug: "",
   excerpt: "",
@@ -64,7 +76,7 @@ const emptyBlog = {
   state: "England",
   readTime: "5 min read",
   contentText: "",
-  status: "draft" as const,
+  status: "draft",
   metaTitle: "",
   metaDescription: "",
   coverImageUrl: "",
