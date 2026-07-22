@@ -209,7 +209,7 @@ export const blogPosts: BlogPost[] = [
         heading: "Try a live AI receptionist demo for your Houston clinic",
         paragraphs: [
           "If your Houston practice is still losing patients to unanswered calls, try the live AI receptionist demo on our site — or book a free clinic audit and we will show you exactly how much after-hours demand you are leaving on the table.",
-          "Alliance Tech is based in Houston, TX and builds AI automation for dental and aesthetic clinics across Texas and the United States.",
+          "Alliance Tech is based in Blackburn, UK and builds AI automation for dental and aesthetic clinics across the United Kingdom.",
         ],
       },
     ],

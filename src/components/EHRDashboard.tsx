@@ -97,14 +97,14 @@ export default function EHRDashboard() {
               <span className="gradient-heading">Go Fully Digital</span>
             </h2>
             <p className="text-gray-500 leading-relaxed mb-6">
-              Built for dental and aesthetic clinics across the United States. Patient records, appointments, prescriptions, and billing — all on one screen, accessible from any device.
+              Built for dental and aesthetic clinics across the United Kingdom. Patient records, appointments, prescriptions, and billing — all on one screen, accessible from any device.
             </p>
             <ul className="space-y-3 mb-8">
               {[
                 "Digital patient records — searchable, secure",
                 "Appointment calendar with SMS reminders",
                 "Digital prescriptions — print or WhatsApp",
-                "Billing & invoice tracking in USD",
+                "Billing & invoice tracking in GBP",
                 "Patient mobile app with booking",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2.5 text-sm text-gray-600">

@@ -117,7 +117,7 @@ export default function AIReceptionist() {
               It also cuts your <strong>no-show rate</strong> with automatic confirmations and reminders, and gives you a record of every conversation — so you finally see how many patients are calling after hours. It works alongside your existing staff and phone number, not instead of them: your team stops firefighting the phone and starts closing high-value treatments.
             </p>
             <p>
-              We built this for clinics right here in <strong>Houston, TX</strong> — from practices in Memorial and The Woodlands to Sugar Land, Katy, and Pearland — where patients are searching &ldquo;dentist near me&rdquo; or &ldquo;AI answering service Houston&rdquo; and expect an instant reply. If you&apos;re a dental, aesthetic, or medical practice anywhere in the Houston metro or elsewhere in Texas, our <strong>AI receptionist</strong> is trained on your services and hours from day one, so every Houston-area caller gets a fast, accurate answer — not a busy signal.
+              We built this for clinics right here in <strong>Blackburn, UK</strong> — and across Manchester, London, Birmingham, and beyond — where patients are searching &ldquo;dentist near me&rdquo; or &ldquo;AI answering service UK&rdquo; and expect an instant reply. If you&apos;re a dental, aesthetic, or medical practice anywhere in the UK, our <strong>AI receptionist</strong> is trained on your services and hours from day one, so every caller gets a fast, accurate answer — not a busy signal.
             </p>
           </div>
         </div>

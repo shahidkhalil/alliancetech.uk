@@ -19,14 +19,18 @@ export function OrganizationSchema() {
             "@type": "Organization",
             "@id": `${BASE_URL}/#organization`,
             name: "Alliance Tech",
+            legalName: "Alliance Tech Ltd",
             url: BASE_URL,
             logo: `${BASE_URL}/logo-horizontal.png`,
             email: "Sales@alliancetechltd.com",
+            telephone: "+44 161 515 7261",
             address: {
               "@type": "PostalAddress",
-              addressLocality: "Houston",
-              addressRegion: "TX",
-              addressCountry: "US",
+              streetAddress: "138 Laburnum Rd",
+              addressLocality: "Blackburn",
+              postalCode: "BB1 5EQ",
+              addressRegion: "England",
+              addressCountry: "GB",
             },
             sameAs: [
               "https://www.instagram.com/alliancetechofficial",
@@ -40,7 +44,7 @@ export function OrganizationSchema() {
             url: BASE_URL,
             name: "Alliance Tech",
             publisher: { "@id": `${BASE_URL}/#organization` },
-            inLanguage: "en-US",
+            inLanguage: "en-GB",
           },
         ],
       }}
@@ -67,9 +71,9 @@ export function ServiceSchema({
         url: `${BASE_URL}${path}`,
         provider: { "@id": `${BASE_URL}/#organization` },
         areaServed: [
-          { "@type": "City", name: "Houston" },
-          { "@type": "State", name: "Texas" },
-          { "@type": "Country", name: "United States" },
+          { "@type": "City", name: "Blackburn" },
+          { "@type": "AdministrativeArea", name: "England" },
+          { "@type": "Country", name: "United Kingdom" },
         ],
       }}
     />

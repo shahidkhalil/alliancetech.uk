@@ -27,7 +27,7 @@ export default function Guarantee() {
         >
           <div className="bg-[#00283C] px-8 py-4 flex items-center justify-between">
             <span className="text-xs font-bold text-white/60 uppercase tracking-widest">RISK-FREE GUARANTEE</span>
-            <span className="text-xs text-white/60">Alliance Tech (PVT) LTD</span>
+            <span className="text-xs text-white/60">Alliance Tech Ltd</span>
           </div>
 
           <div className="bg-white p-8 lg:p-12">

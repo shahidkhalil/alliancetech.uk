@@ -136,7 +136,7 @@ function buildGrowthReportUserHtml(lead) {
           </tr>
           <tr>
             <td style="padding:16px 32px 28px;text-align:center;border-top:1px solid #eef2f6;">
-              <p style="margin:0;font-size:12px;color:#94a3b8;">Alliance Tech · Sales@alliancetechltd.com · Houston, Texas</p>
+              <p style="margin:0;font-size:12px;color:#94a3b8;">Alliance Tech · Sales@alliancetechltd.com · Blackburn, UK</p>
             </td>
           </tr>
         </table>

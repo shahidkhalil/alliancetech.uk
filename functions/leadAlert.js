@@ -101,7 +101,7 @@ function buildAdminHtml(lead, badge, headline) {
           </tr>
           <tr>
             <td style="padding:16px 32px 28px;text-align:center;border-top:1px solid #eef2f6;">
-              <p style="margin:0;font-size:12px;color:#94a3b8;">Alliance Tech · Houston, Texas · <a href="${ADMIN_URL}" style="color:#0077A8;">Admin panel</a></p>
+              <p style="margin:0;font-size:12px;color:#94a3b8;">Alliance Tech · Blackburn, UK · <a href="${ADMIN_URL}" style="color:#0077A8;">Admin panel</a></p>
             </td>
           </tr>
         </table>

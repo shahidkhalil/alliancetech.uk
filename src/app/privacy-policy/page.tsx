@@ -3,7 +3,7 @@ import PageWrapper from "@/components/PageWrapper";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Alliance Tech",
-  description: "How Alliance Tech (PVT) LTD collects, uses, and protects your information.",
+  description: "How Alliance Tech Ltd collects, uses, and protects your information.",
   alternates: { canonical: "/privacy-policy" },
 };
 
@@ -90,7 +90,12 @@ export default function PrivacyPolicy() {
                 If you have questions about this Privacy Policy, contact us at{" "}
                 <a href="mailto:Sales@alliancetechltd.com" className="text-[#0077A8] font-semibold hover:underline">
                   Sales@alliancetechltd.com
-                </a>.
+                </a>
+                , call{" "}
+                <a href="tel:+441615157261" className="text-[#0077A8] font-semibold hover:underline">
+                  +44 161 515 7261
+                </a>
+                , or write to Alliance Tech Ltd, 138 Laburnum Rd, Blackburn BB1 5EQ, United Kingdom.
               </p>
             </div>
           </div>

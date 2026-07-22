@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ArrowRight, CheckCircle2, Loader2, Mail, MessageCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import { useForm } from "@/context/FormContext";
@@ -128,7 +128,7 @@ function ContactQuickForm() {
             markStarted();
             setForm((p) => ({ ...p, phone: e.target.value }));
           }}
-          placeholder="+1 713 …"
+          placeholder="+44 161 …"
           autoComplete="tel"
           className="w-full px-3.5 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-[#0E7C6B] focus:ring-2 focus:ring-[#0E7C6B]/10"
           required
@@ -201,7 +201,7 @@ export default function Contact() {
       <section className="py-12 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           {/* Instant actions — mobile-first for sales */}
-          <div className="grid sm:grid-cols-3 gap-3 mb-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
             <a
               href="/free-website-audit"
               data-analytics-label="start_website_audit"
@@ -209,6 +209,12 @@ export default function Contact() {
               className="flex items-center justify-center gap-2 rounded-xl bg-[#00283C] text-white font-bold text-sm py-3.5 hover:bg-[#003D5C] transition-colors"
             >
               <MessageCircle className="w-4 h-4" /> Free Website Audit
+            </a>
+            <a
+              href="tel:+441615157261"
+              className="flex items-center justify-center gap-2 rounded-xl border border-[#00283C]/15 text-[#00283C] font-bold text-sm py-3.5 hover:bg-[#F8FAFC] transition-colors"
+            >
+              <Phone className="w-4 h-4" /> +44 161 515 7261
             </a>
             <a
               href="mailto:Sales@alliancetechltd.com?subject=Clinic%20inquiry"
@@ -226,6 +232,15 @@ export default function Contact() {
             >
               Book Strategy Call
             </button>
+          </div>
+
+          <div className="mb-10 rounded-2xl border border-gray-100 bg-[#F8FAFC] px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-3 text-sm text-gray-600">
+            <MapPin className="w-4 h-4 text-[#0077A8] flex-shrink-0" />
+            <p>
+              <span className="font-semibold text-[#00283C]">Alliance Tech Ltd</span>
+              {" — "}
+              138 Laburnum Rd, Blackburn BB1 5EQ, United Kingdom
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">

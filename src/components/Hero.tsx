@@ -4,7 +4,7 @@ import { useForm } from "@/context/FormContext";
 
 const heroSlides = [
   {
-    badge: "AI Automation for Houston Clinics",
+    badge: "AI Automation for UK Clinics",
     headline: (
       <>
         Your Front Desk Can&apos;t Answer
@@ -12,15 +12,15 @@ const heroSlides = [
         Every Call. <span className="gradient-heading">Our AI Can.</span>
       </>
     ),
-    sub: "A 24/7 AI receptionist that answers calls, chats, and WhatsApp, books appointments, and sends reminders — so your Houston clinic never misses another patient.",
+    sub: "A 24/7 AI receptionist that answers calls, chats, and WhatsApp, books appointments, and sends reminders — so your UK clinic never misses another patient.",
     cta: { label: "Talk to Our AI Now", href: "/ai-receptionist" },
     showChatProof: true,
   },
   {
-    badge: "Houston's Top Reviewed Clinic Growth Agency",
+    badge: "UK's Top Reviewed Clinic Growth Agency",
     headline: (
       <>
-        Most Houston Clinics Lose Patients
+        Most UK Clinics Lose Patients
         <br />
         to Competitors Every Day. <span className="gradient-heading">We Fix That.</span>
       </>
@@ -37,7 +37,7 @@ const heroSlides = [
         <span className="gradient-heading">Make Sure They Find You.</span>
       </>
     ),
-    sub: "Fast, mobile-first clinic websites and local SEO that put you at the top of 'dentist near me in Houston' — and turn searchers into booked appointments.",
+    sub: "Fast, mobile-first clinic websites and local SEO that put you at the top of 'dentist near me in Blackburn' — and turn searchers into booked appointments.",
     cta: { label: "Free Website Audit", href: "/free-website-audit" },
   },
   {
@@ -49,14 +49,14 @@ const heroSlides = [
         <span className="gradient-heading">Fill Your Calendar Instead.</span>
       </>
     ),
-    sub: "Targeted campaigns built only for dental and aesthetic clinics in Houston — every dollar tracked, every lead measured, an average 4x return on ad spend.",
+    sub: "Targeted campaigns built only for dental and aesthetic clinics in the UK — every pound tracked, every lead measured, an average 4x return on ad spend.",
     cta: { label: "Free Website Audit", href: "/free-website-audit" },
   },
 ];
 
 const marqueeItems = [
-  "Dental Clinics", "Aesthetic Clinics", "Houston", "Sugar Land",
-  "The Woodlands", "AI Receptionist", "WhatsApp AI", "Clinic Websites",
+  "Dental Clinics", "Aesthetic Clinics", "Blackburn", "Manchester",
+  "London", "AI Receptionist", "WhatsApp AI", "Clinic Websites",
   "Patient Apps", "Local SEO", "Google Ads", "EHR Platform",
 ];
 
@@ -138,50 +138,17 @@ export default function Hero() {
             ))}
           </div>
 
-          {/* One sales path: free audit (lead) → pricing (intent) → call (close) */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href="/free-website-audit"
-              data-analytics-label="start_website_audit"
-              data-analytics-location="hero"
-              className="btn-dark px-8 py-4 text-base w-full sm:w-auto text-center"
-            >
+            <button type="button" onClick={openForm} className="btn-dark px-8 py-4 text-base w-full sm:w-auto">
               Get Your Free Clinic Audit
-            </a>
+            </button>
             <a
-              href="/pricing"
-              data-analytics-label="view_pricing"
-              data-analytics-location="hero"
+              href={s.cta.href}
               className="flex items-center gap-2 text-sm font-semibold text-[#0077A8] border border-[#0077A8]/30 px-6 py-4 rounded-md hover:bg-[#0077A8]/5 transition-colors w-full sm:w-auto justify-center"
             >
-              See Plans &amp; Pricing
+              {s.cta.label}
             </a>
           </div>
-          <p className="mt-4 text-sm text-gray-500">
-            Prefer to talk?{" "}
-            <button
-              type="button"
-              onClick={openForm}
-              data-analytics-label="book_consultation"
-              data-analytics-location="hero"
-              className="font-semibold text-[#0077A8] hover:underline"
-            >
-              Book a free 30-min strategy call
-            </button>
-            {s.cta.href === "/ai-receptionist" && (
-              <>
-                {" · "}
-                <a
-                  href="/ai-receptionist"
-                  data-analytics-label="start_ai_demo"
-                  data-analytics-location="hero"
-                  className="font-semibold text-[#0077A8] hover:underline"
-                >
-                  Try the AI receptionist
-                </a>
-              </>
-            )}
-          </p>
         </div>
       </div>
 

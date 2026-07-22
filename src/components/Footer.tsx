@@ -30,7 +30,7 @@ export default function Footer() {
               />
             </a>
             <p className="text-white/60 text-sm leading-relaxed">
-              America&apos;s specialist digital marketing agency for dental and aesthetic clinics.
+              The UK&apos;s specialist digital marketing agency for dental and aesthetic clinics.
             </p>
             <p className="text-white/60 text-xs mt-3 font-semibold italic">Digitally Yours</p>
 
@@ -81,7 +81,7 @@ export default function Footer() {
                 { label: "Blog", href: "/blog" },
                 { label: "Pricing", href: "/pricing" },
                 { label: "Contact", href: "/contact" },
-                { label: "Dental Clinics Houston", href: "/dental-clinic-houston" },
+                { label: "Dental Clinics UK", href: "/dental-clinic-houston" },
               ].map((l) => (
                 <li key={l.label}>
                   <a href={l.href} className="text-sm text-white/60 hover:text-white transition-colors">{l.label}</a>
@@ -97,17 +97,24 @@ export default function Footer() {
               <a href="mailto:Sales@alliancetechltd.com" className="block text-sm text-white/60 hover:text-white transition-colors">
                 Sales@alliancetechltd.com
               </a>
+              <a href="tel:+441615157261" className="block text-sm text-white/60 hover:text-white transition-colors">
+                +44 161 515 7261
+              </a>
               <a href="/contact" className="block text-sm text-white/60 hover:text-white transition-colors">
                 Contact us
               </a>
-              <p className="text-sm text-white/60">Houston, Texas</p>
+              <p className="text-sm text-white/60">
+                138 Laburnum Rd<br />
+                Blackburn BB1 5EQ<br />
+                United Kingdom
+              </p>
             </div>
           </div>
         </div>
 
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/60">
-          <p>© {new Date().getFullYear()} Alliance Tech (PVT) LTD. All rights reserved.</p>
-          <p>Specialist digital marketing for dental & aesthetic clinics across the United States.</p>
+          <p>© {new Date().getFullYear()} Alliance Tech Ltd. All rights reserved.</p>
+          <p>Specialist digital marketing for dental & aesthetic clinics across the United Kingdom.</p>
           <div className="flex items-center gap-4">
             <a href="/privacy-policy" className="hover:text-white/60 transition-colors">Privacy Policy</a>
             <a href="/terms-of-service" className="hover:text-white/60 transition-colors">Terms of Service</a>

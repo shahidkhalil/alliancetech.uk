@@ -11,8 +11,8 @@ const services = [
   {
     Icon: Bot,
     title: "AI Receptionist",
-    subtitle: "Your Houston clinic's AI front desk · from $500/mo",
-    desc: "One AI front desk for Houston clinics — voice, WhatsApp, and web chat. Answers, books, sends reminders, and never misses a patient.",
+    subtitle: "Your UK clinic's AI front desk · from $500/mo",
+    desc: "One AI front desk for UK clinics — voice, WhatsApp, and web chat. Answers, books, sends reminders, and never misses a patient.",
     stat: "0 missed calls, 24/7",
     href: "/ai-receptionist",
     popular: true,
@@ -39,7 +39,7 @@ const services = [
     Icon: Globe,
     title: "Clinic Websites",
     subtitle: "Fast. Professional. Converting.",
-    desc: "Built for American clinics — mobile-first, SEO-ready, and designed to turn visitors into booked appointments.",
+    desc: "Built for UK clinics — mobile-first, SEO-ready, and designed to turn visitors into booked appointments.",
     stat: "Live in 7 days",
     href: "/clinic-website-design",
     popular: false,
@@ -75,7 +75,7 @@ const services = [
     Icon: ClipboardList,
     title: "EHR Platform",
     subtitle: "Go fully paperless",
-    desc: "Patient records, prescriptions, billing, and appointments — all in one screen. Built for US clinics.",
+    desc: "Patient records, prescriptions, billing, and appointments — all in one screen. Built for UK clinics.",
     stat: "100% paperless",
     href: "/ehr-platform",
     popular: false,
@@ -111,7 +111,7 @@ export default function Solutions() {
             <span className="gradient-heading">under one roof.</span>
           </h2>
           <p className="text-gray-500 text-base leading-relaxed">
-            We don&apos;t do general marketing. Everything we build is designed for dental and aesthetic clinics across the United States — the right audience, the right channels, real results.
+            We don&apos;t do general marketing. Everything we build is designed for dental and aesthetic clinics across the United Kingdom — the right audience, the right channels, real results.
           </p>
         </motion.div>
 
@@ -145,12 +145,12 @@ export default function Solutions() {
           <div className="flex items-center gap-3 relative z-[1]">
             <MapPin className="w-5 h-5 text-[#00B4D8] flex-shrink-0" strokeWidth={2} />
             <div>
-              <p className="text-white font-bold text-sm">Houston-based — serving clinics across the United States</p>
-              <p className="text-white/50 text-xs mt-0.5">Houston · Los Angeles · Chicago · Dallas · and beyond</p>
+              <p className="text-white font-bold text-sm">Blackburn-based — serving clinics across the United Kingdom</p>
+              <p className="text-white/50 text-xs mt-0.5">Blackburn · Manchester · London · Birmingham · and beyond</p>
             </div>
           </div>
-          <a href="/dental-clinic-houston" className="relative z-[1] flex-shrink-0 btn-dark px-5 py-2.5 text-sm whitespace-nowrap">
-            Houston Clinics →
+          <a href="/contact" className="relative z-[1] flex-shrink-0 btn-dark px-5 py-2.5 text-sm whitespace-nowrap">
+            UK Clinics →
           </a>
         </motion.div>
       </div>

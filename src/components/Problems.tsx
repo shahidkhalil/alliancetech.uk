@@ -8,7 +8,7 @@ const problems = [
   { icon: "📍", title: "Invisible on Google Maps", desc: "If your clinic doesn't appear in the top 3 when someone searches 'dentist near me', you don't exist to that patient." },
   { icon: "💸", title: "Ad spend wasted on wrong audiences", desc: "Running Facebook or Google ads without clinic-specific targeting burns budget on people who will never become patients." },
   { icon: "📄", title: "Paper records holding you back", desc: "Manual registers, lost files, prescription errors — paper-based clinics can't scale and lose patient trust." },
-  { icon: "💬", title: "WhatsApp inquiries going unanswered", desc: "American patients prefer WhatsApp. If you're not replying within minutes, they've already booked somewhere else." },
+  { icon: "💬", title: "WhatsApp inquiries going unanswered", desc: "UK patients prefer WhatsApp. If you're not replying within minutes, they've already booked somewhere else." },
   { icon: "🌐", title: "Outdated or no website", desc: "A clinic with no website — or a slow, unprofessional one — loses 60% of potential new patients before they ever call." },
 ];
 
@@ -26,7 +26,7 @@ export default function Problems() {
             <span className="gradient-heading">Marketing Budget — Here&apos;s Why</span>
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto">
-            After auditing 100+ dental and aesthetic clinics across the United States, we see the same 6 problems costing clinics thousands every month.
+            After auditing 100+ dental and aesthetic clinics across the United Kingdom, we see the same 6 problems costing clinics thousands every month.
           </p>
         </motion.div>
 
@@ -43,7 +43,7 @@ export default function Problems() {
         >
           <div>
             <p className="text-white font-bold text-base">Sound familiar? You&apos;re not alone.</p>
-            <p className="text-white/60 text-sm mt-0.5">We&apos;ve fixed all 6 for clinics across the United States — we can fix them for you too.</p>
+            <p className="text-white/60 text-sm mt-0.5">We&apos;ve fixed all 6 for clinics across the United Kingdom — we can fix them for you too.</p>
           </div>
           <a href="/#services" className="flex-shrink-0 bg-white text-[#00283C] font-bold px-5 py-2.5 rounded-md text-sm hover:bg-gray-100 transition-colors whitespace-nowrap">
             See Our Solutions →

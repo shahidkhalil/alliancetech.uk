@@ -6,17 +6,17 @@ import { FeatureCardGrid } from "@/components/ui/Card";
 import { Target, MapPin, Zap, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Alliance Tech | AI & Growth Agency for Clinics in the US",
+  title: "About Alliance Tech | AI & Growth Agency for Clinics in the UK",
   description:
-    "Meet Alliance Tech — the AI and growth agency helping US dental and aesthetic clinics win more patients with automation, websites, and SEO.",
+    "Meet Alliance Tech — the AI and growth agency helping UK dental and aesthetic clinics win more patients with automation, websites, and SEO.",
   alternates: { canonical: "/about" },
 };
 
 const values = [
   {
     icon: <MapPin className="w-5 h-5 text-[#0077A8]" strokeWidth={2} />,
-    title: "Built for the United States",
-    desc: "We understand the American healthcare market: patient behaviour, English communication, and local search patterns.",
+    title: "Built for the United Kingdom",
+    desc: "We understand the UK healthcare market: patient behaviour, English communication, and local search patterns.",
   },
   {
     icon: <Zap className="w-5 h-5 text-[#0077A8]" strokeWidth={2} />,
@@ -47,7 +47,7 @@ export default function About() {
         badge="ABOUT ALLIANCE TECH"
         headline="We Grow Clinics With"
         highlight="AI & Automation"
-        subheadline="Alliance Tech is America's first AI-powered healthcare growth agency, helping dental and aesthetic clinics attract more patients, automate operations, and scale faster."
+        subheadline="Alliance Tech is the UK's AI-powered healthcare growth agency, helping dental and aesthetic clinics attract more patients, automate operations, and scale faster."
         ctaText="Get Your Free Clinic Audit"
         ctaHref="/free-website-audit"
       />
@@ -59,7 +59,7 @@ export default function About() {
             Why We Built Alliance Tech
           </h2>
           <p className="text-gray-500 text-base lg:text-lg leading-relaxed">
-            We believe every talented doctor in the US deserves a full appointment book. Too many great clinics struggle to attract patients, not because their care is lacking, but because they lack the digital infrastructure to compete. We built Alliance Tech to fix that.
+            We believe every talented doctor in the UK deserves a full appointment book. Too many great clinics struggle to attract patients, not because their care is lacking, but because they lack the digital infrastructure to compete. We built Alliance Tech to fix that.
           </p>
         </div>
       </section>
@@ -132,7 +132,7 @@ export default function About() {
               What We Do
             </h2>
             <p className="text-gray-500 text-sm lg:text-base max-w-xl mx-auto">
-              A complete growth stack for healthcare clinics across the United States.
+              A complete growth stack for healthcare clinics across the United Kingdom.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 gap-3">

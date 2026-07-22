@@ -135,9 +135,9 @@ export default function Navigation() {
                   fetchPriority="high"
                 />
               </a>
-              <a href="/dental-clinic-houston"
+              <a href="/contact"
                 className="hidden xl:inline-flex items-center gap-1 text-xs font-semibold text-gray-400 hover:text-[#00283C] border-l border-gray-200 pl-3 transition-colors">
-                📍 Houston, TX
+                📍 Blackburn, UK
               </a>
             </div>
 

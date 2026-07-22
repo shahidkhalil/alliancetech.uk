@@ -159,7 +159,8 @@ export default function DentalClinicHouston() {
               instantly while also supporting patients inside the clinic.
             </p>
             <p>
-              Alliance Tech builds AI automation for dental clinics in Houston, TX. Our systems can answer
+              Alliance Tech builds AI automation for dental clinics across the UK, from our base in Blackburn.
+              Our systems can answer
               approved questions, collect patient details, qualify treatment interest, support appointment
               requests, and follow up with leads across phone, website, and WhatsApp channels. The automation
               supports your staff; it does not diagnose patients or replace clinical judgment.
