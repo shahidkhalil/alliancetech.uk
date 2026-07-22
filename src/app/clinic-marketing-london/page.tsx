@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import LocationPage, { locationMeta } from "@/components/LocationPage";
+import LocationPage from "@/components/LocationPage";
+import { locationMeta } from "@/lib/locationMeta";
 
 export const metadata: Metadata = locationMeta("London", "/clinic-marketing-london");
 
