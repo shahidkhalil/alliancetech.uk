@@ -25,16 +25,13 @@ export function resolveEndpoint(path: string, absolute: string): string {
   const override = process.env.NEXT_PUBLIC_RECEPTIONIST_ENDPOINT;
   if (override?.startsWith("http")) return override;
   const host = window.location.hostname;
-  // Firebase Hosting rewrites only apply on *.web.app / *.firebaseapp.com (and localhost dev).
-  if (
-    host.endsWith(".web.app") ||
-    host.endsWith(".firebaseapp.com") ||
-    host === "localhost" ||
-    host === "127.0.0.1"
-  ) {
+  // Firebase Hosting rewrites apply on *.web.app / *.firebaseapp.com.
+  // Localhost: call cloudfunctions.net from the browser — Next's rewrite proxy
+  // uses Node getaddrinfo, which can fail (ENOTFOUND → 500) even when dig works.
+  if (host.endsWith(".web.app") || host.endsWith(".firebaseapp.com")) {
     return path;
   }
-  // Custom domains (e.g. alliancetechltd.com) — use cloudfunctions.net (allowed by CSP).
+  // localhost / custom domains (e.g. alliancetechltd.com) — cloudfunctions.net (CSP-allowed).
   return absolute;
 }
 
