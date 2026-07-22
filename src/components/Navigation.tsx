@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Phone, MessageCircle } from "lucide-react";
 import { useForm } from "@/context/FormContext";
+import { UK_PHONE_DISPLAY, UK_PHONE_TEL, UK_WHATSAPP_URL } from "@/lib/ukContact";
 
 interface DropdownLink { label: string; href: string; }
 interface DropdownGroup { title: string; links: DropdownLink[]; }
@@ -68,6 +69,9 @@ const navLinks: NavLink[] = [
         { label: "About Us", href: "/about" },
         { label: "Our Mission", href: "/our-mission" },
         { label: "Contact Us", href: "/contact" },
+        { label: "Blackburn clinics", href: "/clinic-marketing-blackburn" },
+        { label: "Manchester clinics", href: "/clinic-marketing-manchester" },
+        { label: "London clinics", href: "/clinic-marketing-london" },
         { label: "FAQ", href: "/#faq" },
       ],
     },
@@ -204,7 +208,23 @@ export default function Navigation() {
             </div>
 
             {/* Desktop CTA */}
-            <div className="hidden lg:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-2">
+              <a
+                href={UK_WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-[#25D366] hover:bg-[#F0F7FA] transition-colors"
+              >
+                <MessageCircle className="w-4 h-4" />
+              </a>
+              <a
+                href={UK_PHONE_TEL}
+                className="hidden xl:inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-[#00283C] px-2"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                {UK_PHONE_DISPLAY}
+              </a>
               <button
                 onClick={openForm}
                 data-analytics-label="book_consultation"
@@ -283,7 +303,23 @@ export default function Navigation() {
                   )}
                 </div>
               ))}
-              <div className="pt-3 border-t border-gray-100 mt-2">
+              <div className="pt-3 border-t border-gray-100 mt-2 space-y-2">
+                <a
+                  href={UK_WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full py-3 text-sm font-bold rounded-lg border border-[#25D366]/30 text-[#128C7E]"
+                >
+                  <MessageCircle className="w-4 h-4" /> WhatsApp
+                </a>
+                <a
+                  href={UK_PHONE_TEL}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full py-3 text-sm font-bold rounded-lg border border-gray-200 text-[#00283C]"
+                >
+                  <Phone className="w-4 h-4" /> {UK_PHONE_DISPLAY}
+                </a>
                 <button
                   type="button"
                   onClick={() => { setMobileOpen(false); openForm(); }}

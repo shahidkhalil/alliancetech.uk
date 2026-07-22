@@ -82,6 +82,9 @@ export default function Footer() {
                 { label: "Pricing", href: "/pricing" },
                 { label: "Contact", href: "/contact" },
                 { label: "Dental Clinics UK", href: "/dental-clinic-houston" },
+                { label: "Blackburn", href: "/clinic-marketing-blackburn" },
+                { label: "Manchester", href: "/clinic-marketing-manchester" },
+                { label: "London", href: "/clinic-marketing-london" },
               ].map((l) => (
                 <li key={l.label}>
                   <a href={l.href} className="text-sm text-white/60 hover:text-white transition-colors">{l.label}</a>

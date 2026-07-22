@@ -24,16 +24,20 @@ export default function FinalCTA() {
             Get Your Free Clinic Audit
           </a>
           <a
-            href="/pricing"
-            data-analytics-label="view_pricing"
-            data-analytics-location="final_cta"
+            href="https://wa.me/441615157261"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm font-semibold text-white border border-white/30 px-6 py-4 rounded-md hover:bg-white/10 transition-colors w-full sm:w-auto justify-center"
           >
-            See Plans &amp; Pricing
+            WhatsApp +44 161 515 7261
           </a>
         </div>
         <p className="text-white/70 text-sm mt-5">
-          Ready to buy?{" "}
+          Prefer a call?{" "}
+          <a href="tel:+441615157261" className="font-semibold text-white underline underline-offset-2 hover:text-[#9FD3E8]">
+            +44 161 515 7261
+          </a>
+          {" · "}
           <button
             type="button"
             onClick={openForm}
@@ -44,7 +48,7 @@ export default function FinalCTA() {
             Book a free strategy call
           </button>
         </p>
-        <p className="text-white/75 text-xs mt-6">★★★★★ Rated 4.9/5 by 100+ clinics across the United Kingdom · 3–6 month minimum · Results guaranteed</p>
+        <p className="text-white/75 text-xs mt-6">★★★★★ 5.01 Google reviews · Blackburn, UK · Reply within 2 hours Mon–Sat · GDPR-aware · 3–6 month minimum</p>
       </div>
     </section>
   );

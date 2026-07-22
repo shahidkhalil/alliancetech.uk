@@ -1,4 +1,4 @@
-export type PricingPackage = {
+﻿export type PricingPackage = {
   name: string;
   price: string;
   period: string;
@@ -42,7 +42,7 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$500",
+        price: "£500",
         period: "/ month",
         description: "Put an AI assistant on your website that answers patients and captures every lead, 24/7.",
         features: [
@@ -56,11 +56,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start with Basic",
         popular: false,
-        addOns: ["Voice notes (patients speak) from $99/mo", "Extra conversations from $49/mo"],
+        addOns: ["Voice notes (patients speak) from £99/mo", "Extra conversations from £49/mo"],
       },
       {
         name: "Standard",
-        price: "$1,000",
+        price: "£1,000",
         period: "/ month",
         savings: "Most popular with busy clinics",
         description: "A full AI receptionist across web + WhatsApp that books patients and confirms automatically.",
@@ -76,11 +76,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Get Standard",
         popular: true,
-        addOns: ["Live voice-call agent from $199/mo", "CRM/EHR sync from $149/mo"],
+        addOns: ["Live voice-call agent from £199/mo", "CRM/EHR sync from £149/mo"],
       },
       {
         name: "Premium",
-        price: "$2,000",
+        price: "£2,000",
         period: "/ month",
         description: "A real-time voice + chat AI agent that runs your front desk end to end, at scale.",
         features: [
@@ -130,7 +130,7 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Clinic Automation",
-        price: "$1,499",
+        price: "£1,499",
         period: "/ month",
         savings: "One fixed price — no tiers",
         description: "Behind-the-scenes AI workflows that recover missed patients and keep your calendar full — without replacing your front desk.",
@@ -149,8 +149,8 @@ const allServices: ServicePricing[] = [
         cta: "Get Clinic Automation",
         popular: true,
         addOns: [
-          "AI Receptionist (front desk) sold separately — from $500/mo",
-          "Extra locations from $399/mo each",
+          "AI Receptionist (front desk) sold separately — from £500/mo",
+          "Extra locations from £399/mo each",
         ],
       },
     ],
@@ -162,7 +162,7 @@ const allServices: ServicePricing[] = [
       },
       {
         q: "Is the price really fixed?",
-        a: "Yes — $1,499/month covers the full clinic automation stack listed above. No Basic/Standard/Premium tiers. Extra clinic locations are optional add-ons.",
+        a: "Yes — £1,499/month covers the full clinic automation stack listed above. No Basic/Standard/Premium tiers. Extra clinic locations are optional add-ons.",
       },
       {
         q: "Do I need the AI Receptionist too?",
@@ -190,13 +190,13 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$1,500",
+        price: "£1,500",
         period: "one-time",
         description: "A professional, mobile-optimized site for new practices ready to establish a credible online presence.",
         features: [
           "5-page custom website (Home, Services, About, Blog, Contact)",
           "Mobile-first responsive design",
-          "HIPAA-friendly contact & inquiry forms",
+          "GDPR-friendly contact & inquiry forms",
           "Google Business Profile integration",
           "On-page SEO (titles, meta tags, schema)",
           "Appointment request form",
@@ -207,18 +207,18 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Your Project",
         popular: false,
-        addOns: ["Logo & brand identity from $799", "Blog content package from $299/mo"],
+        addOns: ["Logo & brand identity from £799", "Blog content package from £299/mo"],
       },
       {
         name: "Standard",
-        price: "$3,000",
+        price: "£3,000",
         period: "one-time",
         savings: "Most chosen by growing practices",
         description: "A conversion-optimized, fully branded website with patient booking — built to turn visitors into patients.",
         features: [
           "Up to 12 pages including service-specific landing pages",
           "Custom UI design aligned to your brand",
-          "HIPAA-compliant patient intake forms",
+          "GDPR-conscious patient intake forms",
           "Online booking integration (Zocdoc, Calendly, or custom)",
           "Google Analytics 4 + conversion tracking",
           "Core Web Vitals optimized (90+ PageSpeed score)",
@@ -231,11 +231,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Your Project",
         popular: true,
-        addOns: ["Monthly maintenance from $149/mo", "SEO retainer from $599/mo"],
+        addOns: ["Monthly maintenance from £149/mo", "SEO retainer from £599/mo"],
       },
       {
         name: "Premium",
-        price: "$5,000",
+        price: "£5,000",
         period: "one-time",
         description: "Enterprise-grade healthcare platform for multi-location groups, DSOs, and ambitious independent practices.",
         features: [
@@ -246,7 +246,7 @@ const allServices: ServicePricing[] = [
           "Telemedicine booking flow",
           "Multi-provider scheduling system",
           "AI chatbot integration",
-          "HIPAA compliance review",
+          "UK data protection review",
           "Heatmap & CRO setup (Hotjar or FullStory)",
           "Custom admin dashboard",
           "Unlimited revisions during build",
@@ -255,7 +255,7 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Book a Strategy Call",
         popular: false,
-        addOns: ["Ongoing SEO from $1,199/mo", "AI Receptionist from $399/mo"],
+        addOns: ["Ongoing SEO from £1,199/mo", "AI Receptionist from £399/mo"],
       },
     ],
     comparison: [
@@ -263,7 +263,7 @@ const allServices: ServicePricing[] = [
       { feature: "Custom design", basic: "Template-based", standard: "Custom", premium: "Fully custom + motion" },
       { feature: "Mobile optimization", basic: true, standard: true, premium: true },
       { feature: "Online booking integration", basic: false, standard: true, premium: true },
-      { feature: "HIPAA-compliant forms", basic: "Basic forms", standard: "HIPAA-compliant", premium: "HIPAA + patient portal" },
+      { feature: "GDPR-conscious forms", basic: "Basic forms", standard: "GDPR-conscious", premium: "GDPR + patient portal" },
       { feature: "EMR/EHR integration", basic: false, standard: false, premium: true },
       { feature: "PageSpeed score", basic: "70+", standard: "90+", premium: "95+" },
       { feature: "ADA accessibility", basic: false, standard: true, premium: true },
@@ -274,7 +274,7 @@ const allServices: ServicePricing[] = [
     ],
     faqs: [
       { q: "How long does it take to build a healthcare website?", a: "Basic sites deliver in 10 business days, Standard in 21, and Premium in 30. We run a structured sprint — discovery, wireframes, design, development, QA, then launch — with stage updates so you're never in the dark." },
-      { q: "Is the website HIPAA compliant?", a: "We don't store PHI directly on the site. All forms and third-party tools are configured to HIPAA-friendly standards. For a signed BAA, we partner with certified hosting providers or work with your compliance team." },
+      { q: "Is the website GDPR-ready?", a: "We don't store patient data directly on the site. All forms and third-party tools are configured to GDPR-friendly standards. For a data processing agreement, we partner with certified hosting providers or work with your compliance team." },
       { q: "Do I own the website after it's built?", a: "100%. You own the code, domain, and every asset. Full repo access is handed off at launch. We never lock you into proprietary platforms." },
       { q: "Can you migrate my existing website?", a: "Yes — content migration and URL redirects are included in Standard and Premium so your existing SEO equity carries over." },
       { q: "What CMS do you use?", a: "We build on Next.js for peak performance and SEO, with Sanity or a headless CMS for easy content updates — no developer needed for routine edits." },
@@ -292,7 +292,7 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$5,000",
+        price: "£5,000",
         period: "one-time",
         description: "A polished single-platform app for practices ready to give patients a branded mobile experience.",
         features: [
@@ -307,11 +307,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Your Project",
         popular: false,
-        addOns: ["Second platform add-on $4,999", "App maintenance from $149/mo"],
+        addOns: ["Second platform add-on £4,999", "App maintenance from £149/mo"],
       },
       {
         name: "Standard",
-        price: "$15,000",
+        price: "£15,000",
         period: "one-time",
         savings: "Best value for most practices",
         description: "A dual-platform patient app with real booking, secure messaging, and a health record viewer.",
@@ -329,11 +329,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Your Project",
         popular: true,
-        addOns: ["Telemedicine module from $4,999", "AI triage chatbot from $2,999"],
+        addOns: ["Telemedicine module from £4,999", "AI triage chatbot from £2,999"],
       },
       {
         name: "Premium",
-        price: "$30,000",
+        price: "£30,000",
         period: "one-time",
         description: "A full healthcare super-app — iOS, Android, and web — with AI features, telemedicine, and EMR integration.",
         features: [
@@ -352,7 +352,7 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Book a Strategy Call",
         popular: false,
-        addOns: ["Dedicated post-launch SLA from $599/mo"],
+        addOns: ["Dedicated post-launch SLA from £599/mo"],
       },
     ],
     comparison: [
@@ -372,8 +372,8 @@ const allServices: ServicePricing[] = [
       { q: "Do you build native or cross-platform apps?", a: "We use React Native for cross-platform builds that feel fully native — one codebase, two stores, no quality compromise." },
       { q: "How long does App Store approval take?", a: "Apple typically reviews in 1–3 days; Google Play in 1–7 days. We prep all assets and metadata to minimize rejections." },
       { q: "Can the app integrate with our existing EHR?", a: "Yes. Premium includes full EMR/EHR integration. Standard includes a record viewer that connects to most major EHRs via HL7 FHIR API." },
-      { q: "Who manages the app after launch?", a: "You own it entirely. We offer maintenance plans from $149/mo for updates, OS compatibility fixes, and ongoing improvements." },
-      { q: "Is the patient data HIPAA compliant?", a: "All patient data is encrypted in transit and at rest. We use HIPAA-eligible cloud infrastructure and can work with your compliance officer on a BAA." },
+      { q: "Who manages the app after launch?", a: "You own it entirely. We offer maintenance plans from £149/mo for updates, OS compatibility fixes, and ongoing improvements." },
+      { q: "Is patient data handled under GDPR?", a: "All patient data is encrypted in transit and at rest. We use UK GDPR-eligible cloud infrastructure and can work with your compliance officer on a DPA." },
     ],
     timeline: "60–120 business days",
     technologies: ["React Native", "Expo", "Node.js", "Firebase", "PostgreSQL", "Stripe", "Twilio"],
@@ -388,7 +388,7 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$249",
+        price: "£249",
         period: "/ month",
         description: "Automated appointment reminders and instant replies — stop losing patients to unanswered WhatsApp messages.",
         features: [
@@ -402,11 +402,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Get Started",
         popular: false,
-        addOns: ["Additional 500 messages +$49/mo", "Broadcast campaigns +$99/mo"],
+        addOns: ["Additional 500 messages +£49/mo", "Broadcast campaigns +£99/mo"],
       },
       {
         name: "Standard",
-        price: "$499",
+        price: "£499",
         period: "/ month",
         savings: "Most practices recoup the cost in 2 recovered bookings",
         description: "A full patient journey on WhatsApp — from first inquiry through confirmed booking and post-visit follow-up.",
@@ -424,11 +424,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Get Started",
         popular: true,
-        addOns: ["Additional flows +$99 each", "Multi-agent inbox +$149/mo"],
+        addOns: ["Additional flows +£99 each", "Multi-agent inbox +£149/mo"],
       },
       {
         name: "Premium",
-        price: "$999",
+        price: "£999",
         period: "/ month",
         description: "Unlimited messaging, AI-driven conversations, EMR sync, and broadcast campaigns — the full WhatsApp automation stack.",
         features: [
@@ -445,7 +445,7 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Book a Demo",
         popular: false,
-        addOns: ["AI voice escalation from $299/mo"],
+        addOns: ["AI voice escalation from £299/mo"],
       },
     ],
     comparison: [
@@ -465,7 +465,7 @@ const allServices: ServicePricing[] = [
     faqs: [
       { q: "Do you use the official WhatsApp Business API?", a: "Yes — we integrate through Meta's official Business API, which means no risk of your number being banned and full broadcast capability." },
       { q: "Can patients book appointments directly in WhatsApp?", a: "Yes on Standard and Premium. The AI guides them through a natural-language booking flow, checks availability, confirms, and sends a calendar invite." },
-      { q: "Is patient data safe over WhatsApp?", a: "WhatsApp uses end-to-end encryption for messages. We don't store PHI beyond what's needed for booking sync, and comply with HIPAA data handling principles." },
+      { q: "Is WhatsApp suitable for UK clinic enquiries?", a: "WhatsApp uses end-to-end encryption for messages. We don't store patient data beyond what's needed for booking sync, and comply with UK GDPR principles." },
       { q: "Can I still reply to patients manually?", a: "Absolutely. The AI handles routine messages automatically. You — or your team — can jump into any conversation at any time via the team inbox." },
       { q: "What's the difference between this and a chatbot?", a: "WhatsApp automation lives on a channel patients already use daily, with higher open rates (98% vs. email's ~20%). The AI is trained on your specific practice, not generic responses." },
     ],
@@ -482,7 +482,7 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$4,999",
+        price: "£4,999",
         period: "one-time",
         description: "A fully digital patient record system for solo or small practices ready to eliminate paper charts.",
         features: [
@@ -491,18 +491,18 @@ const allServices: ServicePricing[] = [
           "SOAP note templates",
           "Basic appointment scheduling",
           "Prescription generation (PDF)",
-          "Patient demographics & history",
+          "Patient demograpatient datacs & history",
           "Data import from Excel/CSV",
           "Role-based staff access",
           "6-month support included",
         ],
         cta: "Start Your Project",
         popular: false,
-        addOns: ["Additional provider +$499", "Patient mobile app from $4,999"],
+        addOns: ["Additional provider +£499", "Patient mobile app from £4,999"],
       },
       {
         name: "Standard",
-        price: "$9,999",
+        price: "£9,999",
         period: "one-time",
         savings: "Most practices recover the investment in under 90 days",
         description: "A complete EHR for growing multi-provider practices — scheduling, billing, prescriptions, and patient management unified.",
@@ -521,11 +521,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Your Project",
         popular: true,
-        addOns: ["Branded patient mobile app from $9,999", "Telehealth module +$3,999"],
+        addOns: ["Branded patient mobile app from £9,999", "Telehealth module +£3,999"],
       },
       {
         name: "Premium",
-        price: "From $19,999",
+        price: "From £19,999",
         period: "one-time",
         description: "Enterprise EHR for large groups, DSOs, and multi-specialty networks — infinitely scalable, deeply customized.",
         features: [
@@ -544,7 +544,7 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Book a Strategy Call",
         popular: false,
-        addOns: ["Ongoing support retainer from $999/mo", "Staff training workshop from $1,499"],
+        addOns: ["Ongoing support retainer from £999/mo", "Staff training workshop from £1,499"],
       },
     ],
     comparison: [
@@ -561,7 +561,7 @@ const allServices: ServicePricing[] = [
       { feature: "Post-delivery support", basic: "6 months", standard: "1 year", premium: "2 years" },
     ],
     faqs: [
-      { q: "Is the EHR HIPAA compliant?", a: "Yes. All patient data is stored on HIPAA-eligible cloud infrastructure, encrypted at rest and in transit, with role-based access controls and full audit logging. We sign a BAA." },
+      { q: "Is the EHR GDPR-ready?", a: "Yes. All patient data is stored on UK GDPR-eligible cloud infrastructure, encrypted at rest and in transit, with role-based access controls and full audit logging. We sign a DPA." },
       { q: "How long does implementation take?", a: "Basic: 4–6 weeks. Standard: 8–10 weeks. Premium: 12–16 weeks, depending on custom requirements. We include data migration from your existing records." },
       { q: "Can you migrate our existing patient records?", a: "Yes — data migration is included in all plans. We import from paper scans, Excel/CSV, or your current EHR system." },
       { q: "Does it work for our specialty?", a: "We've built EHRs for dental, dermatology, aesthetic, OB/GYN, orthopedics, and multi-specialty practices. Note templates and workflows are customized per specialty." },
@@ -570,7 +570,7 @@ const allServices: ServicePricing[] = [
     timeline: "4–16 weeks depending on plan and customization",
     technologies: ["Next.js", "PostgreSQL", "AWS", "HL7 FHIR", "Twilio", "Stripe", "Firebase Auth"],
     support: "6 months to 2 years of post-delivery support included by plan",
-    guarantee: "HIPAA-compliant or we fix it — guaranteed before final delivery.",
+    guarantee: "GDPR-conscious or we fix it — guaranteed before final delivery.",
   },
 {
     id: "local-seo",
@@ -580,7 +580,7 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$300",
+        price: "£300",
         period: "/ month",
         description: "A strong local SEO foundation for single-location practices ready to start appearing in Google's local pack.",
         features: [
@@ -595,11 +595,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Growing",
         popular: false,
-        addOns: ["Additional location +$199/mo", "Review generation campaign +$149/mo"],
+        addOns: ["Additional location +£199/mo", "Review generation campaign +£149/mo"],
       },
       {
         name: "Standard",
-        price: "$500",
+        price: "£500",
         period: "/ month",
         savings: "Average client sees local pack ranking in 60–90 days",
         description: "An aggressive local presence strategy for multi-location practices ready to own their ZIP code.",
@@ -617,15 +617,15 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Growing",
         popular: true,
-        addOns: ["4th+ location at $199/mo each", "Google Ads synergy package +$499/mo"],
+        addOns: ["4th+ location at £199/mo each", "Google Ads synergy package +£499/mo"],
       },
       {
         name: "Premium",
-        price: "$700",
+        price: "£700",
         period: "/ month",
         description: "Total local market domination — 5+ locations, aggressive link building, and review management at scale.",
         features: [
-          "Up to 5 locations (additional +$149/mo each)",
+          "Up to 5 locations (additional +£149/mo each)",
           "50+ target local keywords",
           "Full GBP management with weekly posts",
           "Citation building (50 directories/mo)",
@@ -639,7 +639,7 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Book a Strategy Call",
         popular: false,
-        addOns: ["National SEO expansion from $599/mo add-on"],
+        addOns: ["National SEO expansion from £599/mo add-on"],
       },
     ],
     comparison: [
@@ -675,7 +675,7 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$500",
+        price: "£500",
         period: "/ month",
         description: "On-page SEO and technical foundations for practices ready to start earning organic traffic.",
         features: [
@@ -689,11 +689,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Growing",
         popular: false,
-        addOns: ["Blog content 2 posts/mo +$299", "Link building starter +$299/mo"],
+        addOns: ["Blog content 2 posts/mo +£299", "Link building starter +£299/mo"],
       },
       {
         name: "Standard",
-        price: "$700",
+        price: "£700",
         period: "/ month",
         savings: "Average 4× ROI within 6 months for healthcare clients",
         description: "Full-spectrum SEO with content creation, link building, and competitor displacement.",
@@ -710,11 +710,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Start Growing",
         popular: true,
-        addOns: ["Additional 5 links/mo +$399", "Local SEO package +$499/mo"],
+        addOns: ["Additional 5 links/mo +£399", "Local SEO package +£499/mo"],
       },
       {
         name: "Premium",
-        price: "$1,000",
+        price: "£1,000",
         period: "/ month",
         description: "Aggressive, authority-building SEO for practices ready to own page 1 for their entire service menu.",
         features: [
@@ -733,7 +733,7 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Book a Strategy Call",
         popular: false,
-        addOns: ["Paid ads integration from $499/mo"],
+        addOns: ["Paid ads integration from £499/mo"],
       },
     ],
     comparison: [
@@ -769,12 +769,12 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$500",
+        price: "£500",
         period: "/ month + ad spend",
         description: "Managed Google Search campaigns for practices ready to start generating patient leads from paid traffic.",
         features: [
           "1 Google Search campaign",
-          "Manage up to $3,000 ad spend / month",
+          "Manage up to £3,000 ad spend / month",
           "Keyword research & negative keyword setup",
           "Ad copywriting (3 ads per ad group)",
           "Conversion tracking setup",
@@ -783,33 +783,33 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Launch Campaigns",
         popular: false,
-        addOns: ["Display/retargeting campaign +$149/mo", "Landing page design +$499 one-time"],
+        addOns: ["Display/retargeting campaign +£149/mo", "Landing page design +£499 one-time"],
       },
       {
         name: "Standard",
-        price: "$900",
+        price: "£900",
         period: "/ month + ad spend",
         savings: "Average 4× ROAS for healthcare practices",
         description: "Multi-campaign Google Ads management with A/B testing and conversion rate optimization.",
         features: [
           "Up to 3 campaigns (Search + Display + Retargeting)",
-          "Manage up to $10,000 ad spend / month",
+          "Manage up to £10,000 ad spend / month",
           "Advanced keyword segmentation",
           "Weekly bid strategy optimization",
           "A/B ad copy testing",
           "Advanced conversion tracking (calls, forms, bookings)",
-          "Audience & demographic targeting",
+          "Audience & demograpatient datac targeting",
           "Competitor conquest campaigns",
           "Bi-weekly performance report",
           "Monthly strategy call",
         ],
         cta: "Launch Campaigns",
         popular: true,
-        addOns: ["YouTube ads campaign +$299/mo", "Custom landing page +$799 one-time"],
+        addOns: ["YouTube ads campaign +£299/mo", "Custom landing page +£799 one-time"],
       },
       {
         name: "Premium",
-        price: "$1,400",
+        price: "£1,400",
         period: "/ month + ad spend",
         description: "Full-funnel Google Ads ecosystem — search, display, YouTube, and Performance Max — with daily optimization.",
         features: [
@@ -827,12 +827,12 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Book a Strategy Call",
         popular: false,
-        addOns: ["Meta Ads bundle at $1,499/mo (save $500)"],
+        addOns: ["Meta Ads bundle at £1,499/mo (save £500)"],
       },
     ],
     comparison: [
       { feature: "Campaigns managed", basic: "1 Search", standard: "Search + Display + Retargeting", premium: "Unlimited (all types)" },
-      { feature: "Monthly ad spend cap", basic: "Up to $3,000", standard: "Up to $10,000", premium: "Unlimited" },
+      { feature: "Monthly ad spend cap", basic: "Up to £3,000", standard: "Up to £10,000", premium: "Unlimited" },
       { feature: "Bid optimization", basic: "Monthly", standard: "Weekly", premium: "Daily" },
       { feature: "A/B ad testing", basic: false, standard: true, premium: true },
       { feature: "Call tracking", basic: "Basic", standard: "Advanced", premium: "Recording + transcripts" },
@@ -844,7 +844,7 @@ const allServices: ServicePricing[] = [
       { feature: "Strategy calls", basic: false, standard: "Monthly", premium: "Weekly" },
     ],
     faqs: [
-      { q: "What ad spend budget do I need?", a: "We recommend a minimum of $1,500/mo in ad spend for meaningful results in healthcare. Competitive markets (dental implants, cosmetic surgery) typically need $3,000–$10,000/mo to see significant volume." },
+      { q: "What ad spend budget do I need?", a: "We recommend a minimum of £1,500/mo in ad spend for meaningful results in healthcare. Competitive markets (dental implants, cosmetic surgery) typically need £3,000–£10,000/mo to see significant volume." },
       { q: "How quickly will I see patient leads?", a: "Google Ads can generate leads within 48–72 hours of launch. Expect the first 2 weeks to be an optimization period as the algorithm learns." },
       { q: "Is your management fee separate from ad spend?", a: "Yes — our management fee is separate from the budget you pay directly to Google. You always have full visibility into both." },
       { q: "Do you build the landing pages?", a: "Standard includes landing page recommendations; Premium includes custom landing pages. We can also build dedicated pages as an add-on for Basic clients." },
@@ -863,12 +863,12 @@ const allServices: ServicePricing[] = [
     packages: [
       {
         name: "Basic",
-        price: "$500",
+        price: "£500",
         period: "/ month + ad spend",
         description: "Foundational Meta advertising for practices ready to reach patients on Facebook and Instagram.",
         features: [
           "2 ad sets (Facebook + Instagram)",
-          "Manage up to $3,000 ad spend / month",
+          "Manage up to £3,000 ad spend / month",
           "Core audience targeting setup",
           "Static image + copy creative",
           "Facebook Pixel installation",
@@ -877,17 +877,17 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Launch Campaigns",
         popular: false,
-        addOns: ["Video ad creative +$399 one-time", "Retargeting setup +$149/mo"],
+        addOns: ["Video ad creative +£399 one-time", "Retargeting setup +£149/mo"],
       },
       {
         name: "Standard",
-        price: "$1,000",
+        price: "£1,000",
         period: "/ month + ad spend",
         savings: "Custom audiences drive 60% lower CPL on average",
         description: "Full-funnel Meta campaigns with lookalike audiences, A/B testing, and creative that converts.",
         features: [
           "5 ad sets across Facebook, Instagram & Messenger",
-          "Manage up to $10,000 ad spend / month",
+          "Manage up to £10,000 ad spend / month",
           "Custom audience + lookalike targeting",
           "Carousel + video + story ad formats",
           "A/B creative testing",
@@ -899,11 +899,11 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Launch Campaigns",
         popular: true,
-        addOns: ["Monthly creative refresh +$299", "Influencer coordination +$499/mo"],
+        addOns: ["Monthly creative refresh +£299", "Influencer coordination +£499/mo"],
       },
       {
         name: "Premium",
-        price: "$1,500",
+        price: "£1,500",
         period: "/ month + ad spend",
         description: "Full-funnel Meta advertising — from cold audience awareness to booked appointments — with daily management.",
         features: [
@@ -922,12 +922,12 @@ const allServices: ServicePricing[] = [
         ],
         cta: "Book a Strategy Call",
         popular: false,
-        addOns: ["Google Ads bundle at $1,499/mo (save $500)"],
+        addOns: ["Google Ads bundle at £1,499/mo (save £500)"],
       },
     ],
     comparison: [
       { feature: "Ad sets managed", basic: "2", standard: "5", premium: "Unlimited" },
-      { feature: "Monthly ad spend cap", basic: "Up to $3,000", standard: "Up to $10,000", premium: "Unlimited" },
+      { feature: "Monthly ad spend cap", basic: "Up to £3,000", standard: "Up to £10,000", premium: "Unlimited" },
       { feature: "Ad formats", basic: "Static image", standard: "Carousel + video + stories", premium: "All formats + dynamic" },
       { feature: "Custom audiences", basic: "Interest targeting", standard: "Custom + lookalikes", premium: "Advanced + suppression" },
       { feature: "A/B testing", basic: false, standard: true, premium: true },
@@ -939,11 +939,11 @@ const allServices: ServicePricing[] = [
       { feature: "Reporting", basic: "Monthly", standard: "Bi-weekly", premium: "Weekly dashboard" },
     ],
     faqs: [
-      { q: "What ad spend do I need for Meta ads to work?", a: "We recommend a minimum of $1,500/mo in spend. The algorithm needs data to optimize — higher budgets learn faster and deliver better cost-per-lead." },
+      { q: "What ad spend do I need for Meta ads to work?", a: "We recommend a minimum of £1,500/mo in spend. The algorithm needs data to optimize — higher budgets learn faster and deliver better cost-per-lead." },
       { q: "Can Meta ads work for medical services?", a: "Yes, with the right compliance approach. We know Meta's healthcare advertising policies and structure campaigns to stay approved while still converting effectively." },
       { q: "Do you create the ad creative?", a: "Standard includes creative direction and static ad design. Premium includes a monthly creative production package (video + static). Basic uses provided creative or we create one static set." },
       { q: "How do you track ROI from Meta ads?", a: "We track lead form submissions, website conversions, call-through rates, and — where CRM integration allows — actual booked appointments tied back to specific campaigns." },
-      { q: "What's the difference between Facebook and Instagram ads?", a: "We run placements on both by default. Facebook tends to perform better for 35+ age demographics; Instagram for 18–35. We allocate budget dynamically based on performance data." },
+      { q: "What's the difference between Facebook and Instagram ads?", a: "We run placements on both by default. Facebook tends to perform better for 35+ age demograpatient datacs; Instagram for 18–35. We allocate budget dynamically based on performance data." },
     ],
     timeline: "Campaigns live within 3–5 business days",
     technologies: ["Meta Ads Manager", "Meta Pixel", "Meta Conversions API", "HubSpot", "Zapier", "Looker Studio"],
@@ -973,3 +973,4 @@ export const pricingServices = (ACTIVE_IDS as readonly string[])
 
 export const serviceCategories = ["All", "Web & App", "AI & Automation", "Marketing", "Integration"] as const;
 export type ServiceCategory = typeof serviceCategories[number];
+

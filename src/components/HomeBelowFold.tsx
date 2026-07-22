@@ -9,12 +9,14 @@ import TestimonialVideo from "@/components/TestimonialVideo";
 import PricingPackages from "@/components/PricingPackages";
 import FAQ from "@/components/FAQ";
 import AuditPromo from "@/components/AuditPromo";
+import UkTrustProof from "@/components/UkTrustProof";
 
 /** Single below-fold bundle so the homepage doesn't waterfall many dynamic chunks. */
 export default function HomeBelowFold() {
   return (
     <>
       <Problems />
+      <UkTrustProof />
       <AuditPromo />
       <ForWho />
       <Solutions />

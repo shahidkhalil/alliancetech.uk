@@ -46,7 +46,7 @@ export function nextEmergencySlotClient(now = new Date()): string {
   return "Tomorrow at 10:30 AM (first emergency slot)";
 }
 
-export function buildClientTriage(text: string, clinicPhone = "+1 (713) 555-0142"): TriageInfo | null {
+export function buildClientTriage(text: string, clinicPhone = "+44 1254 555014"): TriageInfo | null {
   const hit = detectEmergencyClient(text);
   if (!hit) return null;
   return {

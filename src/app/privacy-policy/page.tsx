@@ -20,7 +20,8 @@ export default function PrivacyPolicy() {
               <h2 className="text-lg font-bold text-[#00283C] mb-2">1. Information We Collect</h2>
               <p>
                 When you submit a form on our website or message us on WhatsApp, we collect your name, phone number,
-                email address, clinic name, clinic type, and any message you provide. We do not collect this
+                email address, clinic name, clinic type, and any message you provide. We process this information
+                under UK GDPR for the purpose of responding to your enquiry. We do not collect this
                 information unless you voluntarily submit it to us.
               </p>
             </div>

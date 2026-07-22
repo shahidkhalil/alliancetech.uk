@@ -32,7 +32,7 @@ export function generateMetadata({
       description,
       type: "article",
       url,
-      locale: "en_US",
+      locale: "en_GB",
       siteName: "Alliance Tech",
     },
     twitter: {
@@ -50,8 +50,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const related = blogPosts
     .filter((p) => p.slug !== post.slug)
     .sort((a, b) => {
-      const aH = a.location === "Houston" ? 0 : 1;
-      const bH = b.location === "Houston" ? 0 : 1;
+      const aH = a.location === "Blackburn" || a.location === "Manchester" ? 0 : 1;
+      const bH = b.location === "Blackburn" || b.location === "Manchester" ? 0 : 1;
       return aH - bH;
     })
     .slice(0, 2);
@@ -172,7 +172,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         <section className="py-12 bg-[#F8FAFC] border-t border-gray-100">
           <div className="max-w-6xl mx-auto px-6">
             <h2 className="text-xl font-bold text-[#00283C] mb-6">
-              {post.location === "Houston" ? "More Houston clinic insights" : "More from the US"}
+              {post.location === "Blackburn" || post.location === "Manchester"
+                ? "More North West clinic insights"
+                : "More from the UK"}
             </h2>
             <div className="grid sm:grid-cols-2 gap-6">
               {related.map((p) => (
