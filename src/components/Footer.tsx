@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import ConsentSettingsButton from "@/components/ConsentSettingsButton";
+import Reveal from "@/components/Motion/Reveal";
 
 const services = [
   { label: "AI Receptionist", href: "/ai-receptionist" },
@@ -15,7 +18,7 @@ const services = [
 export default function Footer() {
   return (
     <footer className="bg-[#040C14] text-white">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-14">
+      <Reveal y={28} className="max-w-7xl mx-auto px-6 lg:px-8 py-14">
         <div className="grid md:grid-cols-4 gap-10 pb-10 border-b border-white/[0.07]">
 
           {/* Brand */}
@@ -81,7 +84,7 @@ export default function Footer() {
                 { label: "Blog", href: "/blog" },
                 { label: "Pricing", href: "/pricing" },
                 { label: "Contact", href: "/contact" },
-                { label: "Dental Clinics UK", href: "/dental-clinic-houston" },
+                { label: "Dental Clinics UK", href: "/clinic-marketing-blackburn" },
                 { label: "Blackburn", href: "/clinic-marketing-blackburn" },
                 { label: "Manchester", href: "/clinic-marketing-manchester" },
                 { label: "London", href: "/clinic-marketing-london" },
@@ -99,9 +102,6 @@ export default function Footer() {
             <div className="space-y-3">
               <a href="mailto:Sales@alliancetechltd.com" className="block text-sm text-white/60 hover:text-white transition-colors">
                 Sales@alliancetechltd.com
-              </a>
-              <a href="tel:+441615157261" className="block text-sm text-white/60 hover:text-white transition-colors">
-                +44 161 515 7261
               </a>
               <a href="/contact" className="block text-sm text-white/60 hover:text-white transition-colors">
                 Contact us
@@ -124,7 +124,7 @@ export default function Footer() {
             <ConsentSettingsButton />
           </div>
         </div>
-      </div>
+      </Reveal>
     </footer>
   );
 }

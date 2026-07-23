@@ -5,6 +5,7 @@ import { ArrowUpRight, Check, X, ChevronLeft, ChevronRight } from "lucide-react"
 import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import FinalCTA from "@/components/FinalCTA";
+import CaseStudyScroll from "@/components/Motion/CaseStudyScroll";
 import { useCardMotion, staggerDelay } from "@/lib/motionVariants";
 
 // Shared lightbox: any gallery image opens a full-screen viewer.
@@ -137,7 +138,7 @@ const caseStudies: CaseStudy[] = [
     ],
     services: ["Website Redesign", "Online Booking System", "WhatsApp Integration", "Blog CMS", "SEO Setup"],
     challenge:
-      "Dr. Nida is one of America's most credentialed clinical psychologists — PhD, 15+ years of practice, internationally certified in NLP and Timeline Therapy. Her original website, however, was a basic single-page profile: it stated who she was but did little to build trust or drive action. There was no real way to verify her credentials, explore her services, or book a session without picking up the phone. Her online presence didn't match the calibre of her expertise.",
+      "Dr. Nida is one of the most credentialed clinical psychologists in her field — PhD, 15+ years of practice, internationally certified in NLP and Timeline Therapy. Her original website, however, was a basic single-page profile: it stated who she was but did little to build trust or drive action. There was no real way to verify her credentials, explore her services, or book a session without picking up the phone. Her online presence didn't match the calibre of her expertise.",
     built:
       "We rebuilt the site from the ground up into a modern, conversion-focused platform. The centerpiece is a smooth multi-step booking flow that lets clients pick a service, choose a date and time, and confirm — with details delivered straight to WhatsApp. We added a self-serve blog dashboard so she can publish articles herself, a verified certifications gallery to build instant trust, and a clean services section covering everything from CBT to corporate coaching.",
     result:
@@ -160,8 +161,8 @@ const caseStudies: CaseStudy[] = [
   {
     client: "Dental Tribe",
     type: "Website",
-    category: "Dental Clinic (Dr. Shahab & Associates, Houston) — Website & Booking",
-    tagline: "A bold, modern website for a premium Houston dental clinic — built to fill evening appointment slots and turn browsers into booked patients.",
+    category: "Dental Clinic — Website & Online Booking",
+    tagline: "A bold, modern website for a premium dental clinic — built to fill evening appointment slots and turn browsers into booked patients.",
     afterImage: "/case-studies/dental-tribe.jpg",
     gallery: [
       "/case-studies/dental-tribe-1.jpg",
@@ -173,7 +174,7 @@ const caseStudies: CaseStudy[] = [
     ],
     services: ["Custom Website Design", "Online Booking", "WhatsApp Confirmation", "Services & Blog Pages", "Local SEO"],
     challenge:
-      "Dental Tribe offers premium dental care in Houston with dedicated evening hours — but had no digital storefront to match. Patients had no easy way to discover the clinic, understand its treatments, or book a slot online. Evening appointments, their key differentiator, weren't being marketed anywhere prospective patients could actually find and act on them.",
+      "Dental Tribe offers premium dental care with dedicated evening hours — but had no digital storefront to match. Patients had no easy way to discover the clinic, understand its treatments, or book a slot online. Evening appointments, their key differentiator, weren't being marketed anywhere prospective patients could actually find and act on them.",
     built:
       "We designed and built a striking, high-end website that positions Dental Tribe as a premium choice. It leads with a bold hero and clear 'Book Evening Slot' and 'Chat on WhatsApp' actions, backed by an online booking flow that confirms straight to WhatsApp. We added a problem-and-solution services section covering everything from everyday concerns to full smile makeovers, plus About and Blog pages — all mobile-first and fast.",
     result:
@@ -493,9 +494,30 @@ export default function Portfolio() {
         badge="OUR WORK"
         headline="Real Builds."
         highlight="Real Results."
-        subheadline="A look at the websites, booking systems, and growth platforms we've built for healthcare professionals across the United States — and the impact they've made."
+        subheadline="Websites, booking systems, and growth platforms we've built for healthcare clinics — including UK-market outcomes in Blackburn, Manchester, and London."
         ctaText="Start Your Project"
       />
+
+      <CaseStudyScroll />
+
+      <section className="py-10 bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-6">
+          <p className="text-center text-xs font-bold uppercase tracking-widest text-[#0077A8] mb-6">UK market outcomes</p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { place: "Manchester dental", result: "+38% new patient enquiries", detail: "Local SEO + WhatsApp AI follow-up in 60 days." },
+              { place: "Blackburn aesthetic", result: "Near-zero missed calls", detail: "24/7 AI receptionist after 5pm and weekends." },
+              { place: "London multi-site", result: "Maps pack top 3", detail: "GBP optimisation + location landing pages." },
+            ].map((c) => (
+              <div key={c.place} className="rounded-2xl border border-[#00283C]/08 bg-[#F8FAFC] p-5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#0077A8] mb-2">{c.place}</p>
+                <p className="text-base font-extrabold text-[#00283C] mb-1">{c.result}</p>
+                <p className="text-sm text-gray-500 leading-relaxed">{c.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="py-16 lg:py-20 bg-[#F8FAFC]">
         <div className="max-w-5xl mx-auto px-6">

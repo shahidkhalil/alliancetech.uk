@@ -9,7 +9,7 @@ const features = [
   { icon: "📣", title: "Google & Meta Ads", desc: "Campaigns targeting patients searching for fillers, Botox, laser, and aesthetics — not generic clicks." },
   { icon: "🌐", title: "Aesthetic Clinic Website", desc: "Elegant, mobile-first website that showcases your treatments and converts visitors into consultations." },
   { icon: "📸", title: "Instagram & TikTok Growth", desc: "Content strategy and posting for aesthetic clinics — before/afters, reels, and patient testimonials that go viral." },
-  { icon: "📍", title: "Local SEO", desc: "Rank at the top of Google when patients search 'aesthetic clinic near me' or 'botox in Houston'." },
+  { icon: "📍", title: "Local SEO", desc: "Rank at the top of Google when patients search 'aesthetic clinic near me' or 'botox in Manchester'." },
   { icon: "⭐", title: "5-Star Reviews", desc: "Automated post-appointment review requests that build your Google rating to 4.9+ stars." },
   { icon: "📊", title: "Live Analytics", desc: "See every ad, every lead, every booking in a real-time dashboard — updated daily." },
 ];

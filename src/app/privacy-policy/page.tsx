@@ -92,10 +92,6 @@ export default function PrivacyPolicy() {
                 <a href="mailto:Sales@alliancetechltd.com" className="text-[#0077A8] font-semibold hover:underline">
                   Sales@alliancetechltd.com
                 </a>
-                , call{" "}
-                <a href="tel:+441615157261" className="text-[#0077A8] font-semibold hover:underline">
-                  +44 161 515 7261
-                </a>
                 , or write to Alliance Tech Ltd, 138 Laburnum Rd, Blackburn BB1 5EQ, United Kingdom.
               </p>
             </div>

@@ -51,11 +51,16 @@ export default function LocationPage({
               ))}
             </ul>
             <div className="flex flex-col sm:flex-row gap-3">
-              <a href={UK_WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-dark px-5 py-3 text-sm inline-flex items-center justify-center gap-2">
+              <a
+                href={UK_WHATSAPP_URL}
+                target={UK_WHATSAPP_URL.startsWith("http") ? "_blank" : undefined}
+                rel={UK_WHATSAPP_URL.startsWith("http") ? "noopener noreferrer" : undefined}
+                className="btn-dark px-5 py-3 text-sm inline-flex items-center justify-center gap-2"
+              >
                 <MessageCircle className="w-4 h-4" /> WhatsApp
               </a>
               <a href={UK_PHONE_TEL} className="border border-[#00283C]/20 font-bold px-5 py-3 rounded-md text-sm inline-flex items-center justify-center gap-2 text-[#00283C]">
-                <Phone className="w-4 h-4" /> {UK_PHONE_DISPLAY}
+                <Phone className="w-4 h-4" /> {UK_PHONE_DISPLAY || "Call us"}
               </a>
             </div>
           </div>

@@ -1,11 +1,12 @@
 "use client";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import {
   Megaphone, Globe, Smartphone, MapPin, Search,
   MessageCircle, ClipboardList, Bot
 } from "lucide-react";
 import { ServiceShowcaseCard } from "@/components/ui/Card";
+import { DURATION, EASE_OUT_EXPO, STAGGER } from "@/animations/scroll";
 
 const services = [
   {
@@ -85,7 +86,6 @@ const services = [
 export default function Solutions() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const [hoveredHref, setHoveredHref] = useState<string | null>(null);
   const reducedMotion = useReducedMotion();
 
   return (
@@ -95,15 +95,14 @@ export default function Solutions() {
       ref={ref}
       style={{
         background:
-          "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,180,216,0.07) 0%, transparent 60%), linear-gradient(180deg, #f8fcfe 0%, #ffffff 40%, #ffffff 100%)",
+          "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,180,216,0.08) 0%, transparent 60%), linear-gradient(180deg, #f8fcfe 0%, #ffffff 45%, #ffffff 100%)",
       }}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-
         <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.96 }}
-          animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ duration: 0.55, ease: [0, 0, 0.2, 1] }}
+          initial={reducedMotion ? false : { opacity: 0, y: 28 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: DURATION.slow, ease: EASE_OUT_EXPO }}
           className="max-w-2xl mx-auto text-center mb-14"
         >
           <span className="badge-light mb-5">WHAT WE DO</span>
@@ -116,18 +115,28 @@ export default function Solutions() {
           </p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-8">
-          {services.map((s, i) => (
+        <motion.div
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-8"
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: { staggerChildren: reducedMotion ? 0 : STAGGER.base },
+            },
+          }}
+        >
+          {services.map((s) => (
             <motion.div
               key={s.title}
               className="h-full"
-              initial={reducedMotion ? false : { opacity: 0, scale: 0.86, y: 28 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{
-                duration: 0.5,
-                delay: reducedMotion ? 0 : i * 0.06,
-                ease: [0, 0, 0.2, 1],
+              variants={{
+                hidden: reducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 36 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: DURATION.base, ease: EASE_OUT_EXPO },
+                },
               }}
             >
               <ServiceShowcaseCard
@@ -138,22 +147,17 @@ export default function Solutions() {
                 description={s.desc}
                 stat={s.stat}
                 popular={s.popular}
-                showAccentBar={hoveredHref === s.href}
-                accentLayoutId="homeServiceCardBorder"
-                onPointerEnter={() => setHoveredHref(s.href)}
-                onPointerLeave={() => setHoveredHref((prev) => (prev === s.href ? null : prev))}
               />
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.94 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.5, ease: [0, 0, 0.2, 1] }}
-          whileHover={reducedMotion ? undefined : { scale: 1.01, y: -2 }}
-          whileTap={reducedMotion ? undefined : { scale: 0.98 }}
+          transition={{ duration: DURATION.base, ease: EASE_OUT_EXPO }}
+          whileHover={reducedMotion ? undefined : { y: -3 }}
           className="rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 card-cta-dark card-cta-glow"
         >
           <div className="flex items-center gap-3 relative z-[1]">
@@ -163,7 +167,10 @@ export default function Solutions() {
               <p className="text-white/50 text-xs mt-0.5">Blackburn · Manchester · London · Birmingham · and beyond</p>
             </div>
           </div>
-          <a href="/clinic-marketing-blackburn" className="relative z-[1] flex-shrink-0 btn-dark px-5 py-2.5 text-sm whitespace-nowrap">
+          <a
+            href="/clinic-marketing-blackburn"
+            className="relative z-[1] flex-shrink-0 btn-dark px-5 py-2.5 text-sm whitespace-nowrap"
+          >
             UK Clinics →
           </a>
         </motion.div>

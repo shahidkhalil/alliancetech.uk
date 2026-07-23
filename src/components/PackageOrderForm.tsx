@@ -150,7 +150,7 @@ export default function PackageOrderForm() {
                   </div>
                   <div>
                     <label className={label}>Phone / WhatsApp *</label>
-                    <input className={field} inputMode="tel" value={form.phone} placeholder="+44 161 515 7261"
+                    <input className={field} inputMode="tel" value={form.phone} placeholder="Your phone number"
                       onChange={(e) => updateField("phone", e.target.value)} />
                   </div>
                   <div>

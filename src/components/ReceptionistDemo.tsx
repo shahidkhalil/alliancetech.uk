@@ -539,7 +539,7 @@ export default function ReceptionistDemo() {
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto px-3 sm:px-4">
+    <div id="receptionist-chat" className="w-full max-w-xl mx-auto px-3 sm:px-4 scroll-mt-24">
       <div className="rounded-2xl sm:rounded-3xl border border-gray-200/80 shadow-xl shadow-gray-200/50 overflow-hidden bg-white">
 
         {/* Header — stacked on mobile so controls don't crush */}

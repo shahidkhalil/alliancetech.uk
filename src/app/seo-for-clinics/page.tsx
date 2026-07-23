@@ -6,7 +6,7 @@ import FinalCTA from "@/components/FinalCTA";
 import { FeatureCardGrid, ContentCardList } from "@/components/ui/Card";
 
 const features = [
-  { icon: "🔑", title: "Keyword Research & Strategy", desc: "We find exactly what patients type into Google for your treatments — 'dental implants cost Houston', 'best botox clinic Los Angeles' — and build a plan around it." },
+  { icon: "🔑", title: "Keyword Research & Strategy", desc: "We find exactly what patients type into Google for your treatments — 'dental implants cost Blackburn', 'best botox clinic Manchester' — and build a plan around it." },
   { icon: "📝", title: "On-Page SEO Optimisation", desc: "Title tags, headings, content structure, and internal links optimised on every page of your site." },
   { icon: "📄", title: "Treatment Landing Pages", desc: "A dedicated, optimised page for every treatment you offer — implants, whitening, botox, laser — each built to rank on its own." },
   { icon: "🛠️", title: "Technical SEO Audit & Fixes", desc: "Site speed, mobile usability, broken links, and indexing issues — found and fixed before they cost you rankings." },

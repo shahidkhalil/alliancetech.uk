@@ -6,6 +6,11 @@ import PageWrapper from "@/components/PageWrapper";
 import ServicePageHero from "@/components/ServicePageHero";
 import { useForm } from "@/context/FormContext";
 import { AnimatedSurface } from "@/components/ui/Card";
+import Reveal from "@/components/Motion/Reveal";
+import { motion, useReducedMotion } from "framer-motion";
+import { UK_PHONE_DISPLAY, UK_PHONE_TEL, UK_EMAIL } from "@/lib/ukContact";
+import GoogleReviewsBadge from "@/components/GoogleReviewsBadge";
+import PrivacyTrustNote from "@/components/PrivacyTrustNote";
 import {
   FormFields,
   getFormSessionId,
@@ -110,7 +115,7 @@ function ContactQuickForm() {
           }}
           placeholder="Dr. Sarah"
           autoComplete="name"
-          className="w-full px-3.5 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-[#0E7C6B] focus:ring-2 focus:ring-[#0E7C6B]/10"
+          className="motion-field w-full px-3.5 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-[#00B4D8] focus:ring-2 focus:ring-[#00B4D8]/15"
           required
         />
       </div>
@@ -128,9 +133,9 @@ function ContactQuickForm() {
             markStarted();
             setForm((p) => ({ ...p, phone: e.target.value }));
           }}
-          placeholder="+44 161 …"
+          placeholder="Your phone number"
           autoComplete="tel"
-          className="w-full px-3.5 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-[#0E7C6B] focus:ring-2 focus:ring-[#0E7C6B]/10"
+          className="motion-field w-full px-3.5 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-[#00B4D8] focus:ring-2 focus:ring-[#00B4D8]/15"
           required
         />
       </div>
@@ -180,12 +185,14 @@ function ContactQuickForm() {
       <p className="text-[11px] text-gray-400 text-center">
         3 fields only · No spam · We reply on WhatsApp
       </p>
+      <PrivacyTrustNote compact className="mt-2" />
     </form>
   );
 }
 
 export default function Contact() {
   const { openForm } = useForm();
+  const reduced = useReducedMotion();
 
   return (
     <PageWrapper>
@@ -199,8 +206,7 @@ export default function Contact() {
       />
 
       <section className="py-12 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
-          {/* Instant actions — mobile-first for sales */}
+        <Reveal className="max-w-5xl mx-auto px-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
             <a
               href="/free-website-audit"
@@ -211,13 +217,13 @@ export default function Contact() {
               <MessageCircle className="w-4 h-4" /> Free Website Audit
             </a>
             <a
-              href="tel:+441615157261"
+              href={UK_PHONE_TEL}
               className="flex items-center justify-center gap-2 rounded-xl border border-[#00283C]/15 text-[#00283C] font-bold text-sm py-3.5 hover:bg-[#F8FAFC] transition-colors"
             >
-              <Phone className="w-4 h-4" /> +44 161 515 7261
+              <Phone className="w-4 h-4" /> {UK_PHONE_DISPLAY || "Call us"}
             </a>
             <a
-              href="mailto:Sales@alliancetechltd.com?subject=Clinic%20inquiry"
+              href={`mailto:${UK_EMAIL}?subject=Clinic%20inquiry`}
               onClick={() => trackEmailClick("contact_quick")}
               className="flex items-center justify-center gap-2 rounded-xl border border-[#00283C]/15 text-[#00283C] font-bold text-sm py-3.5 hover:bg-[#F8FAFC] transition-colors"
             >
@@ -234,13 +240,23 @@ export default function Contact() {
             </button>
           </div>
 
-          <div className="mb-10 rounded-2xl border border-gray-100 bg-[#F8FAFC] px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-3 text-sm text-gray-600">
-            <MapPin className="w-4 h-4 text-[#0077A8] flex-shrink-0" />
-            <p>
+          <motion.div className="mb-10 rounded-2xl border border-gray-100 bg-[#F8FAFC] px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-3 text-sm text-gray-600 relative overflow-hidden">
+            <motion.span
+              aria-hidden
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#00B4D8]/40"
+              animate={reduced ? undefined : { scale: [1, 1.6, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <MapPin className="w-4 h-4 text-[#0077A8] flex-shrink-0 relative z-[1]" />
+            <p className="relative z-[1]">
               <span className="font-semibold text-[#00283C]">Alliance Tech Ltd</span>
               {" — "}
               138 Laburnum Rd, Blackburn BB1 5EQ, United Kingdom
             </p>
+          </motion.div>
+
+          <div className="mb-10">
+            <GoogleReviewsBadge variant="card" />
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -296,7 +312,7 @@ export default function Contact() {
               </div>
             </AnimatedSurface>
           </div>
-        </div>
+        </Reveal>
       </section>
     </PageWrapper>
   );

@@ -5,8 +5,12 @@ import FinalCTA from "@/components/FinalCTA";
 import { FeatureCardGrid, AnimatedSurface } from "@/components/ui/Card";
 import { staggerDelay } from "@/lib/motionVariants";
 import WhatsAppDemo from "@/components/WhatsAppDemo";
-import { motion, useInView } from "framer-motion";
+import WhatsAppScrollStory from "@/components/Motion/WhatsAppScrollStory";
+import Reveal from "@/components/Motion/Reveal";
+import CountUp from "@/components/Motion/CountUp";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
+import { DURATION, EASE_OUT_EXPO, STAGGER } from "@/animations/scroll";
 
 const features = [
   { icon: "⚡", title: "Instant Replies", desc: "Patients get a response within 5 seconds — any time of day. No waiting. No ghosting." },
@@ -18,10 +22,10 @@ const features = [
 ];
 
 const stats = [
-  { stat: "5s", label: "Reply time" },
-  { stat: "3x", label: "More bookings" },
-  { stat: "60%", label: "Fewer no-shows" },
-  { stat: "24/7", label: "Always on" },
+  { value: 5, suffix: "s", label: "Reply time" },
+  { value: 3, suffix: "x", label: "More bookings" },
+  { value: 60, suffix: "%", label: "Fewer no-shows" },
+  { value: 24, suffix: "/7", label: "Always on" },
 ];
 
 const steps = [
@@ -74,6 +78,7 @@ function FeaturesSection() {
 }
 
 export default function WhatsAppAIAutomation() {
+  const reduced = useReducedMotion();
   return (
     <PageWrapper>
       <ServicePageHero
@@ -84,20 +89,43 @@ export default function WhatsAppAIAutomation() {
         ctaText="Get Your Free Clinic Audit"
       />
 
-      {/* Stats bar */}
       <section className="py-12 bg-[#F8FAFC] border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+        <motion.div
+          className="max-w-5xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-6 text-center"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.35 }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: reduced ? 0 : STAGGER.base } },
+          }}
+        >
           {stats.map((s) => (
-            <div key={s.label}>
-              <div className="text-4xl font-extrabold text-[#00283C] mb-1">{s.stat}</div>
+            <motion.div
+              key={s.label}
+              variants={{
+                hidden: { opacity: 0, y: 18 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: DURATION.base, ease: EASE_OUT_EXPO },
+                },
+              }}
+            >
+              <div className="text-4xl font-extrabold text-[#00283C] mb-1">
+                <CountUp value={s.value} suffix={s.suffix} />
+              </div>
               <div className="text-sm text-gray-400">{s.label}</div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
-      {/* Live WhatsApp graphic — same as home page */}
-      <WhatsAppDemo />
+      <WhatsAppScrollStory />
+
+      <Reveal>
+        <WhatsAppDemo />
+      </Reveal>
 
       <FeaturesSection />
       <StepsSection />

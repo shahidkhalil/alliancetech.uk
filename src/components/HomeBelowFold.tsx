@@ -10,22 +10,45 @@ import PricingPackages from "@/components/PricingPackages";
 import FAQ from "@/components/FAQ";
 import AuditPromo from "@/components/AuditPromo";
 import UkTrustProof from "@/components/UkTrustProof";
+import ScrollSection from "@/components/Motion/ScrollSection";
 
-/** Single below-fold bundle so the homepage doesn't waterfall many dynamic chunks. */
+/** Homepage below-fold chapters — each section fades in on scroll. */
 export default function HomeBelowFold() {
   return (
     <>
-      <Problems />
-      <UkTrustProof />
-      <AuditPromo />
-      <ForWho />
-      <Solutions />
-      <AIReceptionist />
-      <Process />
-      <TestimonialVideo />
-      <Guarantee />
-      <PricingPackages />
-      <FAQ />
+      <ScrollSection>
+        <Problems />
+      </ScrollSection>
+      <ScrollSection delay={0.04}>
+        <UkTrustProof />
+      </ScrollSection>
+      <ScrollSection>
+        <AuditPromo />
+      </ScrollSection>
+      <ScrollSection>
+        <ForWho />
+      </ScrollSection>
+      <ScrollSection>
+        <Solutions />
+      </ScrollSection>
+      <ScrollSection>
+        <AIReceptionist />
+      </ScrollSection>
+      <ScrollSection>
+        <Process />
+      </ScrollSection>
+      <ScrollSection>
+        <TestimonialVideo />
+      </ScrollSection>
+      <ScrollSection>
+        <Guarantee />
+      </ScrollSection>
+      <ScrollSection>
+        <PricingPackages />
+      </ScrollSection>
+      <ScrollSection>
+        <FAQ />
+      </ScrollSection>
     </>
   );
 }

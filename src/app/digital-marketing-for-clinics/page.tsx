@@ -10,7 +10,7 @@ import { ContentCardList } from "@/components/ui/Card";
 const featured = {
   icon: "📣",
   title: "Google Search & Display Ads",
-  desc: "Show up the moment a patient searches 'dental implants Houston' or 'botox near me.' Targeted to your treatments and your city, not generic clicks bought in bulk.",
+  desc: "Show up the moment a patient searches 'dental implants Blackburn' or 'botox near me.' Targeted to your treatments and your city, not generic clicks bought in bulk.",
 };
 
 const features = [
@@ -29,9 +29,9 @@ const stats = [
 ];
 
 const faqs = [
-  { q: "How much should I budget for ads?", a: "Most clinics start between $2,000 and $6,000 per month in ad spend, scaled up once we see what's converting. We'll recommend a number based on your city and treatments." },
+  { q: "How much should I budget for ads?", a: "Most clinics start between £1,500 and £5,000 per month in ad spend, scaled up once we see what's converting. We'll recommend a number based on your city and treatments." },
   { q: "How is this different from a generic marketing agency?", a: "We only run campaigns for dental and aesthetic clinics. Every targeting strategy, ad angle, and landing page is built specifically for healthcare patient acquisition, not adapted from a retail or e-commerce playbook." },
-  { q: "Do you handle the ad spend or just management?", a: "You keep control of your own ad account and budget. We manage strategy, creative, targeting, and optimisation, with full transparency on every dollar spent." },
+  { q: "Do you handle the ad spend or just management?", a: "You keep control of your own ad account and budget. We manage strategy, creative, targeting, and optimisation, with full transparency on every pound spent." },
 ];
 
 function FeatureRow({ f, i }: { f: { icon: string; title: string; desc: string }; i: number }) {

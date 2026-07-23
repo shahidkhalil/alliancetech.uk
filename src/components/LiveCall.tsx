@@ -1,7 +1,18 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PhoneOff, Loader2, Mic, CalendarCheck2 } from "lucide-react";
+import {
+  PhoneOff,
+  Loader2,
+  Mic,
+  CalendarCheck2,
+  User,
+  Phone,
+  Mail,
+  Stethoscope,
+  Clock,
+  Check,
+} from "lucide-react";
 import {
   BookingDraft,
   EMPTY_DRAFT,
@@ -9,9 +20,22 @@ import {
   BOOKING_TIMES,
   extractBookingDraft,
   mergeDraft,
+  parseBookingSchedule,
 } from "@/lib/bookingExtract";
 import { trackDemoComplete, trackDemoStart, trackEvent } from "@/lib/analytics";
-import { realtimeTokenUrl, bookUrl } from "@/lib/receptionistEndpoints";
+import { bookUrl } from "@/lib/receptionistEndpoints";
+import {
+  formatPhoneDigits,
+  groupedSpokenDigits,
+  isNameLike,
+  isRecallReady,
+  LIVE_CALL_BEHAVIOR_RULES,
+  LIVE_STT_PROMPT,
+  normalizeEmailFromSpeech,
+  pickTranscript,
+  speechToDigits,
+  type RecallSnapshot,
+} from "@/lib/speechDetails";
 
 const LIVE_SERVICES = [
   "Consultation & Check-up",
@@ -51,13 +75,6 @@ type ConfirmedValues = {
   preferredTime: string;
 };
 
-type RecallSnapshot = {
-  text: string;
-  digits: string;
-  spoken_digits: string;
-  spelled_email: string;
-};
-
 const EMPTY_CONFIRMED: ConfirmedValues = {
   name: "",
   phone: "",
@@ -74,109 +91,26 @@ const EMPTY_FLAGS: ConfirmationFlags = {
   scheduleConfirmed: false,
 };
 
-const STT_WAIT_MS = 600;
-const STT_MAX_WAIT_MS = 2000;
+/** Wait longer so gpt-4o-transcribe can finish before Maya reads back. */
+const STT_WAIT_MS = 450;
+const STT_MAX_WAIT_MS = 4500;
 
 function digitsOnly(text: string) {
-  return (text.match(/\d/g) || []).join("");
-}
-
-function formatPhoneDigits(digits: string): string {
-  const d = digits.replace(/\D/g, "").slice(-10);
-  if (d.length === 10) return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
-  return digits.trim();
-}
-
-function normalizeEmailFromSpeech(text: string): string {
-  return text
-    .trim()
-    .replace(/\s+at\s+/gi, "@")
-    .replace(/\s+dot\s+/gi, ".")
-    .replace(/\s+/g, "")
-    .toLowerCase();
-}
-
-function spellEmail(email: string): string {
-  const normalized = normalizeEmailFromSpeech(email);
-  if (!normalized.includes("@")) return normalized;
-  const [local, domain] = normalized.split("@");
-  const spellPart = (s: string) =>
-    s
-      .split("")
-      .filter(Boolean)
-      .map((c) => (c === "." ? "dot" : c))
-      .join("-");
-  return `${spellPart(local)} at ${spellPart(domain)}`;
-}
-
-function groupedSpokenDigits(digits: string): string {
-  const d = digits.replace(/\D/g, "");
-  if (d.length <= 3) return d.split("").join(" ");
-  if (d.length <= 6) return `${d.slice(0, 3).split("").join(" ")} , ${d.slice(3).split("").join(" ")}`;
-  return `${d.slice(0, 3).split("").join(" ")} , ${d.slice(3, 6).split("").join(" ")} , ${d.slice(6).split("").join(" ")}`;
-}
-
-function isNameLike(text: string): boolean {
-  const d = digitsOnly(text);
-  const words = text.trim().split(/\s+/);
-  return (
-    d.length < 4 &&
-    words.length >= 1 &&
-    words.length <= 5 &&
-    /[a-zA-Z]/.test(text) &&
-    !/^(yes|yeah|yep|no|nope|correct|right|wrong|skip)\b/i.test(text.trim())
-  );
-}
-
-/** Pick the best user transcript for the field, scoped to utterances since recall was requested. */
-function pickTranscript(field: string, recent: string[], sinceIndex = 0): RecallSnapshot {
-  const list = recent.slice(sinceIndex).filter(Boolean);
-  const reversed = [...list].reverse();
-  let text = reversed[0] || "";
-
-  if (field === "phone") {
-    const withDigits = reversed.find((t) => digitsOnly(t).length >= 7);
-    if (withDigits) text = withDigits;
-  } else if (field === "email") {
-    const withEmail = reversed.find((t) => /@|\bat\b|\bdot\b/i.test(t));
-    if (withEmail) text = withEmail;
-  } else if (field === "name") {
-    const nameLike = reversed.find(isNameLike);
-    if (nameLike) text = nameLike;
-  }
-
-  const trimmed = text.trim();
-  const digits = digitsOnly(trimmed);
-  const normalizedEmail = field === "email" ? normalizeEmailFromSpeech(trimmed) : trimmed;
-
-  return {
-    text: field === "email" ? normalizedEmail : trimmed,
-    digits,
-    spoken_digits: digits ? digits.split("").join(" ") : "",
-    spelled_email: field === "email" ? spellEmail(trimmed) : "",
-  };
-}
-
-function isRecallReady(field: string, picked: RecallSnapshot): boolean {
-  if (!picked.text) return false;
-  if (field === "phone") return picked.digits.length >= 10;
-  if (field === "email") return /@|\bat\b|\bdot\b/i.test(picked.text) || picked.text.length > 5;
-  if (field === "name") return picked.text.length >= 2 && isNameLike(picked.text);
-  return picked.text.length > 0;
+  return speechToDigits(text) || (text.match(/\d/g) || []).join("");
 }
 
 function recallInstruction(field: string, picked: RecallSnapshot, ready: boolean): string {
   if (!ready) {
-    return "Transcript unclear — ask them to repeat once slowly, or suggest they type it in the form on screen.";
+    return "Transcript unclear — ask them to repeat once slowly, digit-by-digit for phone / letter-by-letter for email, or suggest they type it in the on-screen card.";
   }
   if (field === "phone") {
-    return `Read back using these digit groups ONCE: "${groupedSpokenDigits(picked.digits)}". If they say yes, call confirm_field(phone) immediately and move on. NEVER ask for or read back the phone number again after confirm_field(phone).`;
+    return `Read back using ONLY these digit groups ONCE (do not invent digits): "${groupedSpokenDigits(picked.digits)}". If they say yes, call confirm_field(phone) immediately. NEVER invent or guess a digit.`;
   }
   if (field === "email") {
-    return `Spell back letter-by-letter once: "I have ${picked.spelled_email} — is that right?" If yes, call confirm_field(email). If they skip email, call confirm_field(email) with email_skipped true.`;
+    return `Spell back letter-by-letter once from spelled_email only: "I have ${picked.spelled_email} — is that right?" If yes, confirm_field(email). Never invent letters.`;
   }
   if (field === "name") {
-    return `Confirm once: "Got it — ${picked.text}?" If yes, call confirm_field(name) and move on. NEVER ask for the name again after confirm_field(name).`;
+    return `Confirm the exact name once: "Got it — ${picked.text}?" If yes, confirm_field(name). Never invent a surname.`;
   }
   return "Confirm this exact text once. If they say yes, call confirm_field for that field.";
 }
@@ -229,19 +163,26 @@ async function waitForTranscript(
   if (isRecallReady(field, picked)) return picked;
 
   let waited = 0;
+  let best = picked;
   while (waited < STT_MAX_WAIT_MS) {
     await sleep(STT_WAIT_MS);
     waited += STT_WAIT_MS;
     picked = pickTranscript(field, getTranscripts(), getSinceIndex());
+    // Keep the richest phone digit string seen while waiting
+    if (field === "phone" && picked.digits.length > best.digits.length) best = picked;
+    else if (field === "email" && picked.text.length > best.text.length) best = picked;
+    else if (field === "name" && picked.text.split(/\s+/).length >= best.text.split(/\s+/).length) best = picked;
+    else if (!best.text && picked.text) best = picked;
+
     if (isRecallReady(field, picked)) return picked;
-    if (getTranscripts().length > initialCount && picked.text) return picked;
+    if (getTranscripts().length > initialCount && isRecallReady(field, best)) return best;
   }
-  return picked;
+  return isRecallReady(field, best) ? best : pickTranscript(field, getTranscripts(), getSinceIndex());
 }
 
 function friendlyFetchError(err: unknown, step: string): string {
-  if (err instanceof TypeError && /failed to fetch|networkerror/i.test(err.message)) {
-    return `Could not reach the server (${step}). Check your connection or try the chat instead.`;
+  if (err instanceof TypeError && /failed to fetch|networkerror|load failed/i.test(err.message)) {
+    return `Could not reach the live-call server (${step}). Check your connection, disable ad-block for this page, then tap Retry — or use Chat with Maya.`;
   }
   if (err instanceof Error) return err.message;
   return `Couldn't start the call (${step}).`;
@@ -251,25 +192,60 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-async function postJson(url: string, body: unknown, step = "token") {
-  let res: Response;
-  try {
-    res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-  } catch (err) {
-    throw new Error(friendlyFetchError(err, step));
-  }
+/** Absolute Maya voice URL (alliancepak) — always prefer this over relative /api. */
+const SESSION_URL =
+  process.env.NEXT_PUBLIC_REALTIME_TOKEN_ENDPOINT ||
+  "https://asia-south1-alliancepak.cloudfunctions.net/realtimeToken";
+
+async function postJsonOnce(url: string, body: unknown, signal?: AbortSignal) {
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(body),
+    mode: "cors",
+    credentials: "omit",
+    cache: "no-store",
+    signal,
+  });
   let data: Record<string, unknown> = {};
   try {
     data = await res.json();
   } catch {
     /* non-JSON body */
   }
-  if (!res.ok) throw new Error(String(data.error || `Server error (${res.status})`));
+  if (!res.ok) {
+    if (res.status === 429) {
+      throw new Error(String(data.error || "Daily live-call limit reached — please use Chat with Maya."));
+    }
+    if (res.status === 404 || res.status === 502 || res.status === 503) {
+      throw new Error("Live voice is temporarily unavailable. Please use Chat with Maya.");
+    }
+    throw new Error(String(data.error || `Server error (${res.status})`));
+  }
   return data;
+}
+
+async function postJson(url: string, body: unknown, step = "token") {
+  const urls = Array.from(new Set([url, SESSION_URL].filter(Boolean)));
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    for (const u of urls) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 25000);
+      try {
+        return await postJsonOnce(u, body, ctrl.signal);
+      } catch (err) {
+        lastErr = err;
+        if (err instanceof DOMException && err.name === "AbortError") {
+          lastErr = new Error(`Timed out reaching the live-call server (${step}).`);
+        }
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+    if (attempt < 2) await sleep(600 * (attempt + 1));
+  }
+  throw new Error(friendlyFetchError(lastErr, step));
 }
 
 function buildPreferredTime(draft: BookingDraft, confirmed: ConfirmedValues): string {
@@ -345,6 +321,8 @@ export default function LiveCall({ onClose }: Props) {
   const [mayaTalking, setMayaTalking] = useState(false);
   const [booked, setBooked] = useState<string | null>(null);
   const [draft, setDraft] = useState<BookingDraft>({ ...EMPTY_DRAFT });
+  const [locks, setLocks] = useState({ name: false, phone: false, email: false, service: false });
+  const [retryKey, setRetryKey] = useState(0);
 
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -374,7 +352,7 @@ export default function LiveCall({ onClose }: Props) {
     const flags = { ...confirmationFlagsRef.current };
     const confirmed = { ...confirmedValuesRef.current };
 
-    if (field === "name" && lastRecallRef.current.name?.text) {
+    if (field === "name" && lastRecallRef.current.name?.text && isNameLike(lastRecallRef.current.name.text)) {
       flags.nameConfirmed = true;
       confirmed.name = lastRecallRef.current.name.text;
       setDraft((d) => mergeDraft(d, { name: confirmed.name }));
@@ -397,6 +375,12 @@ export default function LiveCall({ onClose }: Props) {
     confirmationFlagsRef.current = flags;
     confirmedValuesRef.current = confirmed;
     pendingRecallRef.current = null;
+    setLocks({
+      name: flags.nameConfirmed,
+      phone: flags.phoneConfirmed,
+      email: flags.emailConfirmed === true,
+      service: flags.serviceConfirmed,
+    });
     return { flags, confirmed };
   }, []);
 
@@ -409,11 +393,41 @@ export default function LiveCall({ onClose }: Props) {
     setDraft((prev) => {
       const patch: Partial<BookingDraft> = {};
       if (!flags.serviceConfirmed && extracted.service) patch.service = extracted.service;
-      if (!flags.scheduleConfirmed) {
+      if (!flags.scheduleConfirmed || !prev.day || !prev.time) {
         if (extracted.day) patch.day = extracted.day;
         if (extracted.time) patch.time = extracted.time;
       }
+      // Never write extracted "name" from free chat into the card — too error-prone
       return mergeDraft(prev, patch);
+    });
+  }, []);
+
+  /** Fill day/time (and service hints) from Maya's spoken summary. */
+  const syncScheduleFromMayaSpeech = useCallback((text: string) => {
+    if (!text.trim()) return;
+    const { day, time } = parseBookingSchedule(text);
+    const svc =
+      LIVE_SERVICES.find((s) => text.toLowerCase().includes(s.toLowerCase().split(" ")[0])) ||
+      (/consultation|check-?up/i.test(text) ? "Consultation & Check-up" : "");
+
+    setDraft((prev) => {
+      const patch: Partial<BookingDraft> = {};
+      if (day && !prev.day) patch.day = day;
+      if (time && !prev.time) patch.time = time;
+      if (day && time) {
+        confirmationFlagsRef.current = {
+          ...confirmationFlagsRef.current,
+          scheduleConfirmed: true,
+        };
+        confirmedValuesRef.current = {
+          ...confirmedValuesRef.current,
+          preferredTime: `${day} at ${time}`,
+        };
+      }
+      if (svc && !prev.service && !confirmationFlagsRef.current.serviceConfirmed) {
+        patch.service = svc;
+      }
+      return Object.keys(patch).length ? mergeDraft(prev, patch) : prev;
     });
   }, []);
 
@@ -426,7 +440,7 @@ export default function LiveCall({ onClose }: Props) {
       const confirmed = { ...confirmedValuesRef.current };
 
       if (field === "name") {
-        if (value.trim().length >= 2) {
+        if (value.trim().length >= 2 && isNameLike(value)) {
           flags.nameConfirmed = true;
           confirmed.name = value.trim();
         } else {
@@ -470,6 +484,12 @@ export default function LiveCall({ onClose }: Props) {
 
       confirmationFlagsRef.current = flags;
       confirmedValuesRef.current = confirmed;
+      setLocks({
+        name: flags.nameConfirmed,
+        phone: flags.phoneConfirmed,
+        email: flags.emailConfirmed === true,
+        service: flags.serviceConfirmed,
+      });
       return next;
     });
   }, []);
@@ -486,15 +506,17 @@ export default function LiveCall({ onClose }: Props) {
 
   useEffect(() => {
     let cancelled = false;
+    let active = true;
 
     (async () => {
       try {
-        const tokenData = await postJson(realtimeTokenUrl(), { clinicId: "demo" }, "session");
+        const tokenData = await postJson(SESSION_URL, { clinicId: "demo" }, "session");
+        if (cancelled || !active) return;
         const clientSecret = String(tokenData.clientSecret || "");
         const model = String(tokenData.model || "gpt-realtime-mini");
         const callMaxSeconds = Number(tokenData.maxSeconds) || 180;
+        const baseInstructions = String(tokenData.instructions || "");
         if (!clientSecret) throw new Error("No session token — please try the chat.");
-        if (cancelled) return;
         setMaxSeconds(callMaxSeconds);
 
         const pc = new RTCPeerConnection({
@@ -516,6 +538,30 @@ export default function LiveCall({ onClose }: Props) {
         stream.getTracks().forEach((t) => pc.addTrack(t, stream));
 
         const dc = pc.createDataChannel("oai-events");
+        dc.onopen = () => {
+          try {
+            const session: Record<string, unknown> = {
+              type: "realtime",
+              audio: {
+                input: {
+                  transcription: {
+                    model: "gpt-4o-transcribe",
+                    language: "en",
+                    prompt: LIVE_STT_PROMPT,
+                  },
+                  noise_reduction: { type: "near_field" },
+                },
+              },
+            };
+            // Only append behaviour rules when we have the server clinic instructions
+            if (baseInstructions) {
+              session.instructions = `${baseInstructions}\n\n${LIVE_CALL_BEHAVIOR_RULES}`;
+            }
+            dc.send(JSON.stringify({ type: "session.update", session }));
+          } catch {
+            /* session.update optional */
+          }
+        };
         dc.onmessage = async (e) => {
           try {
             const ev = JSON.parse(e.data);
@@ -525,6 +571,7 @@ export default function LiveCall({ onClose }: Props) {
               if (t) {
                 userTranscriptsRef.current = [...userTranscriptsRef.current.slice(-11), t];
                 syncDraftFromSpeech(userTranscriptsRef.current);
+                syncScheduleFromMayaSpeech(t);
 
                 const pending = pendingRecallRef.current;
                 if (pending && YES_TRANSCRIPT.test(t)) {
@@ -542,9 +589,13 @@ export default function LiveCall({ onClose }: Props) {
               captionRef.current += ev.delta || "";
               setCaption(captionRef.current.slice(-160));
               setMayaTalking(true);
+              if (captionRef.current.length > 24) {
+                syncScheduleFromMayaSpeech(captionRef.current);
+              }
             }
             if (ev.type === "response.done") {
               setMayaTalking(false);
+              if (captionRef.current) syncScheduleFromMayaSpeech(captionRef.current);
               captionRef.current = "";
               const calls = (ev.response?.output || []).filter(
                 (o: FnCall) => o.type === "function_call" && o.name && o.call_id
@@ -583,7 +634,10 @@ export default function LiveCall({ onClose }: Props) {
                     continue;
                   }
 
-                  recallSinceIndexRef.current = Math.max(0, userTranscriptsRef.current.length - 1);
+                  recallSinceIndexRef.current =
+                    field === "name"
+                      ? Math.max(0, userTranscriptsRef.current.length - 12)
+                      : Math.max(0, userTranscriptsRef.current.length - 1);
                   const initialCount = userTranscriptsRef.current.length;
 
                   const picked = await waitForTranscript(
@@ -599,7 +653,7 @@ export default function LiveCall({ onClose }: Props) {
 
                   const ready = isRecallReady(field, picked);
 
-                  if (ready && field === "name" && !flags.nameConfirmed) {
+                  if (ready && field === "name" && !flags.nameConfirmed && isNameLike(picked.text)) {
                     setDraft((d) => mergeDraft(d, { name: picked.text }));
                   } else if (ready && field === "phone" && !flags.phoneConfirmed) {
                     setDraft((d) => mergeDraft(d, { phone: formatPhoneDigits(picked.digits) }));
@@ -659,7 +713,12 @@ export default function LiveCall({ onClose }: Props) {
                       instruction: "Name already confirmed. Do NOT ask again. " + nextStepHint(flags),
                       ...sessionStatus(flags, confirmed),
                     };
-                  } else if (args.field === "name" && args.confirmed && lastRecallRef.current.name?.text) {
+                  } else if (
+                    args.field === "name" &&
+                    args.confirmed &&
+                    lastRecallRef.current.name?.text &&
+                    isNameLike(lastRecallRef.current.name.text)
+                  ) {
                     flags.nameConfirmed = true;
                     confirmed.name = lastRecallRef.current.name.text;
                     setDraft((d) => mergeDraft(d, { name: confirmed.name }));
@@ -671,6 +730,12 @@ export default function LiveCall({ onClose }: Props) {
                       locked: true,
                       instruction: "Name is locked. Do NOT ask for name again. Ask for phone number next.",
                       ...sessionStatus(flags, confirmed),
+                    };
+                  } else if (args.field === "name" && args.confirmed && !isNameLike(lastRecallRef.current.name?.text || "")) {
+                    output = {
+                      success: false,
+                      field: "name",
+                      reason: "That was not a person name (sounds like a service). Ask for their full name again and call recall_last_spoken_text(name).",
                     };
                   } else if (args.field === "phone" && flags.phoneConfirmed) {
                     output = {
@@ -722,6 +787,13 @@ export default function LiveCall({ onClose }: Props) {
                     if (pref) {
                       flags.scheduleConfirmed = true;
                       confirmed.preferredTime = pref;
+                      const parsed = parseBookingSchedule(pref);
+                      setDraft((d) =>
+                        mergeDraft(d, {
+                          day: parsed.day || d.day,
+                          time: parsed.time || d.time,
+                        })
+                      );
                       output = { success: true, field: "schedule", value: pref };
                     }
                   } else if (!args.confirmed) {
@@ -733,6 +805,12 @@ export default function LiveCall({ onClose }: Props) {
 
                   confirmationFlagsRef.current = flags;
                   confirmedValuesRef.current = confirmed;
+                  setLocks({
+                    name: flags.nameConfirmed,
+                    phone: flags.phoneConfirmed,
+                    email: flags.emailConfirmed === true,
+                    service: flags.serviceConfirmed,
+                  });
                   dc.send(
                     JSON.stringify({
                       type: "conversation.item.create",
@@ -824,7 +902,7 @@ export default function LiveCall({ onClose }: Props) {
           throw new Error(`Voice connection failed (${sdpRes.status})${detail ? `: ${detail}` : ""}`);
         }
         await pc.setRemoteDescription({ type: "answer", sdp: await sdpRes.text() });
-        if (cancelled) return;
+        if (cancelled || !active) return;
 
         setState("live");
         timerRef.current = setInterval(() => {
@@ -834,7 +912,7 @@ export default function LiveCall({ onClose }: Props) {
           });
         }, 1000);
       } catch (err) {
-        if (cancelled) return;
+        if (cancelled || !active) return;
         trackEvent("api_error", {
           api_name: "ai_receptionist_voice",
           error_message: err instanceof Error ? err.message : "Voice call failed",
@@ -846,10 +924,11 @@ export default function LiveCall({ onClose }: Props) {
 
     return () => {
       cancelled = true;
+      active = false;
       hangUp();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [retryKey]);
 
   const mm = String(Math.floor(seconds / 60));
   const ss = String(seconds % 60).padStart(2, "0");
@@ -865,7 +944,7 @@ export default function LiveCall({ onClose }: Props) {
       <motion.div
         initial={{ scale: 0.95, y: 16 }}
         animate={{ scale: 1, y: 0 }}
-        className="w-full sm:max-w-sm max-h-[92dvh] sm:max-h-[90vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto overflow-x-hidden shadow-2xl text-center"
+        className="w-full sm:max-w-sm max-h-[92dvh] sm:max-h-[90vh] rounded-t-3xl sm:rounded-3xl overflow-y-auto overflow-x-hidden shadow-2xl text-center [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         style={{ background: "linear-gradient(160deg, #06382F, #0B5D50)" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -909,64 +988,162 @@ export default function LiveCall({ onClose }: Props) {
                 </p>
               )}
 
-              <div className="mt-4 text-left bg-white/10 rounded-2xl p-3 space-y-2 border border-white/10">
-                <p className="text-[10px] font-bold text-white/70 uppercase tracking-wide">Your details (speak or type)</p>
-                <input
-                  value={draft.name}
-                  onChange={(e) => updateDraftField("name", e.target.value)}
-                  placeholder="Name"
-                  className="w-full px-3 py-2 rounded-lg bg-white/95 text-sm text-gray-800 outline-none"
-                />
-                <input
-                  value={draft.phone}
-                  onChange={(e) => updateDraftField("phone", e.target.value)}
-                  placeholder="Phone"
-                  inputMode="tel"
-                  className="w-full px-3 py-2 rounded-lg bg-white/95 text-sm text-gray-800 outline-none"
-                />
-                <input
-                  value={draft.email}
-                  onChange={(e) => updateDraftField("email", e.target.value)}
-                  placeholder="Email (optional)"
-                  className="w-full px-3 py-2 rounded-lg bg-white/95 text-sm text-gray-800 outline-none"
-                />
-                <select
-                  value={draft.service}
-                  onChange={(e) => updateDraftField("service", e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-white/95 text-sm text-gray-800 outline-none"
+              {/* Unique “patient card” — glass strip with icon fields + live confirm chips */}
+              <div className="mt-5 text-left rounded-[1.35rem] overflow-hidden border border-white/15 shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+                <div
+                  className="px-4 py-3 flex items-center justify-between gap-2"
+                  style={{
+                    background:
+                      "linear-gradient(105deg, rgba(20,160,138,0.45), rgba(6,56,47,0.9) 55%, rgba(11,93,80,0.85))",
+                  }}
                 >
-                  <option value="">Service</option>
-                  {LIVE_SERVICES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/70">Patient card</p>
+                    <p className="text-sm font-semibold text-white">Speak · Maya fills · you can edit</p>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {(
+                      [
+                        ["N", locks.name || !!draft.name],
+                        ["P", locks.phone || digitsOnly(draft.phone).length >= 10],
+                        ["E", locks.email || !!draft.email],
+                      ] as const
+                    ).map(([label, ok]) => (
+                      <span
+                        key={label}
+                        className={`w-6 h-6 rounded-full text-[10px] font-black flex items-center justify-center border ${
+                          ok
+                            ? "bg-emerald-400 text-[#06382F] border-emerald-200"
+                            : "bg-white/10 text-white/50 border-white/20"
+                        }`}
+                      >
+                        {ok ? <Check className="w-3 h-3" strokeWidth={3} /> : label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-[#041F1A]/80 backdrop-blur-md p-3 space-y-2.5">
+                  {(
+                    [
+                      {
+                        key: "name" as const,
+                        Icon: User,
+                        label: "Full name",
+                        placeholder: "e.g. Sarah Khan",
+                        value: draft.name,
+                        locked: locks.name,
+                      },
+                      {
+                        key: "phone" as const,
+                        Icon: Phone,
+                        label: "Mobile",
+                        placeholder: "07… or +44…",
+                        value: draft.phone,
+                        locked: locks.phone,
+                        inputMode: "tel" as const,
+                      },
+                      {
+                        key: "email" as const,
+                        Icon: Mail,
+                        label: "Email",
+                        placeholder: "optional · name at gmail dot com",
+                        value: draft.email,
+                        locked: locks.email,
+                      },
+                    ] as const
+                  ).map((f) => (
+                    <label
+                      key={f.key}
+                      className={`group flex items-stretch gap-0 rounded-2xl border overflow-hidden transition-colors ${
+                        f.locked
+                          ? "border-emerald-400/40 bg-emerald-500/10"
+                          : "border-white/10 bg-white/[0.06] focus-within:border-[#14A08A]/60 focus-within:bg-white/[0.1]"
+                      }`}
+                    >
+                      <span className="w-11 flex items-center justify-center text-white/50 group-focus-within:text-[#7DD3C0]">
+                        <f.Icon className="w-4 h-4" />
+                      </span>
+                      <span className="flex-1 min-w-0 py-2 pr-3">
+                        <span className="flex items-center justify-between gap-2">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-white/45">{f.label}</span>
+                          {f.locked && (
+                            <span className="text-[9px] font-bold text-emerald-300 flex items-center gap-0.5">
+                              <Check className="w-2.5 h-2.5" strokeWidth={3} /> Locked
+                            </span>
+                          )}
+                        </span>
+                        <input
+                          value={f.value}
+                          onChange={(e) => updateDraftField(f.key, e.target.value)}
+                          placeholder={f.placeholder}
+                          inputMode={"inputMode" in f ? f.inputMode : undefined}
+                          autoComplete={f.key === "name" ? "name" : f.key === "phone" ? "tel" : "email"}
+                          className="w-full bg-transparent text-sm text-white placeholder:text-white/25 outline-none mt-0.5"
+                        />
+                      </span>
+                    </label>
                   ))}
-                </select>
-                <div className="grid grid-cols-2 gap-2">
-                  <select
-                    value={draft.day}
-                    onChange={(e) => updateDraftField("day", e.target.value)}
-                    className="w-full px-2 py-2 rounded-lg bg-white/95 text-xs text-gray-800 outline-none"
+
+                  <label
+                    className={`flex items-stretch gap-0 rounded-2xl border overflow-hidden ${
+                      locks.service
+                        ? "border-emerald-400/40 bg-emerald-500/10"
+                        : "border-white/10 bg-white/[0.06]"
+                    }`}
                   >
-                    <option value="">Day</option>
-                    {BOOKING_DAYS.map((d) => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
+                    <span className="w-11 flex items-center justify-center text-white/50">
+                      <Stethoscope className="w-4 h-4" />
+                    </span>
+                    <span className="flex-1 min-w-0 py-2 pr-3">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-white/45">Treatment</span>
+                      <select
+                        value={draft.service}
+                        onChange={(e) => updateDraftField("service", e.target.value)}
+                        className="w-full bg-transparent text-sm text-white outline-none mt-0.5 [&>option]:text-gray-900"
+                      >
+                        <option value="">Choose a service</option>
+                        {LIVE_SERVICES.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                    </span>
+                  </label>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {(
+                      [
+                        { key: "day" as const, label: "Day", options: BOOKING_DAYS },
+                        { key: "time" as const, label: "Time", options: BOOKING_TIMES },
+                      ] as const
+                    ).map((f) => (
+                      <label
+                        key={f.key}
+                        className="flex items-stretch gap-0 rounded-2xl border border-white/10 bg-white/[0.06] overflow-hidden"
+                      >
+                        <span className="w-9 flex items-center justify-center text-white/50">
+                          <Clock className="w-3.5 h-3.5" />
+                        </span>
+                        <span className="flex-1 min-w-0 py-2 pr-2">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-white/45">{f.label}</span>
+                          <select
+                            value={draft[f.key]}
+                            onChange={(e) => updateDraftField(f.key, e.target.value)}
+                            className="w-full bg-transparent text-xs text-white outline-none mt-0.5 [&>option]:text-gray-900"
+                          >
+                            <option value="">{f.label}</option>
+                            {f.options.map((o) => (
+                              <option key={o} value={o}>
+                                {o}
+                              </option>
+                            ))}
+                          </select>
+                        </span>
+                      </label>
                     ))}
-                  </select>
-                  <select
-                    value={draft.time}
-                    onChange={(e) => updateDraftField("time", e.target.value)}
-                    className="w-full px-2 py-2 rounded-lg bg-white/95 text-xs text-gray-800 outline-none"
-                  >
-                    <option value="">Time</option>
-                    {BOOKING_TIMES.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
+                  </div>
                 </div>
               </div>
             </>
@@ -979,7 +1156,36 @@ export default function LiveCall({ onClose }: Props) {
             </div>
           )}
 
-          {state === "error" && <p className="text-sm text-red-300">{error}</p>}
+          {state === "error" && (
+            <div className="space-y-3">
+              <p className="text-sm text-red-300 leading-relaxed px-1">{error}</p>
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError("");
+                    setState("connecting");
+                    setSeconds(0);
+                    setRetryKey((k) => k + 1);
+                  }}
+                  className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto px-5 py-2.5 rounded-full bg-white text-[#0B5D50] text-sm font-bold hover:bg-white/90 transition-colors"
+                >
+                  Retry Live Call
+                </button>
+                <a
+                  href="#receptionist-chat"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onClose();
+                    document.getElementById("receptionist-chat")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
+                  className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto px-5 py-2.5 rounded-full border border-white/25 text-white text-sm font-semibold hover:bg-white/10 transition-colors"
+                >
+                  Use Chat with Maya instead
+                </a>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="pb-6 flex items-center justify-center gap-4">

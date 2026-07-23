@@ -3,12 +3,18 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Aesthetic Clinic Growth Marketing | Alliance Tech",
   description:
-    "Patient growth for aesthetic and skin clinics across the United States — Instagram & TikTok campaigns, before/after content strategy, and WhatsApp AI in English.",
-  keywords: ["med spa marketing", "med spa marketing Houston", "medical spa marketing agency Texas", "aesthetic clinic marketing", "Botox clinic marketing"],
+    "Patient growth for aesthetic and skin clinics across the United Kingdom — Instagram & Meta campaigns, before/after content strategy, and WhatsApp AI in English.",
+  keywords: [
+    "aesthetic clinic marketing UK",
+    "aesthetic clinic marketing Blackburn",
+    "Botox clinic marketing UK",
+    "skin clinic marketing",
+    "aesthetic clinic marketing",
+  ],
   alternates: { canonical: "/aesthetic-clinic-growth" },
   openGraph: {
     title: "Aesthetic Clinic Growth Marketing | Alliance Tech",
-    description: "Patient growth for aesthetic and skin clinics across the United States.",
+    description: "Patient growth for aesthetic and skin clinics across the United Kingdom.",
     url: "/aesthetic-clinic-growth",
     type: "website",
   },

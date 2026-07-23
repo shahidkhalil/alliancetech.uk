@@ -4,7 +4,13 @@ export const metadata: Metadata = {
   title: "Website Design for Dental & Aesthetic Clinics | Alliance Tech",
   description:
     "Custom, mobile-first clinic websites live in 7 days. SEO-optimised from day one, with online booking built in — 3x more enquiries than your old site.",
-  keywords: ["clinic website design", "dental website design", "med spa website design", "medical website design", "clinic web design Houston"],
+  keywords: [
+    "clinic website design UK",
+    "dental website design",
+    "aesthetic clinic website design",
+    "medical website design",
+    "clinic web design Blackburn",
+  ],
   alternates: { canonical: "/clinic-website-design" },
   openGraph: {
     title: "Website Design for Dental & Aesthetic Clinics | Alliance Tech",

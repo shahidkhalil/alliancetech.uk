@@ -7,67 +7,79 @@ import ServicePricingSection from "@/components/ServicePricingSection";
 import { pricingServices, serviceCategories, ServiceCategory } from "@/lib/pricingData";
 import { useForm } from "@/context/FormContext";
 import { FeatureCardGrid } from "@/components/ui/Card";
+import Reveal from "@/components/Motion/Reveal";
 
 /* ─── Why Alliance Tech ─────────────────────────────────────────────────────── */
 function WhySection() {
   const points = [
     { title: "No Hidden Fees", desc: "Every line item is published. What you see is what you pay." },
     { title: "You Own Everything", desc: "Code, assets, data — 100% yours at delivery. No lock-in." },
-    { title: "US Healthcare Focused", desc: "HIPAA-ready builds, US-market pricing, US-native copywriting." },
+    { title: "UK Clinic Focused", desc: "GDPR-aware builds, GBP pricing, and copy written for UK patients." },
     { title: "Guaranteed Results", desc: "Most services carry a performance or satisfaction guarantee." },
   ];
   return (
-    <section className="border-t border-gray-100 py-14 bg-[#F8FAFC]">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="text-center mb-10">
-          <span className="badge-light">WHY ALLIANCE TECH</span>
-          <h2 className="text-2xl font-black text-[#00283C] mt-4 tracking-tight">
-            Built Different. <span className="gradient-heading">Priced Honestly.</span>
-          </h2>
+    <Reveal>
+      <section className="border-t border-gray-100 py-14 bg-[#F8FAFC]">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="badge-light">WHY ALLIANCE TECH</span>
+            <h2 className="text-2xl font-black text-[#00283C] mt-4 tracking-tight">
+              Built Different. <span className="gradient-heading">Priced Honestly.</span>
+            </h2>
+          </div>
+          <FeatureCardGrid
+            items={points.map((p) => ({ icon: <Check className="w-4 h-4 text-[#0077A8]" strokeWidth={3} />, title: p.title, desc: p.desc }))}
+            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6"
+          />
         </div>
-        <FeatureCardGrid
-          items={points.map((p) => ({ icon: <Check className="w-4 h-4 text-[#0077A8]" strokeWidth={3} />, title: p.title, desc: p.desc }))}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6"
-        />
-      </div>
-    </section>
+      </section>
+    </Reveal>
   );
 }
 
-/* ─── Bottom CTA ────────────────────────────────────────────────────────────── */
 function BottomCTA() {
   const { openForm } = useForm();
   return (
-    <section className="py-16 bg-[#00283C]">
-      <div className="max-w-2xl mx-auto px-6 text-center">
-        <p className="text-[#00B4D8] text-xs font-black uppercase tracking-widest mb-4">NEXT STEP</p>
-        <h2 className="text-2xl lg:text-3xl font-black text-white tracking-tight mb-4">
-          Not sure which plan fits?
-        </h2>
-        <p className="text-white/55 text-sm leading-relaxed mb-8">
-          Start with a free clinic audit — then we&apos;ll recommend the exact package for your budget on a 30-minute call.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="/free-website-audit"
-            data-analytics-label="start_website_audit"
-            data-analytics-location="pricing_bottom"
-            className="px-8 py-3.5 bg-white text-[#00283C] rounded-xl font-black text-sm hover:bg-[#E8F7FB] transition-colors shadow flex items-center gap-2"
-          >
-            Run Free Website Audit <ArrowRight className="w-4 h-4" />
-          </a>
-          <button
-            type="button"
-            onClick={openForm}
-            data-analytics-label="book_consultation"
-            data-analytics-location="pricing_bottom"
-            className="px-8 py-3.5 border border-white/30 text-white rounded-xl font-bold text-sm hover:bg-white/10 transition-colors"
-          >
-            Book Free Strategy Call
-          </button>
+    <Reveal>
+      <section className="py-16 bg-[#00283C] relative overflow-hidden">
+        <motion.div
+          aria-hidden
+          className="absolute -top-24 left-1/2 h-64 w-[28rem] -translate-x-1/2 rounded-full bg-[#00B4D8]/30 blur-3xl"
+          animate={{ opacity: [0.35, 0.7, 0.35], scale: [1, 1.06, 1] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <div className="relative max-w-2xl mx-auto px-6 text-center">
+          <p className="text-[#00B4D8] text-xs font-black uppercase tracking-widest mb-4">NEXT STEP</p>
+          <h2 className="text-2xl lg:text-3xl font-black text-white tracking-tight mb-4">
+            Not sure which plan fits?
+          </h2>
+          <p className="text-white/55 text-sm leading-relaxed mb-8">
+            Start with a free clinic audit — then we&apos;ll recommend the exact package for your budget on a 30-minute call.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <motion.a
+              href="/free-website-audit"
+              data-analytics-label="start_website_audit"
+              data-analytics-location="pricing_bottom"
+              className="px-8 py-3.5 bg-white text-[#00283C] rounded-xl font-black text-sm hover:bg-[#E8F7FB] transition-colors shadow flex items-center gap-2"
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Run Free Website Audit <ArrowRight className="w-4 h-4" />
+            </motion.a>
+            <button
+              type="button"
+              onClick={openForm}
+              data-analytics-label="book_consultation"
+              data-analytics-location="pricing_bottom"
+              className="px-8 py-3.5 border border-white/30 text-white rounded-xl font-bold text-sm hover:bg-white/10 transition-colors"
+            >
+              Book Free Strategy Call
+            </button>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </Reveal>
   );
 }
 
@@ -182,10 +194,10 @@ function PricingContent() {
               </button>
             </div>
             <p className="text-xs text-gray-400 mb-5 max-w-xl">
-              Built for Houston dental &amp; aesthetic clinics that need more booked appointments — not vanity traffic.
+              Built for UK dental &amp; aesthetic clinics that need more booked appointments — not vanity traffic.
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2">
-              {["No hidden fees", "Cancel monthly plans anytime", "You own everything we build", "US market pricing"].map((t) => (
+              {["No hidden fees", "Cancel monthly plans anytime", "You own everything we build", "GBP pricing"].map((t) => (
                 <span key={t} className="flex items-center gap-1.5 text-xs text-gray-400">
                   <Check className="w-3 h-3 text-[#00B4D8]" strokeWidth={3} /> {t}
                 </span>

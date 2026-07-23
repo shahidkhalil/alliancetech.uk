@@ -21,18 +21,6 @@
     "cleanUrls": true,
     "rewrites": [
       {
-        "source": "/api/receptionist",
-        "function": { "functionId": "clinicReceptionist", "region": "asia-south1" }
-      },
-      {
-        "source": "/api/realtime-token",
-        "function": { "functionId": "realtimeToken", "region": "asia-south1" }
-      },
-      {
-        "source": "/api/book",
-        "function": { "functionId": "bookAppointmentHttp", "region": "asia-south1" }
-      },
-      {
         "source": "/api/business-audit",
         "function": { "functionId": "auditWebsite", "region": "asia-south1" }
       }

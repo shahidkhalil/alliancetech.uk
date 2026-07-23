@@ -1,9 +1,13 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useForm } from "@/context/FormContext";
 import { ArrowLeft } from "lucide-react";
 import { BreadcrumbSchema, ServiceSchema } from "@/components/StructuredData";
+import AnimatedGrid from "@/components/Motion/AnimatedGrid";
+import FloatingParticles from "@/components/Motion/FloatingParticles";
+import MagneticButton from "@/components/Motion/MagneticButton";
+import { heroContainer, heroItem, heroCta } from "@/animations/hero";
 
 interface Props {
   badge: string;
@@ -24,6 +28,7 @@ export default function ServicePageHero({
 }: Props) {
   const { openForm } = useForm();
   const pathname = usePathname();
+  const reduced = useReducedMotion();
 
   return (
     <>
@@ -35,31 +40,48 @@ export default function ServicePageHero({
         ]}
       />
       <section className="relative pt-32 pb-16 bg-white border-b border-gray-100 overflow-hidden">
-      {/* Subtle grid */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        backgroundImage: "linear-gradient(rgba(0,40,60,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(0,40,60,0.035) 1px, transparent 1px)",
-        backgroundSize: "60px 60px",
-      }} />
-      {/* Teal glow top-right */}
-      <div className="absolute top-0 right-0 w-[500px] h-[350px] rounded-full pointer-events-none opacity-[0.07]"
-        style={{ background: "radial-gradient(circle, #00B4D8, transparent 70%)", filter: "blur(80px)" }} />
+        <AnimatedGrid opacity={0.045} />
+        <FloatingParticles />
+        <motion.div
+          aria-hidden
+          className="absolute top-0 right-0 w-[500px] h-[350px] rounded-full pointer-events-none opacity-[0.1]"
+          style={{ background: "radial-gradient(circle, #00B4D8, transparent 70%)", filter: "blur(80px)" }}
+          animate={reduced ? undefined : { x: [0, 24, 0], y: [0, -16, 0] }}
+          transition={reduced ? undefined : { duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        />
 
-      <div className="relative max-w-4xl mx-auto px-6">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}>
+        <motion.div
+          className="relative max-w-4xl mx-auto px-6"
+          variants={reduced ? undefined : heroContainer}
+          initial={reduced ? false : "hidden"}
+          animate="visible"
+        >
+          <motion.a
+            variants={heroItem}
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-[#00283C] mb-6 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back home
+          </motion.a>
 
-          <span className="badge-light mb-5">
+          <motion.span variants={heroItem} className="badge-light mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00B4D8] animate-pulse" />
             {badge}
-          </span>
+          </motion.span>
 
-          <h1 className="text-4xl lg:text-5xl font-extrabold text-[#00283C] tracking-tight leading-tight mb-5 mt-3">
+          <motion.h1
+            variants={heroItem}
+            className="text-4xl lg:text-5xl font-extrabold text-[#00283C] tracking-tight leading-tight mb-5 mt-3"
+          >
             {headline}{" "}
             <span className="gradient-heading">{highlight}</span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-lg text-gray-500 max-w-2xl mb-10 leading-relaxed">{subheadline}</p>
+          <motion.p variants={heroItem} className="text-lg text-gray-500 max-w-2xl mb-10 leading-relaxed">
+            {subheadline}
+          </motion.p>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <motion.div variants={heroCta} className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {ctaHref ? (
               <a
                 href={ctaHref}
@@ -70,21 +92,17 @@ export default function ServicePageHero({
                 {ctaText}
               </a>
             ) : (
-              <button
+              <MagneticButton
                 onClick={openForm}
                 data-analytics-label="book_consultation"
                 data-analytics-location="service_hero"
-                className="btn-dark px-8 py-4 text-base"
+                className="btn-dark px-8 py-4 text-base group"
               >
                 {ctaText}
-              </button>
+              </MagneticButton>
             )}
-            <a href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-[#00283C] transition-colors">
-              <ArrowLeft className="w-4 h-4" /> Back to Home
-            </a>
-          </div>
+          </motion.div>
         </motion.div>
-      </div>
       </section>
     </>
   );

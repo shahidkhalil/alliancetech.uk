@@ -461,7 +461,10 @@ export default function ConsultationForm({ isOpen, onClose }: Props) {
                   </div>
 
                   <p className="text-center text-xs text-white/60 mt-4">
-                    🔒 Your info is private. No spam, ever.
+                    🔒 UK GDPR-aware · Your info is private. No spam.{" "}
+                    <a href="/privacy-policy" className="underline underline-offset-2 hover:text-white/90">
+                      Privacy Policy
+                    </a>
                   </p>
                 </div>
               )}

@@ -11,7 +11,7 @@ const features = [
   { icon: "📱", title: "Mobile App for Your Clinic", desc: "Your own branded app — patients book, view records, get reminders, and pay with your logo on their phone." },
   { icon: "📍", title: "Google Business Profile", desc: "Rank #1 for 'dentist near me' searches and dominate local Google Maps results in your city." },
   { icon: "⭐", title: "Reputation Management", desc: "Automatically collect 5-star Google reviews after every appointment to build trust and outrank competitors." },
-  { icon: "📊", title: "Live Analytics Dashboard", desc: "See every dollar spent, every lead generated, every booking made — in a real-time dashboard updated daily." },
+  { icon: "📊", title: "Live Analytics Dashboard", desc: "See every pound spent, every lead generated, every booking made — in a real-time dashboard updated daily." },
 ];
 
 const results = [

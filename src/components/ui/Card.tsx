@@ -4,6 +4,7 @@ import { ReactNode, useState, ComponentType, SVGProps, Children, isValidElement 
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useCardMotion, staggerDelay } from "@/lib/motionVariants";
+import SpotlightCard from "@/components/Motion/SpotlightCard";
 
 function cardClasses(accent: boolean, feature: boolean, hover: boolean, extra = "") {
   return [
@@ -370,7 +371,7 @@ export function ServiceCard({
   );
 }
 
-/** Rich service card — subtitle, stat footer (homepage Solutions grid). */
+/** Rich service card — unified layout for light + popular variants. */
 export function ServiceShowcaseCard({
   href,
   icon: Icon,
@@ -379,12 +380,9 @@ export function ServiceShowcaseCard({
   description,
   stat,
   popular = false,
-  showAccentBar = false,
-  accentLayoutId = "activeCardBorder",
   onPointerEnter,
   onPointerLeave,
-  skipEntrance = true,
-  className = "p-6 lg:p-7 gap-4",
+  className = "p-6 lg:p-7",
 }: {
   href: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
@@ -401,32 +399,37 @@ export function ServiceShowcaseCard({
   className?: string;
 }) {
   return (
-    <AnimatedLinkCard
+    <SpotlightCard
       href={href}
       dark={popular}
-      skipEntrance={skipEntrance}
-      showAccentBar={showAccentBar && !popular}
-      accentLayoutId={accentLayoutId}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
       className={className}
     >
       {popular && (
-        <span className="absolute top-4 right-4 z-[3] text-[9px] font-bold px-2.5 py-1 rounded-full bg-gradient-to-r from-[#F97316] to-[#EF4444] text-white tracking-wider shadow-lg">
+        <span className="absolute top-3 left-3 z-[3] text-[9px] font-bold px-2 py-1 rounded-full bg-gradient-to-r from-[#F97316] to-[#EF4444] text-white tracking-wider shadow-md">
           MOST POPULAR
         </span>
       )}
 
-      <div className="flex items-start justify-between gap-3">
+      <div className={`flex items-start justify-between gap-3 ${popular ? "mt-6" : ""}`}>
         <ServiceCardIcon icon={Icon} dark={popular} />
-        {!popular && <ServiceCardArrow />}
+        <ServiceCardArrow dark={popular} />
       </div>
 
-      <div className="flex-1">
-        <p className={`text-[10px] font-bold uppercase tracking-[0.14em] mb-1.5 ${popular ? "text-[#7DD3EA]/80" : "text-[#00B4D8]"}`}>
+      <div className="flex-1 mt-4">
+        <p
+          className={`text-[10px] font-bold uppercase tracking-[0.14em] mb-1.5 ${
+            popular ? "text-[#7DD3EA]/80" : "text-[#00B4D8]"
+          }`}
+        >
           {subtitle}
         </p>
-        <h3 className={`text-base font-extrabold mb-2 leading-snug tracking-tight ${popular ? "text-white" : "text-[#00283C]"}`}>
+        <h3
+          className={`text-base font-extrabold mb-2 leading-snug tracking-tight transition-transform duration-300 group-hover:translate-x-0.5 ${
+            popular ? "text-white" : "text-[#00283C]"
+          }`}
+        >
           {title}
         </h3>
         <p className={`text-xs leading-relaxed ${popular ? "text-white/65" : "text-[#00283C]/55"}`}>
@@ -434,12 +437,12 @@ export function ServiceShowcaseCard({
         </p>
       </div>
 
-      <div className="flex items-center justify-between gap-3 pt-1">
-        <CardStatPill className={popular ? "bg-white/10 border-white/20 text-white/80" : ""}>{stat}</CardStatPill>
-        {popular ? <ServiceCardArrow dark /> : null}
+      <div className="pt-4 mt-auto">
+        <CardStatPill className={popular ? "bg-white/10 border-white/20 text-white/80" : ""}>
+          {stat}
+        </CardStatPill>
       </div>
-      <hr className={`card-footer-rule mt-2 ${popular ? "card-footer-rule--dark" : ""}`} />
-    </AnimatedLinkCard>
+    </SpotlightCard>
   );
 }
 

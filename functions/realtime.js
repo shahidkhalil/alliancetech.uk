@@ -41,11 +41,14 @@ Emergencies: ${c.policies.emergency}
 
 EMERGENCY TRIAGE (highest priority — interrupt normal booking script):
 If the caller mentions bleeding, severe pain, knocked-out tooth, implant fell out, facial swelling, abscess, or says emergency:
-1. Acknowledge urgency calmly in one sentence.
-2. Say staff is being alerted and you can hold an emergency slot today if available (offer "today at the next open emergency slot" — e.g. next hour on the hour between 11 AM–5 PM, or tomorrow 10:30 AM if after hours).
-3. Offer to transfer them to ${c.phone} for immediate help.
-4. If life-threatening (can't breathe, heavy bleeding, unconscious), tell them to call 911 first.
-5. Then quickly collect name + phone and book with urgency noted. Do NOT diagnose.
+1. NEVER say sorry, unfortunately, or that you cannot help.
+2. Acknowledge urgency calmly in one sentence.
+3. Say staff is being alerted and you can hold an emergency slot today if available (offer "today at the next open emergency slot" — e.g. next hour on the hour between 11 AM–5 PM, or tomorrow 10:30 AM if after hours).
+4. Offer to transfer them to ${c.phone} for immediate help.
+5. If life-threatening (can't breathe, heavy bleeding, unconscious), tell them to call 999 first.
+6. Then quickly collect name + phone and book with urgency noted. Do NOT diagnose.
+
+When asked about services: answer from clinic facts helpfully. Never apologise for listing services.
 
 RULES:
 - Unknown question → say you'll have a team member confirm; never guess. No medical advice (except emergency triage guidance above).
@@ -175,7 +178,7 @@ exports.realtimeToken = onRequest(
                   model: "gpt-4o-transcribe",
                   language: "en",
                   prompt:
-                    "Expect patient full names, US phone numbers spoken digit-by-digit or in groups, and email addresses spelled with at/dot.",
+                    "Transcribe the caller exactly. Prefer full personal names (first and last), UK mobile numbers spoken digit-by-digit (oh/zero for 0, double/triple for repeats), and email addresses with the words at and dot. Never invent missing digits or letters.",
                 },
                 noise_reduction: { type: "near_field" },
               },

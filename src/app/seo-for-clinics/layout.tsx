@@ -3,8 +3,15 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "SEO for Dental & Aesthetic Clinics | Alliance Tech",
   description:
-    "Long-term organic Google rankings for the treatment keywords your patients search — dental implants, teeth whitening, botox, laser hair removal, and more.",
-  keywords: ["SEO for clinics", "dental SEO Houston", "dental SEO services", "med spa SEO Texas", "dental clinic SEO", "clinic organic search ranking"],
+    "Long-term organic Google rankings for the treatment keywords your UK patients search — dental implants, teeth whitening, botox, laser hair removal, and more.",
+  keywords: [
+    "SEO for clinics UK",
+    "dental SEO Blackburn",
+    "dental SEO services UK",
+    "aesthetic clinic SEO",
+    "dental clinic SEO",
+    "clinic organic search ranking",
+  ],
   alternates: { canonical: "/seo-for-clinics" },
   openGraph: {
     title: "SEO for Dental & Aesthetic Clinics | Alliance Tech",

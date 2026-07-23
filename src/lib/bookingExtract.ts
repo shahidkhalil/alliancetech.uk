@@ -17,7 +17,22 @@ export const EMPTY_DRAFT: BookingDraft = {
 };
 
 export const BOOKING_DAYS = ["Today", "Tomorrow", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-export const BOOKING_TIMES = ["11:00 AM", "1:00 PM", "3:00 PM", "5:00 PM", "7:00 PM", "8:30 PM"];
+export const BOOKING_TIMES = [
+  "9:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM",
+  "4:00 PM",
+  "5:00 PM",
+  "6:00 PM",
+  "7:00 PM",
+  "8:00 PM",
+  "8:30 PM",
+  "9:00 PM",
+];
 
 export function isServicesQuery(text: string): boolean {
   return /\b(what services|services do you|what do you offer|what treatments|list (your )?services|tell me about your services)\b/i.test(text);
@@ -62,30 +77,38 @@ function splitDayTime(pref: string): { day: string; time: string } {
   }
   const day = BOOKING_DAYS.find((d) => new RegExp(`\\b${d}\\b`, "i").test(pref)) || "";
   const time = normalizeTime(pref);
-  return { day, time: day && time && !pref.toLowerCase().includes(day.toLowerCase()) ? time : time };
+  return { day, time };
+}
+
+/** Parse day + time from Maya speech or booking summary text. */
+export function parseBookingSchedule(text: string): { day: string; time: string } {
+  return splitDayTime(text || "");
 }
 
 function normalizeTime(text: string): string {
-  const direct = BOOKING_TIMES.find((t) => text.includes(t));
+  const direct = BOOKING_TIMES.find((t) => text.toLowerCase().includes(t.toLowerCase()));
   if (direct) return direct;
   const m = text.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i);
   if (!m) return "";
   let h = parseInt(m[1], 10);
+  const mins = m[2] ? parseInt(m[2], 10) : 0;
   const ap = m[3].toUpperCase();
   if (ap === "PM" && h < 12) h += 12;
   if (ap === "AM" && h === 12) h = 0;
-  const slots = [
-    { label: "11:00 AM", h: 11 },
-    { label: "1:00 PM", h: 13 },
-    { label: "3:00 PM", h: 15 },
-    { label: "5:00 PM", h: 17 },
-    { label: "7:00 PM", h: 19 },
-    { label: "8:30 PM", h: 20.5 },
-  ];
+  const value = h + mins / 60;
+  const slots = BOOKING_TIMES.map((label) => {
+    const tm = label.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i)!;
+    let hh = parseInt(tm[1], 10);
+    const mm = parseInt(tm[2], 10);
+    const ap2 = tm[3].toUpperCase();
+    if (ap2 === "PM" && hh < 12) hh += 12;
+    if (ap2 === "AM" && hh === 12) hh = 0;
+    return { label, h: hh + mm / 60 };
+  });
   let best = slots[0];
   let bestDiff = Infinity;
   for (const s of slots) {
-    const diff = Math.abs(s.h - h);
+    const diff = Math.abs(s.h - value);
     if (diff < bestDiff) {
       bestDiff = diff;
       best = s;
@@ -170,7 +193,7 @@ export function extractBookingDraft(
     ];
     for (const p of patterns) {
       const m = t.match(p);
-      if (m && !/\b(book|appointment|service|phone|email|braces|whitening)\b/i.test(m[1])) {
+      if (m && !/\b(book|appointment|service|phone|email|braces|whitening|consultation|checkup|check-up|implant|filling|scaling)\b/i.test(m[1])) {
         draft.name = m[1].trim();
         break;
       }

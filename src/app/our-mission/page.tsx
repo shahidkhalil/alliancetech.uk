@@ -6,6 +6,9 @@ import ServicePageHero from "@/components/ServicePageHero";
 import FinalCTA from "@/components/FinalCTA";
 import { Card } from "@/components/ui/Card";
 import { staggerDelay } from "@/lib/motionVariants";
+import CountUp from "@/components/Motion/CountUp";
+import Reveal from "@/components/Motion/Reveal";
+import FloatingImage from "@/components/Motion/FloatingImage";
 
 const beliefs = [
   { lead: "Every patient lost is preventable.", desc: "A missed call, an unanswered WhatsApp message, a Google listing buried on page two. None of that is inevitable. It's a system failing the doctor behind it, and systems can be fixed." },
@@ -14,9 +17,9 @@ const beliefs = [
 ];
 
 const vision = [
-  { stat: "500+", label: "Clinics by 2027" },
-  { stat: "1", label: "Platform, every growth need" },
-  { stat: "0", label: "Patients lost to silence" },
+  { value: 500, suffix: "+", label: "Clinics by 2027" },
+  { value: 1, suffix: "", label: "Platform, every growth need" },
+  { value: 0, suffix: "", label: "Patients lost to silence" },
 ];
 
 function BeliefCard({ b, i }: { b: { lead: string; desc: string }; i: number }) {
@@ -46,11 +49,13 @@ export default function OurMission() {
       />
 
       <section className="py-16 lg:py-20 bg-white">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <p className="text-2xl lg:text-3xl font-bold text-[#00283C] leading-snug tracking-tight">
-            Most clinics that struggle aren&apos;t struggling because the care is lacking. They&apos;re struggling because the digital infrastructure around them was never built for healthcare in the United Kingdom. We started Alliance Tech to close that gap.
-          </p>
-        </div>
+        <Reveal className="max-w-3xl mx-auto px-6 text-center">
+          <FloatingImage speed={20}>
+            <p className="text-2xl lg:text-3xl font-bold text-[#00283C] leading-snug tracking-tight">
+              Most clinics that struggle aren&apos;t struggling because the care is lacking. They&apos;re struggling because the digital infrastructure around them was never built for healthcare in the United Kingdom. We started Alliance Tech to close that gap.
+            </p>
+          </FloatingImage>
+        </Reveal>
       </section>
 
       <section className="py-16 lg:py-20 bg-[#F8FAFC] border-t border-gray-100">
@@ -74,7 +79,9 @@ export default function OurMission() {
                 initial={{ opacity: 0, y: 16 }} animate={visionInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
                 className={`text-center py-2 ${i > 0 ? "sm:border-l border-white/10" : ""}`}>
-                <div className="text-4xl lg:text-5xl font-extrabold mb-2" style={{ color: "#00B4D8" }}>{v.stat}</div>
+                <div className="text-4xl lg:text-5xl font-extrabold mb-2" style={{ color: "#00B4D8" }}>
+                  <CountUp value={v.value} suffix={v.suffix} />
+                </div>
                 <div className="text-white/60 text-sm">{v.label}</div>
               </motion.div>
             ))}

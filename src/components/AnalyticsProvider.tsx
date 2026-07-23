@@ -12,6 +12,7 @@ import { useReportWebVitals } from "next/web-vitals";
 import { usePathname } from "next/navigation";
 import ConsentBanner from "@/components/ConsentBanner";
 import PresenceBeacon from "@/components/PresenceBeacon";
+import MotionProvider from "@/components/Motion/MotionProvider";
 import { trackPerformanceMetric, type ConsentPreferences } from "@/lib/analytics";
 import { usePageTracking } from "@/hooks/usePageTracking";
 
@@ -227,10 +228,12 @@ export default function AnalyticsProvider({ children }: { children: ReactNode })
 
   return (
     <AnalyticsContext.Provider value={value}>
-      {children}
-      <PresenceBeacon />
-      <AnalyticsRuntime enabled={value.analyticsEnabled} />
-      <ConsentBanner />
+      <MotionProvider>
+        {children}
+        <PresenceBeacon />
+        <AnalyticsRuntime enabled={value.analyticsEnabled} />
+        <ConsentBanner />
+      </MotionProvider>
     </AnalyticsContext.Provider>
   );
 }

@@ -23,7 +23,6 @@ export function OrganizationSchema() {
             url: BASE_URL,
             logo: `${BASE_URL}/logo-horizontal.png`,
             email: "Sales@alliancetechltd.com",
-            telephone: "+44 161 515 7261",
             address: {
               "@type": "PostalAddress",
               streetAddress: "138 Laburnum Rd",

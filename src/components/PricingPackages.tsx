@@ -1,9 +1,10 @@
 "use client";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { pricingServices } from "@/lib/pricingData";
 import { AnimatedLinkCard, ServiceCardArrow, StaggerGrid } from "@/components/ui/Card";
+import { DURATION, EASE_OUT_EXPO } from "@/animations/scroll";
 
 // Headline services shown as a homepage preview — full list lives on /pricing.
 const FEATURED_IDS = ["ai-automation", "healthcare-website", "local-seo", "google-ads"];
@@ -14,6 +15,7 @@ const COLS = "grid grid-cols-[1fr_110px_140px_110px] lg:grid-cols-[1fr_150px_180
 export default function PricingPackages() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const reduced = useReducedMotion();
   const featured = FEATURED_IDS
     .map((id) => pricingServices.find((s) => s.id === id))
     .filter(Boolean) as typeof pricingServices;
@@ -34,8 +36,9 @@ export default function PricingPackages() {
 
         {/* ── Header ── */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduced ? false : { opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: DURATION.slow, ease: EASE_OUT_EXPO }}
           className="text-center mb-14"
         >
           <span className="badge-light mb-6">PRICING</span>
@@ -50,7 +53,7 @@ export default function PricingPackages() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2.5">
-            {["No hidden fees", "Cancel anytime", "You own everything", "US-market pricing"].map((t) => (
+            {["No hidden fees", "Cancel anytime", "You own everything", "GBP pricing"].map((t) => (
               <span key={t} className="flex items-center gap-1.5 text-sm font-medium text-gray-500">
                 <span className="w-4 h-4 rounded-full bg-[#00B4D8]/10 flex items-center justify-center">
                   <Check className="w-2.5 h-2.5 text-[#0077A8]" strokeWidth={3} />
@@ -112,9 +115,9 @@ export default function PricingPackages() {
 
         {/* ── Pricing matrix (sm and up) ── */}
         <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.12 }}
+          initial={reduced ? false : { opacity: 0, y: 32, scale: 0.98 }}
+          animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
+          transition={{ delay: reduced ? 0 : 0.12, duration: DURATION.base, ease: EASE_OUT_EXPO }}
           className="hidden sm:block rounded-2xl overflow-hidden bg-white border border-gray-200/80 shadow-xl shadow-gray-200/50"
         >
           {/* Column labels */}

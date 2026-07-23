@@ -1,15 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShieldCheck, MapPin, Star, MessageCircle, Phone } from "lucide-react";
+import { ShieldCheck, MapPin, Star, MessageCircle } from "lucide-react";
 import {
   UK_GOOGLE_REVIEWS,
-  UK_PHONE_DISPLAY,
-  UK_PHONE_TEL,
   UK_REVIEW_LABEL,
   UK_REVIEW_SCORE,
   UK_WHATSAPP_URL,
 } from "@/lib/ukContact";
+import { useForm } from "@/context/FormContext";
 
 const proofs = [
   {
@@ -48,6 +47,8 @@ const cases = [
 ];
 
 export default function UkTrustProof() {
+  const { openForm } = useForm();
+
   return (
     <section className="py-14 lg:py-18 bg-white border-y border-gray-100">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -57,7 +58,7 @@ export default function UkTrustProof() {
             Built for the <span className="gradient-heading">United Kingdom</span>
           </h2>
           <p className="text-gray-500 text-sm lg:text-base leading-relaxed">
-            We reply within 2 hours Mon–Sat (UK time). Talk to a real person on WhatsApp or phone — not a ticket queue.
+            We reply within 2 hours Mon–Sat (UK time). Start with a free clinic audit — talk to a real person, not a ticket queue.
           </p>
         </div>
 
@@ -89,19 +90,22 @@ export default function UkTrustProof() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href={UK_WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={openForm}
+            data-analytics-label="book_consultation"
+            data-analytics-location="uk_trust_proof"
             className="inline-flex items-center gap-2 btn-dark px-6 py-3.5 text-sm w-full sm:w-auto justify-center"
           >
-            <MessageCircle className="w-4 h-4" /> WhatsApp us
-          </a>
+            Get Your Free Clinic Audit
+          </button>
           <a
-            href={UK_PHONE_TEL}
+            href={UK_WHATSAPP_URL}
+            target={UK_WHATSAPP_URL.startsWith("http") ? "_blank" : undefined}
+            rel={UK_WHATSAPP_URL.startsWith("http") ? "noopener noreferrer" : undefined}
             className="inline-flex items-center gap-2 border border-[#00283C]/20 text-[#00283C] font-bold px-6 py-3.5 rounded-md text-sm hover:bg-[#F8FAFC] w-full sm:w-auto justify-center"
           >
-            <Phone className="w-4 h-4" /> {UK_PHONE_DISPLAY}
+            <MessageCircle className="w-4 h-4" /> WhatsApp us
           </a>
           <a
             href={UK_GOOGLE_REVIEWS}
