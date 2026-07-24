@@ -192,10 +192,10 @@ function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-/** Absolute Maya voice URL (alliancepak) — always prefer this over relative /api. */
+/** Maya voice session token — alliance-tech-656ba Cloud Functions. */
 const SESSION_URL =
   process.env.NEXT_PUBLIC_REALTIME_TOKEN_ENDPOINT ||
-  "https://asia-south1-alliancepak.cloudfunctions.net/realtimeToken";
+  "https://asia-south1-alliance-tech-656ba.cloudfunctions.net/realtimeToken";
 
 async function postJsonOnce(url: string, body: unknown, signal?: AbortSignal) {
   const res = await fetch(url, {
@@ -1157,9 +1157,9 @@ export default function LiveCall({ onClose }: Props) {
           )}
 
           {state === "error" && (
-            <div className="space-y-3">
-              <p className="text-sm text-red-300 leading-relaxed px-1">{error}</p>
-              <div className="flex flex-col items-center gap-2">
+            <div className="space-y-3 px-1">
+              <p className="text-sm text-red-300 leading-relaxed">{error}</p>
+              <div className="flex flex-col gap-2.5 w-full max-w-xs mx-auto">
                 <button
                   type="button"
                   onClick={() => {
@@ -1168,7 +1168,7 @@ export default function LiveCall({ onClose }: Props) {
                     setSeconds(0);
                     setRetryKey((k) => k + 1);
                   }}
-                  className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto px-5 py-2.5 rounded-full bg-white text-[#0B5D50] text-sm font-bold hover:bg-white/90 transition-colors"
+                  className="inline-flex items-center justify-center w-full px-5 py-3 rounded-full bg-white text-[#0B5D50] text-sm font-bold hover:bg-white/90 transition-colors"
                 >
                   Retry Live Call
                 </button>
@@ -1179,35 +1179,47 @@ export default function LiveCall({ onClose }: Props) {
                     onClose();
                     document.getElementById("receptionist-chat")?.scrollIntoView({ behavior: "smooth", block: "center" });
                   }}
-                  className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto px-5 py-2.5 rounded-full border border-white/25 text-white text-sm font-semibold hover:bg-white/10 transition-colors"
+                  className="inline-flex items-center justify-center w-full px-5 py-3 rounded-full border border-white/25 text-white text-sm font-semibold hover:bg-white/10 transition-colors"
                 >
                   Use Chat with Maya instead
                 </a>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="inline-flex items-center justify-center w-full px-5 py-2.5 rounded-full text-white/70 text-sm font-medium hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  Close
+                </button>
               </div>
             </div>
           )}
         </div>
 
-        <div className="pb-6 flex items-center justify-center gap-4">
-          {state === "live" || state === "connecting" ? (
-            <button
-              onClick={() => {
-                hangUp();
-              }}
-              className="w-16 h-16 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg shadow-red-500/30 hover:bg-red-600 transition-colors"
-              aria-label="End call"
-            >
-              <PhoneOff className="w-6 h-6" />
-            </button>
-          ) : (
-            <button
-              onClick={onClose}
-              className="px-8 py-3 rounded-full bg-white/10 text-white text-sm font-semibold hover:bg-white/20 transition-colors"
-            >
-              Close
-            </button>
-          )}
-        </div>
+        {(state === "live" || state === "connecting" || state === "ended") && (
+          <div className="pb-6 pt-1 flex items-center justify-center gap-4">
+            {state === "live" || state === "connecting" ? (
+              <button
+                type="button"
+                onClick={() => {
+                  hangUp();
+                }}
+                className="w-16 h-16 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg shadow-red-500/30 hover:bg-red-600 transition-colors"
+                aria-label="End call"
+              >
+                <PhoneOff className="w-6 h-6" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-8 py-3 rounded-full bg-white/10 text-white text-sm font-semibold hover:bg-white/20 transition-colors"
+              >
+                Close
+              </button>
+            )}
+          </div>
+        )}
+        {state === "error" && <div className="pb-5" aria-hidden />}
       </motion.div>
     </motion.div>
   );

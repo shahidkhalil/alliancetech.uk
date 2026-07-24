@@ -1,16 +1,10 @@
 /**
  * Maya AI receptionist endpoints (Live Call + Chat + booking).
- *
- * These Cloud Functions stay on the previous Firebase project `alliancepak`
- * (where they are already deployed with OpenAI secrets). Site data/Auth/CMS
- * continues to use `alliance-tech-656ba` via src/lib/firebase.ts.
- *
- * Prefer absolute cloudfunctions.net URLs — Firebase Hosting on the new
- * project cannot rewrite to another project's functions.
+ * Same Firebase project as the site: alliance-tech-656ba.
  */
 const MAYA_CF =
   process.env.NEXT_PUBLIC_MAYA_FUNCTIONS_BASE ||
-  "https://asia-south1-alliancepak.cloudfunctions.net";
+  "https://asia-south1-alliance-tech-656ba.cloudfunctions.net";
 
 export const RECEPTIONIST_ENDPOINT =
   process.env.NEXT_PUBLIC_RECEPTIONIST_ENDPOINT || `${MAYA_CF}/clinicReceptionist`;

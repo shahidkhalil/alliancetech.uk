@@ -17,7 +17,11 @@ export default function AuditChatWidget() {
   const [showNudge, setShowNudge] = useState(false);
   const [ready, setReady] = useState(false);
   const pathname = usePathname();
-  const hidden = pathname === "/free-website-audit";
+  // Hide on pages that already have a primary chat / sticky CTA conflict
+  const hidden =
+    pathname === "/free-website-audit" ||
+    pathname === "/ai-receptionist" ||
+    (pathname || "").startsWith("/ai-receptionist/");
 
   useEffect(() => {
     if (hidden) return;
@@ -70,10 +74,10 @@ export default function AuditChatWidget() {
     <>
       {everOpened && (
         <div
-          className={`fixed bottom-24 right-4 sm:right-6 z-[60] w-[calc(100vw-2rem)] max-w-[400px] rounded-2xl shadow-2xl border border-gray-200 overflow-hidden bg-white flex flex-col transition-all duration-200 ${
+          className={`fixed bottom-36 lg:bottom-24 right-4 sm:right-6 z-[60] w-[calc(100vw-2rem)] max-w-[400px] rounded-2xl shadow-2xl border border-gray-200 overflow-hidden bg-white flex flex-col transition-all duration-200 ${
             open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none invisible"
           }`}
-          style={{ height: "min(600px, calc(100vh - 140px))" }}
+          style={{ height: "min(600px, calc(100vh - 180px))" }}
         >
           <div className="bg-[#00283C] px-4 py-3 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-2.5">
@@ -107,7 +111,7 @@ export default function AuditChatWidget() {
           type="button"
           onClick={openChat}
           aria-label="Open free website audit chat"
-          className="fixed bottom-24 right-4 sm:right-6 z-[59] bg-white rounded-2xl rounded-br-sm shadow-xl border border-gray-200 px-4 py-3 text-left max-w-[240px]"
+          className="fixed bottom-36 lg:bottom-24 right-4 sm:right-6 z-[59] bg-white rounded-2xl rounded-br-sm shadow-xl border border-gray-200 px-4 py-3 text-left max-w-[240px]"
         >
           <p className="text-xs font-bold text-[#00283C] mb-0.5">Free website audit</p>
           <p className="text-xs text-gray-600 leading-snug">
@@ -123,7 +127,7 @@ export default function AuditChatWidget() {
           setEverOpened(true);
           setShowNudge(false);
         }}
-        className="fixed bottom-5 right-4 sm:right-6 z-[60] group"
+        className="fixed bottom-20 lg:bottom-5 right-4 sm:right-6 z-[60] group"
         aria-label={open ? "Close free website audit chat" : "Open free website audit chat"}
       >
         {open ? (

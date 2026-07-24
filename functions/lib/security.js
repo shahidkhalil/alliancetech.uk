@@ -15,10 +15,10 @@ function isAllowedOrigin(origin) {
   if (!origin || typeof origin !== "string") return false;
   if (ALLOWED_ORIGINS.has(origin)) return true;
   try {
-    const { protocol, hostname, port } = new URL(origin);
+    const { protocol, hostname } = new URL(origin);
     if (protocol !== "http:" && protocol !== "https:") return false;
-    // Local dev — any port
-    if (hostname === "localhost" || hostname === "127.0.0.1") return true;
+    // Local dev — any port (incl. IPv6 ::1)
+    if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1") return true;
     // Firebase hosting previews + custom clinic domains
     if (hostname.endsWith(".web.app") || hostname.endsWith(".firebaseapp.com")) return true;
     if (hostname === "alliancetechltd.com" || hostname.endsWith(".alliancetechltd.com")) return true;
@@ -41,15 +41,21 @@ function clientIp(req) {
 
 function applyCors(req, res) {
   const origin = req.headers.origin;
-  if (origin && isAllowedOrigin(origin)) {
+  const allowed = !origin || isAllowedOrigin(origin);
+  if (origin && allowed) {
     res.set("Access-Control-Allow-Origin", origin);
     res.set("Vary", "Origin");
     res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.set("Access-Control-Allow-Headers", "Content-Type");
+    const requested = String(req.headers["access-control-request-headers"] || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const allowHeaders = [...new Set(["Content-Type", "Accept", ...requested])].join(", ");
+    res.set("Access-Control-Allow-Headers", allowHeaders || "Content-Type, Accept");
     res.set("Access-Control-Max-Age", "3600");
   }
   if (req.method === "OPTIONS") {
-    res.status(origin && isAllowedOrigin(origin) ? 204 : 403).send("");
+    res.status(origin && allowed ? 204 : 403).send("");
     return true;
   }
   return false;

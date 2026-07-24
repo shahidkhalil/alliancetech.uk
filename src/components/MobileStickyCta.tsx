@@ -5,7 +5,7 @@ import { MessageCircle } from "lucide-react";
 import { useForm } from "@/context/FormContext";
 import { UK_WHATSAPP_URL } from "@/lib/ukContact";
 
-const HIDDEN_PREFIXES = ["/admin", "/pricing"];
+const HIDDEN_PREFIXES = ["/admin", "/pricing", "/ai-receptionist"];
 
 /** Mobile-only sticky dual CTA — Free Audit + WhatsApp. Hidden on admin/pricing. */
 export default function MobileStickyCta() {
